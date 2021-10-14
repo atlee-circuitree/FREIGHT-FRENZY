@@ -29,16 +29,27 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Stokes - TeleOp", group="Linear Opmode")
-public class Stokes_FirstOpMode extends LinearOpMode {
+
+/**
+ * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
+ * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
+ * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
+ * class is instantiated on the Robot Controller and executed.
+ *
+ * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
+ * It includes all the skeletal structure that all linear OpModes contain.
+ *
+ * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ */
+
+@TeleOp(name="Stokes - Lab2.4", group="Linear Opmode")
+public class Stokes_Lab2_4 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -55,8 +66,8 @@ public class Stokes_FirstOpMode extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftDrive1 = hardwareMap.get(DcMotor.class, "drive_FL");
-        leftDrive2 = hardwareMap.get(DcMotor.class, "drive_RL");
+        leftDrive1  = hardwareMap.get(DcMotor.class, "drive_FL");
+        leftDrive2  = hardwareMap.get(DcMotor.class, "drive_RL");
         rightDrive1 = hardwareMap.get(DcMotor.class, "drive_FR");
         rightDrive2 = hardwareMap.get(DcMotor.class, "drive_RR");
 
@@ -67,6 +78,7 @@ public class Stokes_FirstOpMode extends LinearOpMode {
         leftDrive2.setDirection(DcMotor.Direction.FORWARD);
         rightDrive1.setDirection(DcMotor.Direction.REVERSE);
         rightDrive2.setDirection(DcMotor.Direction.FORWARD);
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -74,26 +86,41 @@ public class Stokes_FirstOpMode extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
-            double rightPower;
-
-
-            double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            double robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
-            double rightX = gamepad1.right_stick_x;
-            final double v1 = r * Math.cos(robotAngle) + rightX;
-            final double v2 = r * Math.sin(robotAngle) - rightX;
-            final double v3 = r * Math.sin(robotAngle) + rightX;
-            final double v4 = r * Math.cos(robotAngle) - rightX;
-
-            leftDrive2.setPower(v1);
-            leftDrive1.setPower(v3);
-            rightDrive2.setPower(v2);
-            rightDrive1.setPower(v4);
+            if (gamepad1.y)
+            {
+                leftDrive1.setPower(.5);
+                leftDrive2.setPower(.5);
+                rightDrive1.setPower(.5);
+                rightDrive2.setPower(.5);
             }
-
+            else if(gamepad1.a)
+            {
+                leftDrive1.setPower(-.5);
+                leftDrive2.setPower(-.5);
+                rightDrive1.setPower(-.5);
+                rightDrive2.setPower(-.5);
+            }
+            else if(gamepad1.x)
+            {
+                leftDrive1.setPower(-.5);
+                leftDrive2.setPower(.5);
+                rightDrive1.setPower(.5);
+                rightDrive2.setPower(-.5);
+            }
+            else if (gamepad1.b)
+            {
+                leftDrive1.setPower(.5);
+                leftDrive2.setPower(-.5);
+                rightDrive1.setPower(-.5);
+                rightDrive2.setPower(.5);
+            }
+            else
+            {
+                leftDrive1.setPower(.0);
+                leftDrive2.setPower(.0);
+                rightDrive1.setPower(.0);
+                rightDrive2.setPower(.0);
+            }
         }
     }
-
-
+}

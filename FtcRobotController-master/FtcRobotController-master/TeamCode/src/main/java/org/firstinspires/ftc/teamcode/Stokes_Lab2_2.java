@@ -78,9 +78,9 @@ public class Stokes_Lab2_2 extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive1.setDirection(DcMotor.Direction.FORWARD);
+        leftDrive1.setDirection(DcMotor.Direction.REVERSE);
         leftDrive2.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive1.setDirection(DcMotor.Direction.FORWARD);
+        rightDrive1.setDirection(DcMotor.Direction.REVERSE);
         rightDrive2.setDirection(DcMotor.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
@@ -95,6 +95,8 @@ public class Stokes_Lab2_2 extends LinearOpMode {
             telemetry.addData("Left Stick Y", gamepad1.left_stick_y);
             telemetry.update();
 
+            if(gamepad1.left_stick_x < 0)
+
             if(gamepad1.a)
             {
                 telemetry.addData("Message", "Hey Daddy! >w<");
@@ -102,6 +104,19 @@ public class Stokes_Lab2_2 extends LinearOpMode {
             else
             {
                 telemetry.addData("Message", "Deez Nuts o_o");
+            }
+
+            if(gamepad1.a)
+            {
+                //run motor forwards
+            }
+            else if(gamepad1.b)
+            {
+                //run motor backwards
+            }
+            else
+            {
+                //stop motors
             }
         }
     }
