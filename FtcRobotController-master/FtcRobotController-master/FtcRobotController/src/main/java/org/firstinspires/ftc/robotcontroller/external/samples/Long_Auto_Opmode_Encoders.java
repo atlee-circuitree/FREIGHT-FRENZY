@@ -25,7 +25,6 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @Autonomous(name="Long - Auto Opmode Encoders", group="Linear Opmode")
-@Disabled
 public class Long_Auto_Opmode_Encoders extends LinearOpMode {
 
     // Declare OpMode members.
