@@ -35,12 +35,16 @@ public class Stokes_Encoder extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        ResetDriveEncoder();
 
         leftDrive1 = hardwareMap.get(DcMotor.class, "drive_FL");
         leftDrive2 = hardwareMap.get(DcMotor.class, "drive_RL");
         rightDrive1 = hardwareMap.get(DcMotor.class, "drive_FR");
         rightDrive2 = hardwareMap.get(DcMotor.class, "drive_RR");
+
+        leftDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         leftDrive1.setDirection(DcMotor.Direction.FORWARD);
         leftDrive2.setDirection(DcMotor.Direction.FORWARD);
@@ -52,9 +56,10 @@ public class Stokes_Encoder extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            runForwardsEncoder(.2, 20);
+            runForwardsEncoder(.4, 60);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Encoder", "Left Front : " + leftDrive1.getCurrentPosition());
             telemetry.update();
 
         }
@@ -73,7 +78,7 @@ public class Stokes_Encoder extends LinearOpMode {
 
     public void runForwardsEncoder(double speed, double encoderValue) {
 
-        if (leftDrive1.getCurrentPosition() > leftDrive1.getTargetPosition()) {
+        if (leftDrive1.getCurrentPosition() < Inches(encoderValue)) {
 
             leftDrive1.setPower(speed);
             leftDrive2.setPower(speed);
