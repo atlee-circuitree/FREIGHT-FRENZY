@@ -1,5 +1,3 @@
-
-
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -39,29 +37,40 @@ public class Long_Auto_Opmode_Encoders extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        leftDrive1  = hardwareMap.get(DcMotor.class, "left_drive1");
-        rightDrive1 = hardwareMap.get(DcMotor.class, "right_drive1");
-        leftDrive2  = hardwareMap.get(DcMotor.class, "left_drive2");
-        rightDrive2 = hardwareMap.get(DcMotor.class, "right_drive2");
+        leftDrive1  = hardwareMap.get(DcMotor.class, "drive_FL");
+        rightDrive1 = hardwareMap.get(DcMotor.class, "drive_FR");
+        leftDrive2  = hardwareMap.get(DcMotor.class, "drive_RL");
+        rightDrive2 = hardwareMap.get(DcMotor.class, "drive_RR");
 
         leftDrive1.setDirection(DcMotor.Direction.FORWARD);
         leftDrive2.setDirection(DcMotor.Direction.FORWARD);
         rightDrive1.setDirection(DcMotor.Direction.REVERSE);
         rightDrive2.setDirection(DcMotor.Direction.REVERSE);
 
+        leftDrive1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftDrive2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightDrive2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        turnOnEncoders();
+
+
         waitForStart();
         runtime.reset();
 
-        while (opModeIsActive()) {
-
             runForwardsEncoder(.5, 20);
+
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("FL Encoder Value",leftDrive1.getCurrentPosition());
+            telemetry.addData("FR Encoder Value",rightDrive1.getCurrentPosition());
+            telemetry.addData("RL Encoder Value",leftDrive2.getCurrentPosition());
+            telemetry.addData("RR Encoder Value",rightDrive2.getCurrentPosition());
             telemetry.update();
 
-        }
+
     }
 
-    public double Inches(double input) {
+    public double inches(double input) {
 
         final double     COUNTS_PER_MOTOR_REV    = 383.6;    // eg: GOBUILDA Motor Encoder
         final double     DRIVE_GEAR_REDUCTION    = 1;     // This is < 1.0 if geared UP
@@ -72,29 +81,43 @@ public class Long_Auto_Opmode_Encoders extends LinearOpMode {
 
     }
 
-    public void runForwardsEncoder(double speed, double encoderValue) {
+    public void runForwardsEncoder(double speed, double inputInches) {
 
-        if (leftDrive1.getCurrentPosition() > encoderValue) {
+        double encoderValue = inches(inputInches);
+
+        while (leftDrive2.getCurrentPosition() < encoderValue) {
 
             leftDrive1.setPower(speed);
             leftDrive2.setPower(speed);
             rightDrive1.setPower(speed);
             rightDrive2.setPower(speed);
 
-        } else {
-
-            leftDrive1.setPower(0);
-            leftDrive2.setPower(0);
-            rightDrive1.setPower(0);
-            rightDrive2.setPower(0);
-
-            ResetDriveEncoder();
-
         }
+
+        leftDrive1.setPower(0);
+        leftDrive2.setPower(0);
+        rightDrive1.setPower(0);
+        rightDrive2.setPower(0);
+
+        ResetDriveEncoder();
 
     }
 
     public void ResetDriveEncoder(){
+
+        leftDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftDrive2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightDrive2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+    }
+
+    public void turnOnEncoders() {
+
+        leftDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 }
