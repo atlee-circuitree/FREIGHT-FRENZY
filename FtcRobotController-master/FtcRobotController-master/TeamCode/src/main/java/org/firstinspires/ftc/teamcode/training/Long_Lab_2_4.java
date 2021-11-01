@@ -27,12 +27,13 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.training;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 
 /**
@@ -48,8 +49,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Stokes - Lab2.4", group="Linear Opmode")
-public class Stokes_Lab2_4 extends LinearOpMode {
+@TeleOp(name="Long - Lab 2.4", group="Linear Opmode")
+public class Long_Lab_2_4 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -66,18 +67,17 @@ public class Stokes_Lab2_4 extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftDrive1  = hardwareMap.get(DcMotor.class, "drive_FL");
-        leftDrive2  = hardwareMap.get(DcMotor.class, "drive_RL");
+        leftDrive1 = hardwareMap.get(DcMotor.class, "drive_FL");
+        leftDrive2 = hardwareMap.get(DcMotor.class, "drive_RL");
         rightDrive1 = hardwareMap.get(DcMotor.class, "drive_FR");
         rightDrive2 = hardwareMap.get(DcMotor.class, "drive_RR");
 
-
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive1.setDirection(DcMotor.Direction.REVERSE);
+        leftDrive1.setDirection(DcMotor.Direction.FORWARD);
         leftDrive2.setDirection(DcMotor.Direction.FORWARD);
         rightDrive1.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive2.setDirection(DcMotor.Direction.FORWARD);
+        rightDrive2.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -86,41 +86,36 @@ public class Stokes_Lab2_4 extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            if (gamepad1.y)
+            if(gamepad1.y)
             {
-                leftDrive1.setPower(.5);
-                leftDrive2.setPower(.5);
-                rightDrive1.setPower(.5);
-                rightDrive2.setPower(.5);
+                //drive forward
+                drive(0.5);
             }
             else if(gamepad1.a)
             {
-                leftDrive1.setPower(-.5);
-                leftDrive2.setPower(-.5);
-                rightDrive1.setPower(-.5);
-                rightDrive2.setPower(-.5);
+                //drive backward
+                drive(-0.5);
             }
             else if(gamepad1.x)
             {
-                leftDrive1.setPower(-.5);
-                leftDrive2.setPower(.5);
-                rightDrive1.setPower(.5);
-                rightDrive2.setPower(-.5);
+                //turn left
+
             }
-            else if (gamepad1.b)
+            else if(gamepad1.b)
             {
-                leftDrive1.setPower(.5);
-                leftDrive2.setPower(-.5);
-                rightDrive1.setPower(-.5);
-                rightDrive2.setPower(.5);
+                //turn right
             }
             else
             {
-                leftDrive1.setPower(.0);
-                leftDrive2.setPower(.0);
-                rightDrive1.setPower(.0);
-                rightDrive2.setPower(.0);
+                //turn motors off
             }
         }
+    }
+
+    public void drive(double power) {
+        leftDrive1.setPower(power);
+        leftDrive2.setPower(power);
+        rightDrive1.setPower(power);
+        rightDrive2.setPower(power);
     }
 }

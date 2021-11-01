@@ -27,16 +27,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.training;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcore.internal.camera.delegating.DelegatingCaptureSequence;
 
 
 /**
@@ -52,8 +50,8 @@ import org.firstinspires.ftc.robotcore.internal.camera.delegating.DelegatingCapt
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Stokes - Lab2.2", group="Linear Opmode")
-public class Stokes_Lab2_2 extends LinearOpMode {
+@Autonomous(name="Long - My First Autonomous", group="Linear Opmode")
+public class Long_FirstAutoOpmode extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -70,54 +68,79 @@ public class Stokes_Lab2_2 extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftDrive1  = hardwareMap.get(DcMotor.class, "drive_FL");
-        leftDrive2  = hardwareMap.get(DcMotor.class, "drive_RL");
+        leftDrive1 = hardwareMap.get(DcMotor.class, "drive_FL");
+        leftDrive2 = hardwareMap.get(DcMotor.class, "drive_RL");
         rightDrive1 = hardwareMap.get(DcMotor.class, "drive_FR");
         rightDrive2 = hardwareMap.get(DcMotor.class, "drive_RR");
 
-
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive1.setDirection(DcMotor.Direction.REVERSE);
+        leftDrive1.setDirection(DcMotor.Direction.FORWARD);
         leftDrive2.setDirection(DcMotor.Direction.FORWARD);
         rightDrive1.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive2.setDirection(DcMotor.Direction.FORWARD);
+        rightDrive2.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-            telemetry.addData("Button a", gamepad1.a);
-            telemetry.addData("Button x", gamepad1.x);
-            telemetry.addData("Left Stick X", gamepad1.left_stick_x);
-            telemetry.addData("Left Stick Y", gamepad1.left_stick_y);
-            telemetry.update();
+        //Drive Forward
+        telemetry.addData("Status","Driving Forwards");
+        telemetry.update();
+        drive(0.5);
 
-            if(gamepad1.left_stick_x < 0)
+        telemetry.addData("Status","Sleeping");
+        telemetry.update();
+        sleep(2000); //Sleep for 2 second
 
-            if(gamepad1.a)
-            {
-                telemetry.addData("Message", "Hey Daddy! >w<");
-            }
-            else
-            {
-                telemetry.addData("Message", "Deez Nuts o_o");
-            }
+        telemetry.addData("Status","On Standby");
+        telemetry.update();
+        drive(0);
 
-            if(gamepad1.a)
-            {
-                //run motor forwards
-            }
-            else if(gamepad1.b)
-            {
-                //run motor backwards
-            }
-            else
-            {
-                //stop motors
-            }
-        }
+
+
+        /*
+        //Drive Backward
+        leftDrive1.setPower(-0.5);
+        leftDrive2.setPower(-0.5);
+        rightDrive1.setPower(-0.5);
+        rightDrive2.setPower(-0.5);
+
+        sleep(1000); //Sleep for 1 second
+
+        //Turn Left
+        leftDrive1.setPower(-0.5);
+        leftDrive2.setPower(-0.5);
+        rightDrive1.setPower(0.5);
+        rightDrive2.setPower(0.5);
+
+        sleep(1000); //Sleep for 1 second
+
+        //Turn Right
+        leftDrive1.setPower(0.5);
+        leftDrive2.setPower(0.5);
+        rightDrive1.setPower(-0.5);
+        rightDrive2.setPower(-0.5);
+
+        sleep(1000); //Sleep for 1 second
+
+        //Stop Motors
+        leftDrive1.setPower(0);
+        leftDrive2.setPower(0);
+        rightDrive1.setPower(0);
+        rightDrive2.setPower(0);
+
+        sleep(1000); //Sleep for 1 second
+        */
+
+
+    }
+
+    public void drive(double power) {
+        leftDrive1.setPower(power);
+        leftDrive2.setPower(power);
+        rightDrive1.setPower(power);
+        rightDrive2.setPower(power);
+
     }
 }
