@@ -62,20 +62,11 @@ public abstract class BaseOpMode extends LinearOpMode {
     public DcMotor drive_RL = null;
     public DcMotor drive_FR = null;
     public DcMotor drive_RR = null;
-    public DcMotorEx shooter_left = null;
-    public DcMotorEx shooter_right = null;
-    public DcMotor belt_feed = null;
-    public DcMotor lift_Motor = null;
-    public DigitalChannel lift_bottom_Left = null;
-    public DigitalChannel lift_bottom_Right = null;
-    public DigitalChannel lift_top = null;
-    public AHRS navx_cannon;
+
     public AHRS navx_centered;
+
     public DistanceSensor distance_sensor;
 
-
-    public Servo arm_servo;
-    public Servo claw_servo;
     public double intake = -2300;
     public double shooterFar = 1900;
     public boolean clawPos = true;
@@ -119,32 +110,13 @@ public abstract class BaseOpMode extends LinearOpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
         getCenteredNavXValues();
-        getCannonNavXValues();
         //drive train
         drive_FL = hardwareMap.get(DcMotor.class, "drive_FL");
         drive_RL = hardwareMap.get(DcMotor.class, "drive_RL");
         drive_FR = hardwareMap.get(DcMotor.class, "drive_FR");
         drive_RR = hardwareMap.get(DcMotor.class, "drive_RR");
-        //Shooter
-        shooter_left = hardwareMap.get(DcMotorEx.class, "shooter_L");
-        shooter_right = hardwareMap.get(DcMotorEx.class, "shooter_R");
 
-        belt_feed = hardwareMap.get(DcMotor.class, "belt_Feed");
-        lift_Motor = hardwareMap.get(DcMotor.class, "lift_M");
-
-        arm_servo = hardwareMap.get(Servo.class, "arm_servo");
-        claw_servo = hardwareMap.get(Servo.class, "claw_servo");
-
-        lift_bottom_Left = hardwareMap.get(DigitalChannel.class,"lift_bottom_L");
-        lift_bottom_Right = hardwareMap.get(DigitalChannel.class,"lift_bottom_R");
-        lift_top = hardwareMap.get(DigitalChannel.class,"lift_top");
         distance_sensor = hardwareMap.get(DistanceSensor.class, "distance_sensor");
-
-
-        // set digital channel to input mode.
-        lift_top.setMode(DigitalChannel.Mode.INPUT);
-        lift_bottom_Left.setMode(DigitalChannel.Mode.INPUT);
-        lift_bottom_Right.setMode(DigitalChannel.Mode.INPUT);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -153,26 +125,14 @@ public abstract class BaseOpMode extends LinearOpMode {
         drive_FR.setDirection(DcMotor.Direction.FORWARD);
         drive_RR.setDirection(DcMotor.Direction.FORWARD);
 
-        shooter_left.setDirection(DcMotor.Direction.FORWARD);
-        shooter_right.setDirection(DcMotor.Direction.REVERSE);
-
-        belt_feed.setDirection(DcMotor.Direction.FORWARD);
-        lift_Motor.setDirection(DcMotorSimple.Direction.FORWARD);
-
-        shooter_left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        shooter_right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
         SetDriveMode(Mode.STOP_RESET_ENCODER);
-        belt_feed.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
         drive_FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive_FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive_RL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive_RR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        shooter_left.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        shooter_right.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        belt_feed.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         SetDriveMode(Mode.RUN_WITH_ENCODER);
 
         //GetIMU();
@@ -511,16 +471,6 @@ public abstract class BaseOpMode extends LinearOpMode {
         GET_VELOCITY,
     }
 
-    public void SetShooterMotors(Shoot Setting){
-        if (Setting == Shoot.SHOOT_FAR) {
-            shooter_left.setVelocity(shooterFar);
-            shooter_right.setVelocity(shooterFar);
-        }
-        if (Setting == Shoot.GET_VELOCITY) {
-            shooter_left.getVelocity();
-            shooter_right.getVelocity();
-        }
-    }
     public void DriveTrain (Drive Stop){
         if (Stop == Drive.STOP) {
             drive_FL.setPower(0);
@@ -581,28 +531,6 @@ public abstract class BaseOpMode extends LinearOpMode {
 
 
         telemetry.addData("Yaw, Pitch, Roll", ypr);
-
-    }
-
-
-    public void getCannonNavXValues(){
-
-        navx_cannon = AHRS.getInstance(hardwareMap.get(NavxMicroNavigationSensor.class, "navx_cannon"), AHRS.DeviceDataType.kProcessedData);
-        //boolean connected = navx_device.isConnected();
-        //telemetry.addData("1 navX-Device", connected ?
-        //"Connected" : "Disconnected" );
-        String gyrocal, magcal, yaw, pitch, roll, compass_heading;
-        String fused_heading, ypr, cf, motion;
-        DecimalFormat df = new DecimalFormat("#.##");
-
-
-
-            yaw = df.format(navx_cannon.getYaw());
-            pitch = df.format(navx_cannon.getPitch());
-            roll = df.format(navx_cannon.getRoll());
-            ypr = yaw + ", " + pitch + ", " + roll;
-            telemetry.addData("Yaw, Pitch, Roll", ypr);
-
 
     }
 }

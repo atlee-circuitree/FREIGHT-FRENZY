@@ -68,26 +68,26 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         int RevEncoderTarget;
 
         if (opModeIsActive()) {
-            RevEncoderTarget = belt_feed.getCurrentPosition() + (int) (distance * OMNI_COUNTS_PER_INCH);
+            RevEncoderTarget = drive_FL.getCurrentPosition() + (int) (distance * OMNI_COUNTS_PER_INCH);
 
             runtime.reset();
-            while (opModeIsActive() && (runtime.seconds() < timeout) && (belt_feed.getCurrentPosition() < RevEncoderTarget)) {
+            while (opModeIsActive() && (runtime.seconds() < timeout) && (drive_FL.getCurrentPosition() < RevEncoderTarget)) {
                 drive_FL.setPower(-Math.abs(speed));
                 drive_FR.setPower(Math.abs(speed));
                 drive_RL.setPower(Math.abs(speed));
                 drive_RR.setPower(-Math.abs(speed));
                 telemetry.addData("Path3", "Running to %7d", RevEncoderTarget);
-                telemetry.addData("Path4", "Running at %7d", belt_feed.getCurrentPosition());
+                telemetry.addData("Path4", "Running at %7d", drive_FL.getCurrentPosition());
                 telemetry.update();
             }
             DriveTrain(Drive.STOP);
-            while (opModeIsActive() && (runtime.seconds() < timeout) && (belt_feed.getCurrentPosition() > RevEncoderTarget)) {
+            while (opModeIsActive() && (runtime.seconds() < timeout) && (drive_FL.getCurrentPosition() > RevEncoderTarget)) {
                 drive_FL.setPower(Math.abs(speed));
                 drive_FR.setPower(-Math.abs(speed));
                 drive_RL.setPower(-Math.abs(speed));
                 drive_RR.setPower(Math.abs(speed));
                 telemetry.addData("Path3", "Running to %7d", RevEncoderTarget);
-                telemetry.addData("Path4", "Running at %7d", belt_feed.getCurrentPosition());
+                telemetry.addData("Path4", "Running at %7d", drive_FL.getCurrentPosition());
                 telemetry.update();
             }
             DriveTrain(Drive.STOP);
@@ -102,28 +102,28 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         int RevEncoderTarget;
 
         if (opModeIsActive()) {
-            RevEncoderTarget = belt_feed.getCurrentPosition() + (int) (distance * OMNI_COUNTS_PER_INCH);
+            RevEncoderTarget = drive_FL.getCurrentPosition() + (int) (distance * OMNI_COUNTS_PER_INCH);
 
             runtime.reset();
             if(distance > 0) {
-                while (opModeIsActive() && (runtime.seconds() < timeout) && (belt_feed.getCurrentPosition() < RevEncoderTarget)) {
+                while (opModeIsActive() && (runtime.seconds() < timeout) && (drive_FL.getCurrentPosition() < RevEncoderTarget)) {
                     drive_FL.setPower(-Math.abs(speed));
                     drive_FR.setPower(Math.abs(speed));
                     drive_RL.setPower(Math.abs(speed));
                     drive_RR.setPower(-Math.abs(speed));
                     telemetry.addData("Path3", "Running to %7d", RevEncoderTarget);
-                    telemetry.addData("Path4", "Running at %7d", belt_feed.getCurrentPosition());
+                    telemetry.addData("Path4", "Running at %7d", drive_FL.getCurrentPosition());
                     telemetry.update();
                 }
             }
             else {
-                while (opModeIsActive() && (runtime.seconds() < timeout) && (belt_feed.getCurrentPosition() > RevEncoderTarget)) {
+                while (opModeIsActive() && (runtime.seconds() < timeout) && (drive_FL.getCurrentPosition() > RevEncoderTarget)) {
                     drive_FL.setPower(Math.abs(speed));
                     drive_FR.setPower(-Math.abs(speed));
                     drive_RL.setPower(-Math.abs(speed));
                     drive_RR.setPower(Math.abs(speed));
                     telemetry.addData("Path3", "Running to %7d", RevEncoderTarget);
-                    telemetry.addData("Path4", "Running at %7d", belt_feed.getCurrentPosition());
+                    telemetry.addData("Path4", "Running at %7d", drive_FL.getCurrentPosition());
                     telemetry.update();
                 }
             }

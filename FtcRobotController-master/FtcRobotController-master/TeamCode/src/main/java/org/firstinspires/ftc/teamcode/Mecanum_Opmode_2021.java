@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.teamcode.BaseOpMode;
+
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -39,11 +41,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
     private Servo kickout = null;
     private Servo leftDucky = null;
     private Servo rightDucky = null;
-    private Sensor NAVX = null;
-
 
     @Override
     public void runOpMode() {
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
