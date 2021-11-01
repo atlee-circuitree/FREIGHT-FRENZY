@@ -28,10 +28,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor leftDrive1 = null;
-    private DcMotor leftDrive2 = null;
-    private DcMotor rightDrive1 = null;
-    private DcMotor rightDrive2 = null;
+    private DcMotor drive_FL = null;
+    private DcMotor drive_RL = null;
+    private DcMotor drive_FR = null;
+    private DcMotor drive_RR = null;
     private DcMotor leftArm = null;
     private DcMotor rightArm = null;
     private DcMotor armExtend = null;
@@ -50,10 +50,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        leftDrive1 = hardwareMap.get(DcMotor.class, "drive_FL");
-        leftDrive2 = hardwareMap.get(DcMotor.class, "drive_RL");
-        rightDrive1 = hardwareMap.get(DcMotor.class, "drive_FR");
-        rightDrive2 = hardwareMap.get(DcMotor.class, "drive_RR");
+        drive_FL = hardwareMap.get(DcMotor.class, "drive_FL");
+        drive_RL = hardwareMap.get(DcMotor.class, "drive_RL");
+        drive_FR = hardwareMap.get(DcMotor.class, "drive_FR");
+        drive_RR = hardwareMap.get(DcMotor.class, "drive_RR");
         leftArm = hardwareMap.get(DcMotor.class, "left_Arm");
         rightArm = hardwareMap.get(DcMotor.class, "right_Arm");
         armExtend = hardwareMap.get(DcMotor.class, "extend_Arm");
@@ -65,10 +65,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        leftDrive1.setDirection(DcMotor.Direction.FORWARD);
-        leftDrive2.setDirection(DcMotor.Direction.FORWARD);
-        rightDrive1.setDirection(DcMotor.Direction.REVERSE);
-        rightDrive2.setDirection(DcMotor.Direction.REVERSE);
+        drive_FL.setDirection(DcMotor.Direction.FORWARD);
+        drive_RL.setDirection(DcMotor.Direction.FORWARD);
+        drive_FR.setDirection(DcMotor.Direction.REVERSE);
+        drive_RR.setDirection(DcMotor.Direction.REVERSE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -104,10 +104,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             final double v3 = r * Math.sin(robotAngle) + rightX;
             final double v4 = r * Math.cos(robotAngle) - rightX;
 
-            leftDrive1.setPower(v1);
-            leftDrive2.setPower(v3);
-            rightDrive1.setPower(v2);
-            rightDrive2.setPower(v4);
+            drive_FL.setPower(v1);
+            drive_RL.setPower(v3);
+            drive_FR.setPower(v2);
+            drive_RR.setPower(v4);
         }
     }
 }
