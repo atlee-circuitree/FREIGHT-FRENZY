@@ -46,6 +46,8 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
     public void runOpMode() {
 
         telemetry.addData("Status", "Initialized");
+        telemetry.addData("Left Arm Position : ", leftArm.getCurrentPosition());
+        telemetry.addData("Right Arm Position : ", rightArm.getCurrentPosition());
         telemetry.update();
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -84,23 +86,14 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             double leftPower;
             double rightPower;
 
-            // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
-
-            // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
+            //Basic Turn Code
             double drive = gamepad1.left_stick_y;
-            double turn  = -gamepad1.right_stick_x;
+            double turn  = gamepad1.right_stick_x;
             leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
             rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            // leftPower  = -gamepad1.left_stick_y ;
-            // rightPower = -gamepad1.right_stick_y ;
-
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-            double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+            double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
             double rightX = gamepad1.right_stick_x;
             final double v1 = r * Math.cos(robotAngle) + rightX;
             final double v2 = r * Math.sin(robotAngle) - rightX;
@@ -110,8 +103,8 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Extends and retracts slide
             if (gamepad1.right_bumper) {
 
-                leftArm.setPower(.15);
-                rightArm.setPower(.15);
+                leftArm.setPower(.5);
+                rightArm.setPower(.5);
 
             } else {
 
@@ -122,8 +115,8 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             if (gamepad1.left_bumper) {
 
-                leftArm.setPower(-.15);
-                rightArm.setPower(-.15);
+                leftArm.setPower(-.5);
+                rightArm.setPower(-.5);
 
             } else {
 
@@ -132,16 +125,6 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             }
 
-            //Turns on and off feeder motor (A button for now)
-            /*if (gamepad1.a) {
-
-                feeder.setPower(.15);
-
-            } else {
-
-                feeder.setPower(0);
-
-            } */
 
 
             drive_FL.setPower(v1);
@@ -149,5 +132,32 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             drive_FR.setPower(v2);
             drive_RR.setPower(v4);
         }
+
+        }
     }
-}
+    /* Unused Code
+
+  if (gamepad1.right_bumper) {
+
+       rightDucky.setPosition(7);
+
+  }
+
+  if (gamepad1.left_bumper); {
+
+
+      leftDucky.setPosition(7);
+
+  }
+
+  if (gamepad1.a) {
+
+     feeder.setPower(.15);
+
+  } else {
+
+     feeder.setPower(0);
+
+  }
+
+     */
