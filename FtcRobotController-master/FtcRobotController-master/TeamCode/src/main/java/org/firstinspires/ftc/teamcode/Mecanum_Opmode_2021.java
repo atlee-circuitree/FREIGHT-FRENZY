@@ -75,6 +75,13 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.REVERSE);
 
+        //Starting Variables
+        int TargetArmPosition = 1000;
+
+        //Drive Modes
+        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
@@ -92,6 +99,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
             rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
+            //Mecanum Drive Code
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
             double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
             double rightX = gamepad1.right_stick_x;
@@ -100,7 +108,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             final double v3 = r * Math.sin(robotAngle) + rightX;
             final double v4 = r * Math.cos(robotAngle) - rightX;
 
-            //Extends and retracts slide
+            //Move Arm Up
             if (gamepad1.right_bumper) {
 
                 leftArm.setPower(.5);
@@ -113,6 +121,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             }
 
+            //Move Arm Down
             if (gamepad1.left_bumper) {
 
                 leftArm.setPower(-.5);
@@ -159,5 +168,30 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
      feeder.setPower(0);
 
   }
+
+    //Botton Goal
+            if (gamepad1.a) {
+
+                TargetArmPosition = 1000;
+
+            }
+
+            //Middle Goal
+            if (gamepad1.b) {
+
+                TargetArmPosition = 1000;
+
+            }
+
+            //Top Goal
+            if (gamepad1.y) {
+
+                TargetArmPosition = 1000;
+
+            }
+
+            //Run the arm to the selected position
+            leftArm.setTargetPosition(TargetArmPosition);
+            rightArm.setTargetPosition(TargetArmPosition);
 
      */
