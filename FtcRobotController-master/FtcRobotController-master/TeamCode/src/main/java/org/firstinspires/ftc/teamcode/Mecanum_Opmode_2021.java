@@ -4,6 +4,7 @@ import android.hardware.Sensor;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -37,10 +38,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
     private DcMotor leftArm = null;
     private DcMotor rightArm = null;
     private DcMotor armExtend = null;
-    //private DcMotor feeder = null;
-    //private Servo kickout = null;
-    //private Servo leftDucky = null;
-    //private Servo rightDucky = null;
+    private DcMotor feeder = null;
+    private Servo kickout = null;
+    private CRServo leftDucky = null;
+    private CRServo rightDucky = null;
 
     @Override
     public void runOpMode() {
@@ -60,10 +61,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         leftArm = hardwareMap.get(DcMotor.class, "left_Arm");
         rightArm = hardwareMap.get(DcMotor.class, "right_Arm");
         armExtend = hardwareMap.get(DcMotor.class, "extend_Arm");
-        //feeder = hardwareMap.get(DcMotor.class, "feeder");
-        //kickout = hardwareMap.get(Servo.class, "kickout");
-        //leftDucky = hardwareMap.get(Servo.class, "left_Ducky");
-        //rightDucky = hardwareMap.get(Servo.class, "right_Ducky");
+        feeder = hardwareMap.get(DcMotor.class, "feeder");
+        kickout = hardwareMap.get(Servo.class, "kickout");
+        leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
+        rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
 
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -108,31 +109,51 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             final double v3 = r * Math.sin(robotAngle) + rightX;
             final double v4 = r * Math.cos(robotAngle) - rightX;
 
-            //Move Arm Up
-            if (gamepad1.right_bumper) {
-
-                leftArm.setPower(.5);
-                rightArm.setPower(.5);
-
+            //Controller 1
+            //Controls Left Ducky Wheel
+            if (gamepad1.left_bumper)
+            {
+                leftDucky.setPower(.5);
             } else {
-
-                leftArm.setPower(0);
-                rightArm.setPower(0);
-
+                leftDucky.setPower(0);
             }
 
-            //Move Arm Down
-            if (gamepad1.left_bumper) {
 
-                leftArm.setPower(-.5);
-                rightArm.setPower(-.5);
-
+            //Controls Right Ducky Wheel
+            if (gamepad1.right_bumper)
+            {
+                rightDucky.setPower(-.5);
             } else {
-
-                leftArm.setPower(0);
-                rightArm.setPower(0);
-
+                rightDucky.setPower(0);
             }
+
+
+            //Controls Feeder Motor
+            if (gamepad1.left_trigger > 10)
+            {
+                feeder.setPower(.15);
+            } else {
+                feeder.setPower(0);
+            }
+
+
+            if (gamepad1.right_trigger > 10)
+            {
+                feeder.setPower(-.15);
+            } else {
+                feeder.setPower(0);
+            }
+
+
+            //Controller 2
+            //Manually controls extends and turns Arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
+            armExtend.setPower(gamepad2.left_stick_y);
+            leftArm.setPower(gamepad2.right_stick_y);
+            rightArm.setPower(gamepad2.right_stick_y);
+
+            
+
+
 
 
 
