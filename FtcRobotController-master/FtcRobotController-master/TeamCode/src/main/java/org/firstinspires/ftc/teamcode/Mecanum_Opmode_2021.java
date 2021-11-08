@@ -110,6 +110,12 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             final double v4 = r * Math.cos(robotAngle) - rightX;
 
             //Controller 1
+            //Controls Kickout
+            if (gamepad1.b) {
+                kickout.setPosition(7);
+            }
+
+
             //Controls Left Ducky Wheel
             if (gamepad1.left_bumper)
             {
@@ -117,7 +123,6 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             } else {
                 leftDucky.setPower(0);
             }
-
 
             //Controls Right Ducky Wheel
             if (gamepad1.right_bumper)
@@ -128,7 +133,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             }
 
 
-            //Controls Feeder Motor
+            //Turns Feeder Motor Inward
             if (gamepad1.left_trigger > 10)
             {
                 feeder.setPower(.15);
@@ -136,7 +141,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
                 feeder.setPower(0);
             }
 
-
+            //Turns Feeder Motor Outward
             if (gamepad1.right_trigger > 10)
             {
                 feeder.setPower(-.15);
@@ -146,16 +151,50 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
 
             //Controller 2
-            //Manually controls extends and turns Arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
-            armExtend.setPower(gamepad2.left_stick_y);
-            leftArm.setPower(gamepad2.right_stick_y);
-            rightArm.setPower(gamepad2.right_stick_y);
 
-            
+            //Manually extends/turn arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
+            if (gamepad2.dpad_up)
+            {
+                leftArm.setPower(.15);
+            } else {
+                leftArm.setPower(0);
+            }
 
+            if (gamepad2.dpad_down)
+            {
+                leftArm.setPower(-.15);
+            } else {
+                leftArm.setPower(0);
+            }
 
+            if (gamepad2.dpad_up)
+            {
+                rightArm.setPower(.15);
+            } else {
+                rightArm.setPower(0);
+            }
 
+            if (gamepad2.dpad_down)
+            {
+                rightArm.setPower(-.15);
+            } else {
+                rightArm.setPower(0);
+            }
 
+            //Manually extends/retracts arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
+            if (gamepad2.dpad_left)
+            {
+                armExtend.setPower(.15);
+            } else {
+                armExtend.setPower(0);
+            }
+
+            if (gamepad2.dpad_right)
+            {
+                armExtend.setPower(-.15);
+            } else {
+                armExtend.setPower(0);
+            }
 
             drive_FL.setPower(v1);
             drive_RL.setPower(v3);
