@@ -66,6 +66,12 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
 
+        leftArm.setDirection(DcMotor.Direction.FORWARD);
+        rightArm.setDirection(DcMotor.Direction.REVERSE);
+
+        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -81,7 +87,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
         //Drive Modes
         leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -96,9 +102,9 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             //Basic Turn Code
             double drive = gamepad1.left_stick_y;
-            double turn  = gamepad1.right_stick_x;
-            leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+            double turn = gamepad1.right_stick_x;
+            leftPower = Range.clip(drive + turn, -1.0, 1.0);
+            rightPower = Range.clip(drive - turn, -1.0, 1.0);
 
             //Mecanum Drive Code
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
@@ -117,16 +123,14 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
 
             //Controls Left Ducky Wheel
-            if (gamepad1.left_bumper)
-            {
+            if (gamepad1.left_bumper) {
                 leftDucky.setPower(.5);
             } else {
                 leftDucky.setPower(0);
             }
 
             //Controls Right Ducky Wheel
-            if (gamepad1.right_bumper)
-            {
+            if (gamepad1.right_bumper) {
                 rightDucky.setPower(-.5);
             } else {
                 rightDucky.setPower(0);
@@ -134,16 +138,14 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
 
             //Turns Feeder Motor Inward
-            if (gamepad1.left_trigger > 10)
-            {
+            if (gamepad1.left_trigger > 10) {
                 feeder.setPower(.15);
             } else {
                 feeder.setPower(0);
             }
 
             //Turns Feeder Motor Outward
-            if (gamepad1.right_trigger > 10)
-            {
+            if (gamepad1.right_trigger > 10) {
                 feeder.setPower(-.15);
             } else {
                 feeder.setPower(0);
@@ -151,50 +153,44 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
 
             //Controller 2
-
-            //Manually extends/turn arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
-            if (gamepad2.dpad_up)
-            {
+            //Manually turns arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
+            if (gamepad2.dpad_up) {
                 leftArm.setPower(.15);
             } else {
                 leftArm.setPower(0);
             }
 
-            if (gamepad2.dpad_down)
-            {
+            if (gamepad2.dpad_down) {
                 leftArm.setPower(-.15);
             } else {
                 leftArm.setPower(0);
             }
 
-            if (gamepad2.dpad_up)
-            {
+            if (gamepad2.dpad_up) {
                 rightArm.setPower(.15);
             } else {
                 rightArm.setPower(0);
             }
 
-            if (gamepad2.dpad_down)
-            {
+            if (gamepad2.dpad_down) {
                 rightArm.setPower(-.15);
             } else {
                 rightArm.setPower(0);
             }
 
             //Manually extends/retracts arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
-            if (gamepad2.dpad_left)
-            {
+            if (gamepad2.dpad_left) {
                 armExtend.setPower(.15);
             } else {
                 armExtend.setPower(0);
             }
 
-            if (gamepad2.dpad_right)
-            {
+            if (gamepad2.dpad_right) {
                 armExtend.setPower(-.15);
             } else {
                 armExtend.setPower(0);
             }
+
 
             drive_FL.setPower(v1);
             drive_RL.setPower(v3);
@@ -202,8 +198,17 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             drive_RR.setPower(v4);
         }
 
-        }
+
     }
+}
+    /*public void ResetDriveEncoder() {
+
+        leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+    }
+}
     /* Unused Code
 
   if (gamepad1.right_bumper) {
