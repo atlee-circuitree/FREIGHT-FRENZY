@@ -49,6 +49,13 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.addData("Left Arm Position : ", leftArm.getCurrentPosition());
         telemetry.addData("Right Arm Position : ", rightArm.getCurrentPosition());
+        telemetry.addData("Kickout Moving", kickout.getPosition());
+        telemetry.addData("Left Ducky Wheel Moving", leftDucky.getDirection());
+        telemetry.addData("Right Ducky Wheel Moving", rightDucky.getDirection());
+        telemetry.addData("Feeder Moving", feeder.getCurrentPosition());
+        telemetry.addData("Left Arm Moving", leftArm.getCurrentPosition());
+        telemetry.addData("Right Arm Moving", rightArm.getCurrentPosition());
+        telemetry.addData("Arm Extending", armExtend.getCurrentPosition());
         telemetry.update();
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -82,12 +89,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.REVERSE);
 
-        //Starting Variables
-        int TargetArmPosition = 1000;
 
         //Drive Modes
-        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -95,16 +100,6 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-            // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
-            double rightPower;
-
-            //Basic Turn Code
-            double drive = gamepad1.left_stick_y;
-            double turn = gamepad1.right_stick_x;
-            leftPower = Range.clip(drive + turn, -1.0, 1.0);
-            rightPower = Range.clip(drive - turn, -1.0, 1.0);
 
             //Mecanum Drive Code
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
@@ -114,6 +109,11 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             final double v2 = r * Math.sin(robotAngle) - rightX;
             final double v3 = r * Math.sin(robotAngle) + rightX;
             final double v4 = r * Math.cos(robotAngle) - rightX;
+
+            drive_FL.setPower(v1);
+            drive_RL.setPower(v3);
+            drive_FR.setPower(v2);
+            drive_RR.setPower(v4);
 
             //Controller 1
             //Controls Kickout
@@ -156,25 +156,17 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Manually turns arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
             if (gamepad2.dpad_up) {
                 leftArm.setPower(.15);
-            } else {
-                leftArm.setPower(0);
-            }
-
-            if (gamepad2.dpad_down) {
-                leftArm.setPower(-.15);
-            } else {
-                leftArm.setPower(0);
-            }
-
-            if (gamepad2.dpad_up) {
                 rightArm.setPower(.15);
             } else {
+                leftArm.setPower(0);
                 rightArm.setPower(0);
             }
 
             if (gamepad2.dpad_down) {
+                leftArm.setPower(-.15);
                 rightArm.setPower(-.15);
             } else {
+                leftArm.setPower(0);
                 rightArm.setPower(0);
             }
 
@@ -190,73 +182,8 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             } else {
                 armExtend.setPower(0);
             }
-
-
-            drive_FL.setPower(v1);
-            drive_RL.setPower(v3);
-            drive_FR.setPower(v2);
-            drive_RR.setPower(v4);
         }
 
 
     }
 }
-    /*public void ResetDriveEncoder() {
-
-        leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-
-    }
-}
-    /* Unused Code
-
-  if (gamepad1.right_bumper) {
-
-       rightDucky.setPosition(7);
-
-  }
-
-  if (gamepad1.left_bumper); {
-
-
-      leftDucky.setPosition(7);
-
-  }
-
-  if (gamepad1.a) {
-
-     feeder.setPower(.15);
-
-  } else {
-
-     feeder.setPower(0);
-
-  }
-
-    //Botton Goal
-            if (gamepad1.a) {
-
-                TargetArmPosition = 1000;
-
-            }
-
-            //Middle Goal
-            if (gamepad1.b) {
-
-                TargetArmPosition = 1000;
-
-            }
-
-            //Top Goal
-            if (gamepad1.y) {
-
-                TargetArmPosition = 1000;
-
-            }
-
-            //Run the arm to the selected position
-            leftArm.setTargetPosition(TargetArmPosition);
-            rightArm.setTargetPosition(TargetArmPosition);
-
-     */
