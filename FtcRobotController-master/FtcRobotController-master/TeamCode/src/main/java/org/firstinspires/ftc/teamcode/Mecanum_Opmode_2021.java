@@ -1,16 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-import android.hardware.Sensor;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.teamcode.BaseOpMode;
 
 
 /**
@@ -31,10 +26,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor drive_FL = null;
-    private DcMotor drive_RL = null;
-    private DcMotor drive_FR = null;
-    private DcMotor drive_RR = null;
+    private DcMotor frontLeft = null;
+    private DcMotor backLeft = null;
+    private DcMotor frontRight = null;
+    private DcMotor backRight = null;
     private DcMotor leftArm = null;
     private DcMotor rightArm = null;
     private DcMotor armExtend = null;
@@ -49,7 +44,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.addData("Left Arm Position : ", leftArm.getCurrentPosition());
         telemetry.addData("Right Arm Position : ", rightArm.getCurrentPosition());
-        telemetry.addData("Kickout Moving", kickout.getPosition());
+        telemetry.addData("Kicked uwu :)", kickout.getPosition());
         telemetry.addData("Left Ducky Wheel Moving", leftDucky.getDirection());
         telemetry.addData("Right Ducky Wheel Moving", rightDucky.getDirection());
         telemetry.addData("Feeder Moving", feeder.getCurrentPosition());
@@ -61,10 +56,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        drive_FL = hardwareMap.get(DcMotor.class, "drive_FL");
-        drive_RL = hardwareMap.get(DcMotor.class, "drive_RL");
-        drive_FR = hardwareMap.get(DcMotor.class, "drive_FR");
-        drive_RR = hardwareMap.get(DcMotor.class, "drive_RR");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
         leftArm = hardwareMap.get(DcMotor.class, "left_Arm");
         rightArm = hardwareMap.get(DcMotor.class, "right_Arm");
         armExtend = hardwareMap.get(DcMotor.class, "extend_Arm");
@@ -82,10 +77,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        drive_FL.setDirection(DcMotor.Direction.FORWARD);
-        drive_RL.setDirection(DcMotor.Direction.FORWARD);
-        drive_FR.setDirection(DcMotor.Direction.REVERSE);
-        drive_RR.setDirection(DcMotor.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        backLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
         leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.REVERSE);
 
@@ -110,10 +105,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             final double v3 = r * Math.sin(robotAngle) + rightX;
             final double v4 = r * Math.cos(robotAngle) - rightX;
 
-            drive_FL.setPower(v1);
-            drive_RL.setPower(v3);
-            drive_FR.setPower(v2);
-            drive_RR.setPower(v4);
+            frontLeft.setPower(v1);
+            backLeft.setPower(v3);
+            frontRight.setPower(v2);
+            backRight.setPower(v4);
 
             //Controller 1
             //Controls Kickout
