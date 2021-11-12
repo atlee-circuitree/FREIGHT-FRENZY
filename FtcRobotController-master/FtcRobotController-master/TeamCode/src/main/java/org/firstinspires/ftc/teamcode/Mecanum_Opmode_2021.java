@@ -46,13 +46,25 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Left Arm Position : ", leftArm.getCurrentPosition());
+        telemetry.addData("Right Arm Position : ", rightArm.getCurrentPosition());
+        telemetry.addData("Kicked uwu :)", kickout.getPosition());
+        telemetry.addData("Left Ducky Wheel Moving", leftDucky.getDirection());
+        telemetry.addData("Right Ducky Wheel Moving", rightDucky.getDirection());
+        telemetry.addData("Feeder Moving", feeder.getCurrentPosition());
+        telemetry.addData("Left Arm Moving", leftArm.getCurrentPosition());
+        telemetry.addData("Right Arm Moving", rightArm.getCurrentPosition());
+        telemetry.addData("Arm Extending", armExtend.getCurrentPosition());
+        telemetry.update();
+
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        drive_FL = hardwareMap.get(DcMotor.class, "drive_FL");
-        drive_RL = hardwareMap.get(DcMotor.class, "drive_RL");
-        drive_FR = hardwareMap.get(DcMotor.class, "drive_FR");
-        drive_RR = hardwareMap.get(DcMotor.class, "drive_RR");
+        drive_FL = hardwareMap.get(DcMotor.class, "frontLeft");
+        drive_RL = hardwareMap.get(DcMotor.class, "backLeft");
+        drive_FR = hardwareMap.get(DcMotor.class, "frontRight");
+        drive_RR = hardwareMap.get(DcMotor.class, "backRight");
         leftArm = hardwareMap.get(DcMotor.class, "left_Arm");
         rightArm = hardwareMap.get(DcMotor.class, "right_Arm");
         armExtend = hardwareMap.get(DcMotor.class, "extend_Arm");
@@ -71,6 +83,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
+        drive_FL.setDirection(DcMotor.Direction.FORWARD);
+        drive_RL.setDirection(DcMotor.Direction.FORWARD);
+        drive_FR.setDirection(DcMotor.Direction.REVERSE);
+        drive_RR.setDirection(DcMotor.Direction.REVERSE);
         drive_FL.setDirection(DcMotor.Direction.FORWARD);
         drive_RL.setDirection(DcMotor.Direction.FORWARD);
         drive_FR.setDirection(DcMotor.Direction.REVERSE);
