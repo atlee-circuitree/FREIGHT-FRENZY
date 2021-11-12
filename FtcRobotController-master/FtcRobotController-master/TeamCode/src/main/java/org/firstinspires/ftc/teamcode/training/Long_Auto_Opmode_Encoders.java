@@ -88,16 +88,6 @@ public class Long_Auto_Opmode_Encoders extends LinearOpMode {
 
     }
 
-
-    public double ticks(double input) {
-
-        final double     COUNTS_PER_BORE_MOTOR_REV    = 8192;    // eg: GOBUILDA Motor Encoder
-        final double     COUNTS_TICKS_PER_REV_PER_DEGREE  = (COUNTS_PER_BORE_MOTOR_REV) / 360;
-
-        return COUNTS_TICKS_PER_REV_PER_DEGREE * input;
-
-    }
-
     public void runForwardsEncoder(double speed, double inputInches) {
 
         double encoderValue = inches(inputInches);
