@@ -1,11 +1,16 @@
 package org.firstinspires.ftc.teamcode;
 
+import static java.lang.Math.abs;
+import static java.util.stream.LongStream.range;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import java.util.stream.IntStream;
 
 
 /**
@@ -70,8 +75,6 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         drive_RL.setDirection(DcMotor.Direction.FORWARD);
         drive_FR.setDirection(DcMotor.Direction.REVERSE);
         drive_RR.setDirection(DcMotor.Direction.FORWARD);
-        leftArm.setDirection(DcMotor.Direction.FORWARD);
-        rightArm.setDirection(DcMotor.Direction.REVERSE);
 
         //Drive Modes
         drive_FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -90,11 +93,14 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             telemetry.addData("Status", "Initialized");
             telemetry.addData("Left Arm", leftArm.getCurrentPosition());
             telemetry.addData("Right Arm", rightArm.getCurrentPosition());
+            telemetry.addData("Left Arm Power", leftArm.getPower());
+            telemetry.addData("Right Arm Power", rightArm.getPower());
             telemetry.addData("Kickout", kickout.getPosition());
             telemetry.addData("Left Ducky Wheel", leftDucky.getPower());
             telemetry.addData("Right Ducky Wheel", rightDucky.getPower());
             telemetry.addData("Feeder", feeder.getCurrentPosition());
             telemetry.addData("Arm Extend", armExtend.getCurrentPosition());
+            telemetry.addData("Arm Extend Power", armExtend.getPower());
             telemetry.update();
 
             //Mecanum Drive Code
@@ -149,18 +155,17 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             //Controller 2
             //Manually turns arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
-            //Note change these have a function where the arm moves to set levels
             if (gamepad2.dpad_up) {
-                leftArm.setPower(-.5);
-                rightArm.setPower(-.5);
+                leftArm.setPower(-1);
+                rightArm.setPower(-1);
             } else {
                 leftArm.setPower(0);
                 rightArm.setPower(0);
             }
 
             if (gamepad2.dpad_down) {
-                leftArm.setPower(.5);
-                rightArm.setPower(.5);
+                leftArm.setPower(1);
+                rightArm.setPower(1);
             } else {
                 leftArm.setPower(0);
                 rightArm.setPower(0);
@@ -179,28 +184,59 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             }
 
             //Moves arm to set levels
+
             //Pickup level
             if (gamepad2.a) {
-                rightArm.setTargetPosition(degreesBore(10));
-                rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+                if (rightArm.getCurrentPosition() < degreesBore(0) - 20) {
+
+                    rightArm.setPower((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2);
+                    leftArm.setPower((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2);
+
+                } else if (rightArm.getCurrentPosition() > degreesBore(0) + 20) {
+
+                    rightArm.setPower(-((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2));
+                    leftArm.setPower(-((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2));
+
+                } else {
+
+                    rightArm.setPower(0);
+                    leftArm.setPower(0);
+
+                }
+
             }
 
             //Medium level
-            if (gamepad2.b) {
-                rightArm.setTargetPosition(degreesBore(20));
-                rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            if (gamepad2.a) {
+
+                if (rightArm.getCurrentPosition() < degreesBore(35) - 20) {
+
+                    rightArm.setPower((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2);
+                    leftArm.setPower((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2);
+
+                } else if (rightArm.getCurrentPosition() > degreesBore(35) + 20) {
+
+                    rightArm.setPower(-((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2));
+                    leftArm.setPower(-((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2));
+
+                } else {
+
+                    rightArm.setPower(0);
+                    leftArm.setPower(0);
+
+                }
+
             }
 
             //High Level
             if (gamepad2.y) {
-                rightArm.setTargetPosition(degreesBore(30));
-                rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             }
 
             //Capstone level
             if (gamepad2.x) {
-                rightArm.setTargetPosition(degreesBore(40));
-                rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             }
 
         }
