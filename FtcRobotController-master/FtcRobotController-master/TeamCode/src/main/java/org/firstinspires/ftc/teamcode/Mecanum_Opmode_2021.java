@@ -46,25 +46,13 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        telemetry.addData("Status", "Initialized");
-        telemetry.addData("Left Arm Position : ", leftArm.getCurrentPosition());
-        telemetry.addData("Right Arm Position : ", rightArm.getCurrentPosition());
-        telemetry.addData("Kicked uwu :)", kickout.getPosition());
-        telemetry.addData("Left Ducky Wheel Moving", leftDucky.getDirection());
-        telemetry.addData("Right Ducky Wheel Moving", rightDucky.getDirection());
-        telemetry.addData("Feeder Moving", feeder.getCurrentPosition());
-        telemetry.addData("Left Arm Moving", leftArm.getCurrentPosition());
-        telemetry.addData("Right Arm Moving", rightArm.getCurrentPosition());
-        telemetry.addData("Arm Extending", armExtend.getCurrentPosition());
-        telemetry.update();
-
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        drive_FL = hardwareMap.get(DcMotor.class, "frontLeft");
-        drive_RL = hardwareMap.get(DcMotor.class, "backLeft");
-        drive_FR = hardwareMap.get(DcMotor.class, "frontRight");
-        drive_RR = hardwareMap.get(DcMotor.class, "backRight");
+        drive_FL = hardwareMap.get(DcMotor.class, "drive_FL");
+        drive_RL = hardwareMap.get(DcMotor.class, "drive_RL");
+        drive_FR = hardwareMap.get(DcMotor.class, "drive_FR");
+        drive_RR = hardwareMap.get(DcMotor.class, "drive_RR");
         leftArm = hardwareMap.get(DcMotor.class, "left_Arm");
         rightArm = hardwareMap.get(DcMotor.class, "right_Arm");
         armExtend = hardwareMap.get(DcMotor.class, "extend_Arm");
@@ -122,7 +110,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Mecanum Drive Code
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
             double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
-            double rightX = gamepad1.right_stick_x;
+            double rightX = -gamepad1.right_stick_x;
             final double v1 = r * Math.cos(robotAngle) + rightX;
             final double v2 = r * Math.sin(robotAngle) - rightX;
             final double v3 = r * Math.sin(robotAngle) + rightX;
@@ -136,7 +124,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Controller 1
             //Controls Kickout
             if (gamepad1.b) {
-                kickout.setPosition(7);
+                kickout.setPosition(.7);
             }
 
 
@@ -155,31 +143,12 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             }
 
 
-            //Turns Feeder Motor Inward
-            if (gamepad1.left_trigger > .5) {
-                feeder.setPower(1);
-            } else {
-                feeder.setPower(0);
-            }
-
-            //Turns Feeder Motor Outward
-            if (gamepad1.right_trigger > .5) {
-                feeder.setPower(-1);
-            } else {
-                feeder.setPower(0);
-            }
-
             //Controller 2
             //Manually turns arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
             if (gamepad2.dpad_up) {
                 leftArm.setPower(-1);
                 rightArm.setPower(-1);
-            } else {
-                leftArm.setPower(0);
-                rightArm.setPower(0);
-            }
-
-            if (gamepad2.dpad_down) {
+            } else if (gamepad2.dpad_down)  {
                 leftArm.setPower(1);
                 rightArm.setPower(1);
             } else {
@@ -189,7 +158,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             //Extends/retracts arm to set position in case it doesn't extend and turn to set position automatically (FAILSAFE)
             if (gamepad2.dpad_left) {
-                armExtend.setTargetPosition((-200));
+                armExtend.setTargetPosition(2000);
                 armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
@@ -199,20 +168,29 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             }
 
-            //Moves arm to set levels
+            //Turns Feeder Motor Inward
+            if (gamepad2.left_trigger > .5) {
+                feeder.setPower(.8);
+            } else if (gamepad2.right_trigger > .5) {
+                feeder.setPower(-.8);
+            } else {
+                feeder.setPower(0);
+            }
+
+            //Moves arm to set levels (Note: you have to hold the button)
 
             //Pickup level
             if (gamepad2.a) {
 
-                if (rightArm.getCurrentPosition() < degreesBore(0) - 20) {
+                if (rightArm.getCurrentPosition() < degreesBore(20) - 20) {
 
-                    rightArm.setPower((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2);
-                    leftArm.setPower((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2);
+                    rightArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
+                    leftArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
 
                 } else if (rightArm.getCurrentPosition() > degreesBore(0) + 20) {
 
-                    rightArm.setPower(-((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2));
-                    leftArm.setPower(-((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2));
+                    rightArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
+                    leftArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
 
                 } else {
 
@@ -224,17 +202,17 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             }
 
             //Medium level
-            if (gamepad2.a) {
+            if (gamepad2.b) {
 
                 if (rightArm.getCurrentPosition() < degreesBore(35) - 20) {
 
-                    rightArm.setPower((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2);
-                    leftArm.setPower((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2);
+                    rightArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
+                    leftArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
 
                 } else if (rightArm.getCurrentPosition() > degreesBore(35) + 20) {
 
-                    rightArm.setPower(-((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2));
-                    leftArm.setPower(-((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + .2));
+                    rightArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
+                    leftArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
 
                 } else {
 
