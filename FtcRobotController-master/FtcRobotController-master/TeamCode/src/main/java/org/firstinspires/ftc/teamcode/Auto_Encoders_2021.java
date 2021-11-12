@@ -1,10 +1,7 @@
-package org.firstinspires.ftc.teamcode.training;
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -21,8 +18,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Long - Auto Opmode Encoders", group="Linear Opmode")
-public class Long_Auto_Opmode_Encoders extends LinearOpMode {
+@Autonomous(name="Auto Encoders", group="Linear Opmode")
+public class Auto_Encoders_2021 extends BaseAutoOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -30,20 +27,13 @@ public class Long_Auto_Opmode_Encoders extends LinearOpMode {
     private DcMotor drive_FR = null;
     private DcMotor drive_RL = null;
     private DcMotor drive_RR = null;
-    private DcMotor leftArm = null;
-    private DcMotor rightArm = null;
-    private DcMotor armExtend = null;
-    private DcMotor feeder = null;
-    private Servo kickout = null;
-    private CRServo leftDucky = null;
-    private CRServo rightDucky = null;
 
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        drive_FL = hardwareMap.get(DcMotor.class, "drive_FL");
+        drive_FL  = hardwareMap.get(DcMotor.class, "drive_FL");
         drive_FR = hardwareMap.get(DcMotor.class, "drive_FR");
         drive_RL = hardwareMap.get(DcMotor.class, "drive_RL");
         drive_RR = hardwareMap.get(DcMotor.class, "drive_RR");
@@ -64,14 +54,13 @@ public class Long_Auto_Opmode_Encoders extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-            runForwardsEncoder(.5, 20);
+            runForwardsEncoder(.5, 12);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("FL Encoder Value", drive_FL.getCurrentPosition());
+            telemetry.addData("FL Encoder Value",drive_FL.getCurrentPosition());
             telemetry.addData("FR Encoder Value", drive_FR.getCurrentPosition());
             telemetry.addData("RL Encoder Value", drive_RL.getCurrentPosition());
             telemetry.addData("RR Encoder Value", drive_RR.getCurrentPosition());
-            telemetry.addData("Arm Encoder Value", leftArm.getCurrentPosition());
             telemetry.update();
 
 
@@ -88,21 +77,11 @@ public class Long_Auto_Opmode_Encoders extends LinearOpMode {
 
     }
 
-
-    public double ticks(double input) {
-
-        final double     COUNTS_PER_BORE_MOTOR_REV    = 8192;    // eg: GOBUILDA Motor Encoder
-        final double     COUNTS_TICKS_PER_REV_PER_DEGREE  = (COUNTS_PER_BORE_MOTOR_REV) / 360;
-
-        return COUNTS_TICKS_PER_REV_PER_DEGREE * input;
-
-    }
-
     public void runForwardsEncoder(double speed, double inputInches) {
 
         double encoderValue = inches(inputInches);
 
-        while (drive_RL.getCurrentPosition() < encoderValue) {
+        while (drive_FL.getCurrentPosition() < encoderValue) {
 
             drive_FL.setPower(speed);
             drive_RL.setPower(speed);

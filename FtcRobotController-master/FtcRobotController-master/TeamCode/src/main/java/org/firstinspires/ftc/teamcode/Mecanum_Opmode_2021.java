@@ -26,10 +26,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor frontLeft = null;
-    private DcMotor backLeft = null;
-    private DcMotor frontRight = null;
-    private DcMotor backRight = null;
+    private DcMotor drive_FL = null;
+    private DcMotor drive_RL = null;
+    private DcMotor drive_FR = null;
+    private DcMotor drive_RR = null;
     private DcMotor leftArm = null;
     private DcMotor rightArm = null;
     private DcMotor armExtend = null;
@@ -56,14 +56,15 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
-        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
-        backRight = hardwareMap.get(DcMotor.class, "backRight");
+        drive_FL = hardwareMap.get(DcMotor.class, "frontLeft");
+        drive_RL = hardwareMap.get(DcMotor.class, "backLeft");
+        drive_FR = hardwareMap.get(DcMotor.class, "frontRight");
+        drive_RR = hardwareMap.get(DcMotor.class, "backRight");
         leftArm = hardwareMap.get(DcMotor.class, "left_Arm");
         rightArm = hardwareMap.get(DcMotor.class, "right_Arm");
         armExtend = hardwareMap.get(DcMotor.class, "extend_Arm");
         feeder = hardwareMap.get(DcMotor.class, "feeder");
+
         kickout = hardwareMap.get(Servo.class, "kickout");
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
@@ -77,17 +78,22 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-        backLeft.setDirection(DcMotor.Direction.FORWARD);
-        frontRight.setDirection(DcMotor.Direction.REVERSE);
-        backRight.setDirection(DcMotor.Direction.REVERSE);
+        drive_FL.setDirection(DcMotor.Direction.FORWARD);
+        drive_RL.setDirection(DcMotor.Direction.FORWARD);
+        drive_FR.setDirection(DcMotor.Direction.REVERSE);
+        drive_RR.setDirection(DcMotor.Direction.REVERSE);
+        drive_FL.setDirection(DcMotor.Direction.FORWARD);
+        drive_RL.setDirection(DcMotor.Direction.FORWARD);
+        drive_FR.setDirection(DcMotor.Direction.REVERSE);
+        drive_RR.setDirection(DcMotor.Direction.FORWARD);
         leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.REVERSE);
 
-
         //Drive Modes
-        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        drive_FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive_FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive_RL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive_RR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -95,6 +101,17 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
+            //Show encoder values on the phone
+            telemetry.addData("Status", "Initialized");
+            telemetry.addData("Left Arm", leftArm.getCurrentPosition());
+            telemetry.addData("Right Arm", rightArm.getCurrentPosition());
+            telemetry.addData("Kickout", kickout.getPosition());
+            telemetry.addData("Left Ducky Wheel", leftDucky.getPower());
+            telemetry.addData("Right Ducky Wheel", rightDucky.getPower());
+            telemetry.addData("Feeder", feeder.getCurrentPosition());
+            telemetry.addData("Arm Extend", armExtend.getCurrentPosition());
+            telemetry.update();
 
             //Mecanum Drive Code
             double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
@@ -105,10 +122,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             final double v3 = r * Math.sin(robotAngle) + rightX;
             final double v4 = r * Math.cos(robotAngle) - rightX;
 
-            frontLeft.setPower(v1);
-            backLeft.setPower(v3);
-            frontRight.setPower(v2);
-            backRight.setPower(v4);
+            drive_FL.setPower(v1);
+            drive_RL.setPower(v3);
+            drive_FR.setPower(v2);
+            drive_RR.setPower(v4);
 
             //Controller 1
             //Controls Kickout
@@ -119,66 +136,99 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             //Controls Left Ducky Wheel
             if (gamepad1.left_bumper) {
-                leftDucky.setPower(.5);
+                leftDucky.setPower(-.5);
             } else {
                 leftDucky.setPower(0);
             }
 
             //Controls Right Ducky Wheel
             if (gamepad1.right_bumper) {
-                rightDucky.setPower(-.5);
+                rightDucky.setPower(.5);
             } else {
                 rightDucky.setPower(0);
             }
 
 
             //Turns Feeder Motor Inward
-            if (gamepad1.left_trigger > 10) {
-                feeder.setPower(.15);
+            if (gamepad1.left_trigger > .5) {
+                feeder.setPower(1);
             } else {
                 feeder.setPower(0);
             }
 
             //Turns Feeder Motor Outward
-            if (gamepad1.right_trigger > 10) {
-                feeder.setPower(-.15);
+            if (gamepad1.right_trigger > .5) {
+                feeder.setPower(-1);
             } else {
                 feeder.setPower(0);
             }
 
-
             //Controller 2
             //Manually turns arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
+            //Note change these have a function where the arm moves to set levels
             if (gamepad2.dpad_up) {
-                leftArm.setPower(.15);
-                rightArm.setPower(.15);
+                leftArm.setPower(-.5);
+                rightArm.setPower(-.5);
             } else {
                 leftArm.setPower(0);
                 rightArm.setPower(0);
             }
 
             if (gamepad2.dpad_down) {
-                leftArm.setPower(-.15);
-                rightArm.setPower(-.15);
+                leftArm.setPower(.5);
+                rightArm.setPower(.5);
             } else {
                 leftArm.setPower(0);
                 rightArm.setPower(0);
             }
 
-            //Manually extends/retracts arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
+            //Extends/retracts arm to set position in case it doesn't extend and turn to set position automatically (FAILSAFE)
             if (gamepad2.dpad_left) {
-                armExtend.setPower(.15);
-            } else {
-                armExtend.setPower(0);
+                armExtend.setTargetPosition((-200));
+                armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
 
             if (gamepad2.dpad_right) {
-                armExtend.setPower(-.15);
-            } else {
-                armExtend.setPower(0);
+                armExtend.setTargetPosition(0);
+                armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             }
+
+            //Moves arm to set levels
+            //Pickup level
+            if (gamepad2.a) {
+                rightArm.setTargetPosition(degreesBore(10));
+                rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            //Medium level
+            if (gamepad2.b) {
+                rightArm.setTargetPosition(degreesBore(20));
+                rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            //High Level
+            if (gamepad2.y) {
+                rightArm.setTargetPosition(degreesBore(30));
+                rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
+            //Capstone level
+            if (gamepad2.x) {
+                rightArm.setTargetPosition(degreesBore(40));
+                rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
+
         }
 
+    }
+
+    public int degreesBore(int input) {
+
+        final int COUNTS_PER_BORE_MOTOR_REV = 8192;    // eg: GOBUILDA Motor Encoder
+        int COUNTS_TICKS_PER_REV_PER_DEGREE = (COUNTS_PER_BORE_MOTOR_REV) / 360;
+
+        return COUNTS_TICKS_PER_REV_PER_DEGREE * input;
 
     }
 }

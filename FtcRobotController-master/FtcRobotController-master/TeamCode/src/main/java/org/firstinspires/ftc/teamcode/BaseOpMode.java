@@ -33,6 +33,7 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -62,6 +63,13 @@ public abstract class BaseOpMode extends LinearOpMode {
     public DcMotor drive_RL = null;
     public DcMotor drive_FR = null;
     public DcMotor drive_RR = null;
+    public DcMotor leftArm = null;
+    public DcMotor rightArm = null;
+    public DcMotor armExtend = null;
+    public DcMotor feeder = null;
+    public Servo kickout = null;
+    public CRServo leftDucky = null;
+    public CRServo rightDucky = null;
 
     public AHRS navx_centered;
 
@@ -110,11 +118,19 @@ public abstract class BaseOpMode extends LinearOpMode {
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
         getCenteredNavXValues();
-        //drive train
+        //Motor and Servo Variables
         drive_FL = hardwareMap.get(DcMotor.class, "drive_FL");
         drive_RL = hardwareMap.get(DcMotor.class, "drive_RL");
         drive_FR = hardwareMap.get(DcMotor.class, "drive_FR");
         drive_RR = hardwareMap.get(DcMotor.class, "drive_RR");
+        leftArm = hardwareMap.get(DcMotor.class, "left_Arm");
+        rightArm = hardwareMap.get(DcMotor.class, "right_Arm");
+        armExtend = hardwareMap.get(DcMotor.class, "extend_Arm");
+        feeder = hardwareMap.get(DcMotor.class, "feeder");
+
+        kickout = hardwareMap.get(Servo.class, "kickout");
+        leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
+        rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
 
         distance_sensor = hardwareMap.get(DistanceSensor.class, "distance_sensor");
 
