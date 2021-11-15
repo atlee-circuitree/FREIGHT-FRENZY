@@ -158,14 +158,11 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             //Extends/retracts arm to set position in case it doesn't extend and turn to set position automatically (FAILSAFE)
             if (gamepad2.dpad_left) {
-                armExtend.setTargetPosition(2000);
-                armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armExtend.setPower(.3);
             }
 
             if (gamepad2.dpad_right) {
-                armExtend.setTargetPosition(0);
-                armExtend.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
+                armExtend.setPower(-.3);
             }
 
             //Turns Feeder Motor Inward
