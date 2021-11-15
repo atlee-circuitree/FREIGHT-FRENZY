@@ -68,7 +68,6 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         drive_FL.setDirection(DcMotor.Direction.FORWARD);
@@ -159,10 +158,6 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Extends/retracts arm to set position in case it doesn't extend and turn to set position automatically (FAILSAFE)
             if (gamepad2.dpad_left) {
                 armExtend.setPower(.3);
-            }
-
-            if (gamepad2.dpad_right) {
-                armExtend.setPower(-.3);
             }
 
             //Turns Feeder Motor Inward
