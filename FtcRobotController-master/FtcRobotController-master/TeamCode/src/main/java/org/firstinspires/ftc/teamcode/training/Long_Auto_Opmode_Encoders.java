@@ -116,7 +116,7 @@ public class Long_Auto_Opmode_Encoders extends LinearOpMode {
         drive_RL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         drive_FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         drive_RR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+//prostate test :)
     }
 
     public void turnOnEncoders() {
