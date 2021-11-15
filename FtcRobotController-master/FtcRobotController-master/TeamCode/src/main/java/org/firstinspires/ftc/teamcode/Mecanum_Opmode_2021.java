@@ -123,7 +123,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Controller 1
             //Controls Kickout
             if (gamepad1.b) {
-                kickout.setPosition(1);
+                kickout.setPosition(0);
             }
 
 
@@ -145,11 +145,11 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Controller 2
             //Manually turns arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
             if (gamepad2.dpad_up) {
-                leftArm.setPower(-1);
-                rightArm.setPower(-1);
+                leftArm.setPower(-.5);
+                rightArm.setPower(-.5);
             } else if (gamepad2.dpad_down)  {
-                leftArm.setPower(1);
-                rightArm.setPower(1);
+                leftArm.setPower(.5);
+                rightArm.setPower(.5);
             } else {
                 leftArm.setPower(0);
                 rightArm.setPower(0);
@@ -162,7 +162,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             //Turns Feeder Motor Inward
             if (gamepad2.left_trigger > .5) {
-                feeder.setPower(.8);
+                feeder.setPower(.4);
             } else if (gamepad2.right_trigger > .5) {
                 feeder.setPower(-.8);
             } else {

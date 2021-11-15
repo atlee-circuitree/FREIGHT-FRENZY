@@ -73,8 +73,6 @@ public abstract class BaseOpMode extends LinearOpMode {
 
     public AHRS navx_centered;
 
-    public DistanceSensor distance_sensor;
-
     public double intake = -2300;
     public double shooterFar = 1900;
     public boolean clawPos = true;
@@ -132,7 +130,6 @@ public abstract class BaseOpMode extends LinearOpMode {
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
 
-        distance_sensor = hardwareMap.get(DistanceSensor.class, "distance_sensor");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery

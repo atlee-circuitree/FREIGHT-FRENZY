@@ -56,6 +56,8 @@ public class Auto_Encoders_2021 extends BaseAutoOpMode {
 
             runForwardsEncoder(.5, 12);
 
+            //PIDrotate(90, 10);
+
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("FL Encoder Value",drive_FL.getCurrentPosition());
             telemetry.addData("FR Encoder Value", drive_FR.getCurrentPosition());
