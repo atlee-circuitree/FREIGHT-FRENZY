@@ -123,7 +123,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Controller 1
             //Controls Kickout
             if (gamepad1.b) {
-                kickout.setPosition(.7);
+                kickout.setPosition(1);
             }
 
 
