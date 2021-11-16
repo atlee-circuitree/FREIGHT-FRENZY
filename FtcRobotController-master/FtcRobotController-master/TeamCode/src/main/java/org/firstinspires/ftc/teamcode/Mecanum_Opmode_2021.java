@@ -180,8 +180,6 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
                 if (rightArm.getCurrentPosition() < degreesBore(-5) - 40) {
 
-                    //rightArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 7000) ) - .75);
-                    //leftArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 7000) ) - .75);
                     rightArm.setPower(-.5);
                     leftArm.setPower(-.5);
 
@@ -224,17 +222,6 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //High Level
             if (gamepad2.y) {
 
-<<<<<<< Updated upstream
-                if (rightArm.getCurrentPosition() < degreesBore(45) - 20) {
-
-                    rightArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
-                    leftArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
-
-                } else if (rightArm.getCurrentPosition() > degreesBore(45) + 20) {
-
-                    rightArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
-                    leftArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
-=======
                 if (rightArm.getCurrentPosition() < degreesBore(60) - 40) {
 
                     rightArm.setPower(-.5);
@@ -244,7 +231,6 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
                     rightArm.setPower(.25);
                     leftArm.setPower(.25);
->>>>>>> Stashed changes
 
                 } else {
 
@@ -258,17 +244,6 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Capstone level
             if (gamepad2.x) {
 
-<<<<<<< Updated upstream
-                if (rightArm.getCurrentPosition() < degreesBore(55) - 20) {
-
-                    rightArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
-                    leftArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
-
-                } else if (rightArm.getCurrentPosition() > degreesBore(55) + 20) {
-
-                    rightArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
-                    leftArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
-=======
                 if (rightArm.getCurrentPosition() < degreesBore(75) - 40) {
 
                     rightArm.setPower(-.5);
@@ -278,7 +253,6 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
                     rightArm.setPower(.25);
                     leftArm.setPower(.25);
->>>>>>> Stashed changes
 
                 } else {
 
