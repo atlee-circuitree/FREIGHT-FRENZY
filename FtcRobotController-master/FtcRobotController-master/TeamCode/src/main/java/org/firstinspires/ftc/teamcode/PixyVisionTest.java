@@ -45,10 +45,9 @@ public class PixyVisionTest extends BaseVisionOpMode {
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        telemetry.addData("Pixy Byte 1", getPixyByte(0x51, 5));
-        telemetry.addData("Pixy Byte 2", getPixyByte(0x52, 5));
-        telemetry.addData("Pixy Byte 3", getPixyByte(0x53, 5));
-        telemetry.addData("Pixy Byte 4", getPixyByte(0x54, 5));
+        while(opModeIsActive()) {
+            telemetry.addData("Pixy Byte 4", getPixyByte(0x54, 5));
+        }
 
     }
 }

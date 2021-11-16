@@ -130,6 +130,26 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
                 kickout.setPosition(1);
             }
 
+            if (gamepad1.y) {
+
+                if (armExtend.getCurrentPosition() < 450) {
+
+                    armExtend.setPower(.4);
+
+                } else {
+
+                    armExtend.setPower(0);
+
+                }
+
+            } else {
+
+                armExtend.setPower(0);
+
+            }
+
+
+
 
             //Controls Left Ducky Wheel
             if (gamepad1.left_bumper) {
@@ -157,11 +177,6 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             } else {
                 leftArm.setPower(0);
                 rightArm.setPower(0);
-            }
-
-            //Extends arm to set position in case it doesn't extend and turn to set position automatically (FAILSAFE)
-            if (gamepad2.dpad_left) {
-                armExtend.setPower(.3);
             }
 
             //Turns Feeder Motor Inward

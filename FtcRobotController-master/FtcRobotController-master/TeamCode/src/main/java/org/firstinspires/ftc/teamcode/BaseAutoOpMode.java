@@ -376,7 +376,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         final double TOLERANCE_DEGREES = 1.0;
         final double MIN_MOTOR_OUTPUT_VALUE = -1.0;
         final double MAX_MOTOR_OUTPUT_VALUE = 1.0;
-        final double YAW_PID_P = 0.05;
+        final double YAW_PID_P = 0.005;
         final double YAW_PID_I = 0.0;
         final double YAW_PID_D = 0.0;
         //int DEVICE_TIMEOUT_MS =500;
