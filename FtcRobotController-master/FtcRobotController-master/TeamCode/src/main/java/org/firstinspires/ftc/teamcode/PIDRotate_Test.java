@@ -50,8 +50,8 @@ public class PIDRotate_Test extends BaseAutoOpMode {
         waitForStart();
 
 
-        PIDrotate(90,2);
-        PIDrotate(0,2);
+        PIDrotate(-90,5);
+        PIDrotate(0,5);
 
     }
 }

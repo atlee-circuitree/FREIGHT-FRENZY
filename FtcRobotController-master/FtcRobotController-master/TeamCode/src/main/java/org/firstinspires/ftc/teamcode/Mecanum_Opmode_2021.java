@@ -94,8 +94,8 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             //Show encoder values on the phone
             telemetry.addData("Status", "Initialized");
-            telemetry.addData("Left Arm", leftArm.getCurrentPosition());
-            telemetry.addData("Right Arm", rightArm.getCurrentPosition());
+            telemetry.addData("Arm Encoder", rightArm.getCurrentPosition());
+            telemetry.addData("Arm Angle", rightArm.getCurrentPosition() / 20);
             telemetry.addData("Left Arm Power", leftArm.getPower());
             telemetry.addData("Right Arm Power", rightArm.getPower());
             telemetry.addData("Kickout", kickout.getPosition());
@@ -124,6 +124,10 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Controls Kickout
             if (gamepad1.b) {
                 kickout.setPosition(0);
+            }
+
+            if (gamepad1.a) {
+                kickout.setPosition(1);
             }
 
 
@@ -174,15 +178,17 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Pickup level
             if (gamepad2.a) {
 
-                if (rightArm.getCurrentPosition() < degreesBore(20) - 20) {
+                if (rightArm.getCurrentPosition() < degreesBore(-5) - 40) {
 
-                    rightArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
-                    leftArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
+                    //rightArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 7000) ) - .75);
+                    //leftArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 7000) ) - .75);
+                    rightArm.setPower(-.5);
+                    leftArm.setPower(-.5);
 
-                } else if (rightArm.getCurrentPosition() > degreesBore(0) + 20) {
+                } else if (rightArm.getCurrentPosition() > degreesBore(-5) + 40) {
 
-                    rightArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
-                    leftArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
+                    rightArm.setPower(.1);
+                    leftArm.setPower(.1);
 
                 } else {
 
@@ -196,15 +202,15 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Medium level
             if (gamepad2.b) {
 
-                if (rightArm.getCurrentPosition() < degreesBore(35) - 20) {
+                if (rightArm.getCurrentPosition() < degreesBore(40) - 40) {
 
-                    rightArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
-                    leftArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
+                    rightArm.setPower(-.5);
+                    leftArm.setPower(-.5);
 
-                } else if (rightArm.getCurrentPosition() > degreesBore(35) + 20) {
+                } else if (rightArm.getCurrentPosition() > degreesBore(40) + 40) {
 
-                    rightArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
-                    leftArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
+                    rightArm.setPower(.25);
+                    leftArm.setPower(.25);
 
                 } else {
 
@@ -218,6 +224,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //High Level
             if (gamepad2.y) {
 
+<<<<<<< Updated upstream
                 if (rightArm.getCurrentPosition() < degreesBore(45) - 20) {
 
                     rightArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
@@ -227,6 +234,17 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
                     rightArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
                     leftArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
+=======
+                if (rightArm.getCurrentPosition() < degreesBore(60) - 40) {
+
+                    rightArm.setPower(-.5);
+                    leftArm.setPower(-.5);
+
+                } else if (rightArm.getCurrentPosition() > degreesBore(60) + 40) {
+
+                    rightArm.setPower(.25);
+                    leftArm.setPower(.25);
+>>>>>>> Stashed changes
 
                 } else {
 
@@ -240,6 +258,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Capstone level
             if (gamepad2.x) {
 
+<<<<<<< Updated upstream
                 if (rightArm.getCurrentPosition() < degreesBore(55) - 20) {
 
                     rightArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
@@ -249,6 +268,17 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
                     rightArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
                     leftArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
+=======
+                if (rightArm.getCurrentPosition() < degreesBore(75) - 40) {
+
+                    rightArm.setPower(-.5);
+                    leftArm.setPower(-.5);
+
+                } else if (rightArm.getCurrentPosition() > degreesBore(75) + 40) {
+
+                    rightArm.setPower(.25);
+                    leftArm.setPower(.25);
+>>>>>>> Stashed changes
 
                 } else {
 
