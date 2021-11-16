@@ -155,7 +155,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
                 rightArm.setPower(0);
             }
 
-            //Extends/retracts arm to set position in case it doesn't extend and turn to set position automatically (FAILSAFE)
+            //Extends arm to set position in case it doesn't extend and turn to set position automatically (FAILSAFE)
             if (gamepad2.dpad_left) {
                 armExtend.setPower(.3);
             }
@@ -164,7 +164,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             if (gamepad2.left_trigger > .5) {
                 feeder.setPower(.4);
             } else if (gamepad2.right_trigger > .5) {
-                feeder.setPower(-.8);
+                feeder.setPower(-1);
             } else {
                 feeder.setPower(0);
             }
@@ -218,10 +218,44 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //High Level
             if (gamepad2.y) {
 
+                if (rightArm.getCurrentPosition() < degreesBore(45) - 20) {
+
+                    rightArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
+                    leftArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
+
+                } else if (rightArm.getCurrentPosition() > degreesBore(45) + 20) {
+
+                    rightArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
+                    leftArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
+
+                } else {
+
+                    rightArm.setPower(0);
+                    leftArm.setPower(0);
+
+                }
+
             }
 
             //Capstone level
             if (gamepad2.x) {
+
+                if (rightArm.getCurrentPosition() < degreesBore(55) - 20) {
+
+                    rightArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
+                    leftArm.setPower(-(abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0);
+
+                } else if (rightArm.getCurrentPosition() > degreesBore(55) + 20) {
+
+                    rightArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
+                    leftArm.setPower(((abs(rightArm.getCurrentPosition() - degreesBore(10) / 3500) ) + 0));
+
+                } else {
+
+                    rightArm.setPower(0);
+                    leftArm.setPower(0);
+
+                }
 
             }
 
