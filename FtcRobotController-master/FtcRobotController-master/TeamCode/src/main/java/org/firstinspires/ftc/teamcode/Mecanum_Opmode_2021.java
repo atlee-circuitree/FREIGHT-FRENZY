@@ -153,14 +153,14 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             //Controls Left Ducky Wheel
             if (gamepad1.left_bumper) {
-                leftDucky.setPower(-.5);
+                leftDucky.setPower(1);
             } else {
                 leftDucky.setPower(0);
             }
 
             //Controls Right Ducky Wheel
             if (gamepad1.right_bumper) {
-                rightDucky.setPower(.5);
+                rightDucky.setPower(-1);
             } else {
                 rightDucky.setPower(0);
             }
