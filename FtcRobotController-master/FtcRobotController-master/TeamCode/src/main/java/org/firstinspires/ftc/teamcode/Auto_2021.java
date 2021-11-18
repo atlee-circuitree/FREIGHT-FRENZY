@@ -88,6 +88,7 @@ public class Auto_2021 extends BaseAutoOpMode {
         //Kickout();
 
         runForwardsEncoder(.4, 12);
+        
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("FL Encoder Value",drive_FL.getCurrentPosition());
@@ -125,12 +126,16 @@ public class Auto_2021 extends BaseAutoOpMode {
 
         double encoderValue = inchesBore(inputInches);
 
-        while (abs(drive_FL.getCurrentPosition()) < encoderValue) {
+        while (abs(drive_RR.getCurrentPosition()) < encoderValue) {
 
             drive_FL.setPower(-speed);
             drive_RL.setPower(-speed);
             drive_FR.setPower(-speed);
             drive_RR.setPower(-speed);
+
+            telemetry.addData("Encoder Target", encoderValue);
+            telemetry.addData("RR Encoder Running", drive_RR.getCurrentPosition());
+            telemetry.update();
 
         }
 
@@ -139,7 +144,13 @@ public class Auto_2021 extends BaseAutoOpMode {
         drive_FR.setPower(0);
         drive_RR.setPower(0);
 
+        telemetry.addData("Encoder Target", encoderValue);
+        telemetry.addData("FL Encoder Finished", drive_RR.getCurrentPosition());
+        telemetry.update();
+
         ResetDriveEncoder();
+        turnOnEncoders();
+
 
     }
 
