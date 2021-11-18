@@ -278,7 +278,6 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
 
     public void encoderPIDDrive(double speed, double distance, double targetAngle, double timeout) throws InterruptedException {
 
-        final byte NAVX_DEVICE_UPDATE_RATE_HZ = 50;
         final double TARGET_ANGLE_DEGREES = targetAngle;
         final double TOLERANCE_DEGREES = 1.0;
         final double MIN_MOTOR_OUTPUT_VALUE = -1.0;
@@ -366,79 +365,57 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
     }
 
 
+    public void PIDRotate(double targetDegrees, double timeout) throws InterruptedException{
 
+        final double toleranceDegrees = 1.0;
+        final double P = 0.01;
+        final double I = 0.00;
+        final double D = 0.00;
 
-
-    public void PIDrotate(double target, double cutoffTime) throws InterruptedException {
-
-        final byte NAVX_DEVICE_UPDATE_RATE_HZ = 50;
-        final double TARGET_ANGLE_DEGREES = target;
-        final double TOLERANCE_DEGREES = 1.0;
-        final double MIN_MOTOR_OUTPUT_VALUE = -1.0;
-        final double MAX_MOTOR_OUTPUT_VALUE = 1.0;
-        final double YAW_PID_P = 0.005;
-        final double YAW_PID_I = 0.0;
-        final double YAW_PID_D = 0.0;
-        //int DEVICE_TIMEOUT_MS =500;
-        //int problemChild = 0;
-        ElapsedTime runtime = new ElapsedTime();
-        /* Configure the PID controller */
-        yawPIDController.setSetpoint(TARGET_ANGLE_DEGREES);
+        yawPIDController.setPID(P,I,D);
+        yawPIDController.setTolerance(navXPIDController.ToleranceType.ABSOLUTE, toleranceDegrees);
         yawPIDController.setContinuous(true);
-        yawPIDController.setOutputRange(MIN_MOTOR_OUTPUT_VALUE, MAX_MOTOR_OUTPUT_VALUE);
-        yawPIDController.setTolerance(navXPIDController.ToleranceType.ABSOLUTE, TOLERANCE_DEGREES);
-        yawPIDController.setPID(YAW_PID_P, YAW_PID_I, YAW_PID_D);
+        yawPIDController.setInputRange(-180, 180);
+        yawPIDController.setInputRange(-1, 1);
+        yawPIDController.setSetpoint(targetDegrees);
         yawPIDController.enable(true);
 
-        navXPIDController.PIDResult yawPIDResult = new navXPIDController.PIDResult();
+        navXPIDController.PIDResult PIDResult = new navXPIDController.PIDResult();
 
-        while (runtime.time() <= cutoffTime) {
-            if(yawPIDController.waitForNewUpdate(yawPIDResult, 500)){
+        double output = PIDResult.getOutput();
 
-                double output = yawPIDResult.getOutput()*1.7;
+        ElapsedTime runtime = new ElapsedTime();
+        runtime.reset();
+        if(yawPIDController.waitForNewUpdate(PIDResult, 500)) {
+            while (runtime.milliseconds() < timeout && opModeIsActive()) {
 
-                if(Math.abs(output) < 0.1){
-                    if(output > 0){
-                        output = 0.1;
-                    }
-                    else{
-                        output = -0.1;
-                    }
-                }
-                else if(Math.abs(output) > 1){
-                    if(output > 0){
-                        output = 1;
-                    }
-                    else{
-                        output = -1;
-                    }
-                }
-
-                if(!yawPIDController.isOnTarget()){
-                    telemetry.addData("PID output", output);
-                    drive_FL.setPower(output*.9);
-                    drive_FR.setPower(-output*.9);
-                    drive_RL.setPower(output*.9);
-                    drive_RR.setPower(-output*.9);
-
-                } else {
-                    telemetry.addData("PID On Point", yawPIDResult.getOutput());
+                if (PIDResult.isOnTarget()) {
+                    telemetry.addData("PID Output", "On target");
                     drive_FL.setPower(0);
                     drive_FR.setPower(0);
                     drive_RL.setPower(0);
                     drive_RR.setPower(0);
                 }
-                telemetry.addData("NavX Yaw: ", navx_centered.getYaw());
+                else {
+                    telemetry.addData("PID Output", PIDResult.getOutput());
+                    telemetry.addData("NavX Yaw", navx_centered.getYaw());
+                    drive_FL.setPower(output);
+                    drive_FR.setPower(output);
+                    drive_RL.setPower(output);
+                    drive_RR.setPower(output);
+                }
                 telemetry.update();
-            } else{
-                telemetry.addData("Timeout occurred","");
-                telemetry.update();
-                timeout = true;
             }
+        }
+        else{
+            telemetry.addData("PID Output", "PID got sent to timeout");
+            telemetry.update();
         }
 
 
+
     }
+
 
     public void checkForTimeout(){
 
