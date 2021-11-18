@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -18,8 +20,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Encoders", group="Linear Opmode")
-public class Auto_Encoders_2021 extends BaseAutoOpMode {
+@Autonomous(name="Auto 2021", group="Linear Opmode")
+public class Auto_2021 extends BaseAutoOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -80,26 +82,7 @@ public class Auto_Encoders_2021 extends BaseAutoOpMode {
         waitForStart();
         runtime.reset();
 
-        while (rightArm.getCurrentPosition() < degreesBore(40)) {
-
-            rightArm.setPower(-.5);
-            leftArm.setPower(-.5);
-
-        }
-
-        kickout.setPosition(1);
-        rightArm.setPower(0);
-        leftArm.setPower(0);
-
-        sleep(2000);
-
-        if (armExtend.getCurrentPosition() < 450) {
-
-            armExtend.setPower(.4);
-
-        }
-
-        armExtend.setPower(0);
+        Kickout();
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("FL Encoder Value",drive_FL.getCurrentPosition());
@@ -153,6 +136,31 @@ public class Auto_Encoders_2021 extends BaseAutoOpMode {
 
     }
 
+    public void Kickout() {
+
+        while (rightArm.getCurrentPosition() < degreesBore(25)) {
+
+            rightArm.setPower(-.5);
+            leftArm.setPower(-.5);
+
+        }
+
+        kickout.setPosition(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+
+        sleep(2000);
+
+        while (armExtend.getCurrentPosition() < 350 && runtime.seconds() < 5.5) {
+
+            armExtend.setPower(.4);
+
+        }
+
+        armExtend.setPower(0);
+
+    }
+
     public void ResetDriveEncoder(){
 
         drive_FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -180,4 +188,4 @@ public class Auto_Encoders_2021 extends BaseAutoOpMode {
 
     }
 
-}}
+}
