@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import static java.lang.Math.abs;
 
 
 /**
@@ -78,11 +79,15 @@ public class Auto_2021 extends BaseAutoOpMode {
         drive_RL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive_RR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-
         waitForStart();
         runtime.reset();
 
-        Kickout();
+        //Auto Starts Here
+
+        //Disable this to skip the kickout
+        //Kickout();
+
+        runForwardsEncoder(.4, 12);
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("FL Encoder Value",drive_FL.getCurrentPosition());
@@ -105,25 +110,27 @@ public class Auto_2021 extends BaseAutoOpMode {
 
     }
 
-    public double ticks(double input) {
+    public double inchesBore(double input) {
 
-        final double COUNTS_PER_BORE_MOTOR_REV = 8192;    // eg: GOBUILDA Motor Encoder
-        final double COUNTS_TICKS_PER_REV_PER_DEGREE = (COUNTS_PER_BORE_MOTOR_REV) / 360;
+        final double     COUNTS_PER_MOTOR_REV    = 8192;    // eg: REV Bore Encoder
+        final double     DRIVE_GEAR_REDUCTION    = 1;     // This is < 1.0 if geared UP
+        final double     WHEEL_DIAMETER_INCHES   = 2.83465;     // For figuring circumference
+        final double     COUNTS_PER_INCH  = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
 
-        return COUNTS_TICKS_PER_REV_PER_DEGREE * input;
+        return COUNTS_PER_INCH * input;
 
     }
 
     public void runForwardsEncoder(double speed, double inputInches) {
 
-        double encoderValue = inches(inputInches);
+        double encoderValue = inchesBore(inputInches);
 
-        while (drive_FL.getCurrentPosition() < encoderValue) {
+        while (abs(drive_FL.getCurrentPosition()) < encoderValue) {
 
-            drive_FL.setPower(speed);
-            drive_RL.setPower(speed);
-            drive_FR.setPower(speed);
-            drive_RR.setPower(speed);
+            drive_FL.setPower(-speed);
+            drive_RL.setPower(-speed);
+            drive_FR.setPower(-speed);
+            drive_RR.setPower(-speed);
 
         }
 

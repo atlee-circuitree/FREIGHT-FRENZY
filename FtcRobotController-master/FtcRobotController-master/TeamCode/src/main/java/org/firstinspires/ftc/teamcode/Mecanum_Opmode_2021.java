@@ -94,6 +94,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             //Show encoder values on the phone
             telemetry.addData("Status", "Initialized");
+            telemetry.addData("Wheel Encoder", drive_FL.getCurrentPosition());
             telemetry.addData("Arm Encoder", rightArm.getCurrentPosition());
             telemetry.addData("Arm Angle", rightArm.getCurrentPosition() / 20);
             telemetry.addData("Left Arm Power", leftArm.getPower());
