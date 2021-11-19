@@ -87,8 +87,11 @@ public class Auto_2021 extends BaseAutoOpMode {
         //Disable this to skip the kickout
         //Kickout();
 
+        //Move Forward
         runForwardsEncoder(.4, 12);
-        
+
+        //Strafe Left
+        strafeLeftEncoder(.5, 12);
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("FL Encoder Value",drive_FL.getCurrentPosition());
@@ -134,7 +137,7 @@ public class Auto_2021 extends BaseAutoOpMode {
             drive_RR.setPower(-speed);
 
             telemetry.addData("Encoder Target", encoderValue);
-            telemetry.addData("RR Encoder Running", drive_RR.getCurrentPosition());
+            telemetry.addData("Right Dead Encoder Running", drive_RR.getCurrentPosition());
             telemetry.update();
 
         }
@@ -145,7 +148,71 @@ public class Auto_2021 extends BaseAutoOpMode {
         drive_RR.setPower(0);
 
         telemetry.addData("Encoder Target", encoderValue);
-        telemetry.addData("FL Encoder Finished", drive_RR.getCurrentPosition());
+        telemetry.addData("Right Dead Encoder Finished", drive_RR.getCurrentPosition());
+        telemetry.update();
+
+        ResetDriveEncoder();
+        turnOnEncoders();
+
+
+    }
+
+    public void strafeLeftEncoder(double speed, double inputInches) {
+
+        double encoderValue = inchesBore(inputInches);
+
+        while (abs(drive_BL.getCurrentPosition()) < encoderValue) {
+
+            drive_FL.setPower(-speed);
+            drive_RL.setPower(speed);
+            drive_FR.setPower(-speed);
+            drive_RR.setPower(speed);
+
+            telemetry.addData("Encoder Target", encoderValue);
+            telemetry.addData("Back Dead Encoder Running", drive_BL.getCurrentPosition());
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+
+        telemetry.addData("Encoder Target", encoderValue);
+        telemetry.addData("Back Dead Encoder Finished", drive_BL.getCurrentPosition());
+        telemetry.update();
+
+        ResetDriveEncoder();
+        turnOnEncoders();
+
+
+    }
+
+    public void strafeRightEncoder(double speed, double inputInches) {
+
+        double encoderValue = inchesBore(inputInches);
+
+        while (abs(drive_BL.getCurrentPosition()) < encoderValue) {
+
+            drive_FL.setPower(speed);
+            drive_RL.setPower(-speed);
+            drive_FR.setPower(speed);
+            drive_RR.setPower(-speed);
+
+            telemetry.addData("Encoder Target", encoderValue);
+            telemetry.addData("Back Dead Encoder Running", drive_BL.getCurrentPosition());
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+
+        telemetry.addData("Encoder Target", encoderValue);
+        telemetry.addData("Back Dead Encoder Finished", drive_BL.getCurrentPosition());
         telemetry.update();
 
         ResetDriveEncoder();
