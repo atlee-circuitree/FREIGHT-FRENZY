@@ -62,18 +62,14 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
 
-        leftArm.setDirection(DcMotor.Direction.FORWARD);
-        rightArm.setDirection(DcMotor.Direction.REVERSE);
+        leftArm.setDirection(DcMotor.Direction.REVERSE);
+        rightArm.setDirection(DcMotor.Direction.FORWARD);
 
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        drive_FL.setDirection(DcMotor.Direction.FORWARD);
-        drive_RL.setDirection(DcMotor.Direction.FORWARD);
-        drive_FR.setDirection(DcMotor.Direction.REVERSE);
-        drive_RR.setDirection(DcMotor.Direction.REVERSE);
+        // Reverse the motor that runs backwards when connected directly to the batter;
         drive_FL.setDirection(DcMotor.Direction.FORWARD);
         drive_RL.setDirection(DcMotor.Direction.FORWARD);
         drive_FR.setDirection(DcMotor.Direction.REVERSE);
@@ -286,7 +282,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
     public int degreesBore(int input) {
 
         final int COUNTS_PER_BORE_MOTOR_REV = 8192;    // eg: GOBUILDA Motor Encoder
-        int COUNTS_TICKS_PER_REV_PER_DEGREE = (COUNTS_PER_BORE_MOTOR_REV) / 360;
+        int COUNTS_TICKS_PER_REV_PER_DEGREE = (COUNTS_PER_BORE_MOTOR_REV) / 360 * 2;
 
         return COUNTS_TICKS_PER_REV_PER_DEGREE * input;
 
