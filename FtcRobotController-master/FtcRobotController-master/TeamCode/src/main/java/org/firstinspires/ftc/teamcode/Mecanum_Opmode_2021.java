@@ -68,6 +68,8 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the batter;
         drive_FL.setDirection(DcMotor.Direction.FORWARD);
@@ -129,15 +131,11 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             if (gamepad1.y) {
 
-                if (armExtend.getCurrentPosition() < 450) {
+                armExtend.setPower(.4);
 
-                    armExtend.setPower(.4);
+            } else if (gamepad1.x) {
 
-                } else {
-
-                    armExtend.setPower(0);
-
-                }
+                armExtend.setPower(-.4);
 
             } else {
 
@@ -180,7 +178,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             if (gamepad2.left_trigger > .5) {
                 feeder.setPower(.4);
             } else if (gamepad2.right_trigger > .5) {
-                feeder.setPower(-1);
+                feeder.setPower(-.8);
             } else {
                 feeder.setPower(0);
             }

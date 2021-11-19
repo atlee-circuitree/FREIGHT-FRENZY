@@ -62,6 +62,8 @@ public class Auto_2021 extends BaseAutoOpMode {
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
         drive_FL.setDirection(DcMotor.Direction.FORWARD);
@@ -84,10 +86,10 @@ public class Auto_2021 extends BaseAutoOpMode {
         //Kickout();
 
         //Move Forward
-       // runForwardsEncoder(.4, 12);
+        runForwardsEncoder(.5, 12);
 
         //Strafe Left
-        strafeLeftEncoder(.3, 12);
+        strafeLeftEncoder(.5, 12);
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("FL Encoder Value",drive_FL.getCurrentPosition());
@@ -159,8 +161,8 @@ public class Auto_2021 extends BaseAutoOpMode {
 
         while (abs(drive_RL.getCurrentPosition()) < encoderValue) {
 
-            drive_FL.setPower(-speed);
-            drive_RL.setPower(speed);
+            drive_FL.setPower(speed);
+            drive_RL.setPower(-speed);
             drive_FR.setPower(-speed);
             drive_RR.setPower(speed);
 
@@ -191,8 +193,8 @@ public class Auto_2021 extends BaseAutoOpMode {
 
         while (abs(drive_RL.getCurrentPosition()) < encoderValue) {
 
-            drive_FL.setPower(speed);
-            drive_RL.setPower(-speed);
+            drive_FL.setPower(-speed);
+            drive_RL.setPower(speed);
             drive_FR.setPower(speed);
             drive_RR.setPower(-speed);
 
