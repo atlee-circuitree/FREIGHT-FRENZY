@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Stokes - TeleOp", group="Linear Opmode")
+@Disabled
 public class Stokes_FirstOpMode extends LinearOpMode {
 
     // Declare OpMode members.

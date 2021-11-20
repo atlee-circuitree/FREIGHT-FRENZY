@@ -27,6 +27,7 @@ package org.firstinspires.ftc.teamcode.training;/* Copyright (c) 2017 FIRST. All
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -48,6 +49,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="Long - Opmode 2.2", group="Linear Opmode")
+@Disabled
 public class Long_FirstOpmode_2 extends LinearOpMode {
 
     // Declare OpMode members.

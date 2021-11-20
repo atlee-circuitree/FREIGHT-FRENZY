@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode.training;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -49,6 +50,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @TeleOp(name="Stokes - Lab2.4", group="Linear Opmode")
+@Disabled
 public class Stokes_Lab2_4 extends LinearOpMode {
 
     // Declare OpMode members.

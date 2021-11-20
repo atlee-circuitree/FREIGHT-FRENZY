@@ -129,13 +129,13 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
                 kickout.setPosition(1);
             }
 
-            if (gamepad1.y) {
+            if (gamepad1.y) {  //Drivers prefer to have this on gamepad2.y
 
-                armExtend.setPower(.4);
+                armExtend.setPower(1);
 
             } else if (gamepad1.x) {
 
-                armExtend.setPower(-.4);
+                armExtend.setPower(-.75);
 
             } else {
 
@@ -148,14 +148,14 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             //Controls Left Ducky Wheel
             if (gamepad1.left_bumper) {
-                leftDucky.setPower(1);
+                leftDucky.setPower(-1); //11.19.2021 @ 7:01 - Larson - Ducky Wheels Reversed
             } else {
                 leftDucky.setPower(0);
             }
 
             //Controls Right Ducky Wheel
             if (gamepad1.right_bumper) {
-                rightDucky.setPower(-1);
+                rightDucky.setPower(1); //11.19.2021 @ 7:01 - Larson - Ducky Wheels Reversed
             } else {
                 rightDucky.setPower(0);
             }
