@@ -26,8 +26,8 @@ import java.util.stream.IntStream;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Mecanum Opmode", group="Linear Opmode")
-public class Mecanum_Opmode_2021 extends LinearOpMode {
+@TeleOp(name="Mecanum_Opmode_2021_RED", group="Linear Opmode")
+public class Mecanum_Opmode_2021_RED extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -75,7 +75,7 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
         drive_FL.setDirection(DcMotor.Direction.FORWARD);
         drive_RL.setDirection(DcMotor.Direction.FORWARD);
         drive_FR.setDirection(DcMotor.Direction.REVERSE);
-        drive_RR.setDirection(DcMotor.Direction.FORWARD);
+        drive_RR.setDirection(DcMotor.Direction.REVERSE);
 
         //Drive Modes
         drive_FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -129,33 +129,16 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
                 kickout.setPosition(1);
             }
 
-            if (gamepad1.y) {  //Drivers prefer to have this on gamepad2.y
-
-                armExtend.setPower(1);
-
-            } else if (gamepad1.x) {
-
-                armExtend.setPower(-.75);
-
-            } else {
-
-                armExtend.setPower(0);
-
-            }
-
-
-
-
             //Controls Left Ducky Wheel
             if (gamepad1.left_bumper) {
-                leftDucky.setPower(-1); //11.19.2021 @ 7:01 - Larson - Ducky Wheels Reversed
+                leftDucky.setPower(-1);
             } else {
                 leftDucky.setPower(0);
             }
 
             //Controls Right Ducky Wheel
             if (gamepad1.right_bumper) {
-                rightDucky.setPower(1); //11.19.2021 @ 7:01 - Larson - Ducky Wheels Reversed
+                rightDucky.setPower(-1);
             } else {
                 rightDucky.setPower(0);
             }
@@ -164,11 +147,11 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Controller 2
             //Manually turns arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
             if (gamepad2.dpad_up) {
-                leftArm.setPower(-.5);
-                rightArm.setPower(-.5);
+                leftArm.setPower(-1);
+                rightArm.setPower(-1);
             } else if (gamepad2.dpad_down)  {
-                leftArm.setPower(.5);
-                rightArm.setPower(.5);
+                leftArm.setPower(1);
+                rightArm.setPower(1);
             } else {
                 leftArm.setPower(0);
                 rightArm.setPower(0);
@@ -176,15 +159,14 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
             //Turns Feeder Motor Inward
             if (gamepad2.left_trigger > .5) {
-                feeder.setPower(.4);
+                feeder.setPower(.5);
             } else if (gamepad2.right_trigger > .5) {
-                feeder.setPower(-.8);
+                feeder.setPower(-1);
             } else {
                 feeder.setPower(0);
             }
 
             //Moves arm to set levels (Note: you have to hold the button)
-
             //Pickup level
             if (gamepad2.a) {
 
@@ -195,8 +177,8 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
 
                 } else if (rightArm.getCurrentPosition() > degreesBore(-5) + 40) {
 
-                    rightArm.setPower(.1);
-                    leftArm.setPower(.1);
+                    rightArm.setPower(.25);
+                    leftArm.setPower(.25);
 
                 } else {
 
@@ -210,12 +192,12 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Medium level
             if (gamepad2.b) {
 
-                if (rightArm.getCurrentPosition() < degreesBore(40) - 40) {
+                if (rightArm.getCurrentPosition() < degreesBore(25) - 40) {
 
                     rightArm.setPower(-.5);
                     leftArm.setPower(-.5);
 
-                } else if (rightArm.getCurrentPosition() > degreesBore(40) + 40) {
+                } else if (rightArm.getCurrentPosition() > degreesBore(25) + 40) {
 
                     rightArm.setPower(.25);
                     leftArm.setPower(.25);
@@ -232,12 +214,12 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //High Level
             if (gamepad2.y) {
 
-                if (rightArm.getCurrentPosition() < degreesBore(60) - 40) {
+                if (rightArm.getCurrentPosition() < degreesBore(45) - 40) {
 
                     rightArm.setPower(-.5);
                     leftArm.setPower(-.5);
 
-                } else if (rightArm.getCurrentPosition() > degreesBore(60) + 40) {
+                } else if (rightArm.getCurrentPosition() > degreesBore(45) + 40) {
 
                     rightArm.setPower(.25);
                     leftArm.setPower(.25);
@@ -254,12 +236,12 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
             //Capstone level
             if (gamepad2.x) {
 
-                if (rightArm.getCurrentPosition() < degreesBore(75) - 40) {
+                if (rightArm.getCurrentPosition() < degreesBore(55) - 40) {
 
                     rightArm.setPower(-.5);
                     leftArm.setPower(-.5);
 
-                } else if (rightArm.getCurrentPosition() > degreesBore(75) + 40) {
+                } else if (rightArm.getCurrentPosition() > degreesBore(55) + 40) {
 
                     rightArm.setPower(.25);
                     leftArm.setPower(.25);
@@ -270,6 +252,20 @@ public class Mecanum_Opmode_2021 extends LinearOpMode {
                     leftArm.setPower(0);
 
                 }
+
+            }
+
+            //Extends and Retracts the arm
+            if (gamepad2.dpad_right) {
+
+                armExtend.setPower(1);
+
+            } else if (gamepad2.dpad_left) {
+
+                armExtend.setPower(-.75);
+
+            } else {
+                armExtend.setPower(0);
 
             }
 

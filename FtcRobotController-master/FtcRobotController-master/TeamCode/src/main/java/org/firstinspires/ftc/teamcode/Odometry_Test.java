@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode;
 
+import static java.lang.Math.abs;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import static java.lang.Math.abs;
 
 
 /**
@@ -21,8 +22,8 @@ import static java.lang.Math.abs;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto 2021", group="Linear Opmode")
-public class Auto_2021 extends BaseAutoOpMode {
+@Autonomous(name="Odometry_Test", group="Linear Opmode")
+public class Odometry_Test extends BaseAutoOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -40,11 +41,11 @@ public class Auto_2021 extends BaseAutoOpMode {
     private CRServo rightDucky = null;
 
     private DcMotor armEncoder = null;
-    private DcMotor extendEncoder = null;
-    private DcMotor feedEncoder = null;
     private DcMotor leftEncoder = null;
     private DcMotor rightEncoder = null;
     private DcMotor rearEncoder = null;
+    private DcMotor extendEncoder = null;
+    private DcMotor feedEncoder = null;
 
     @Override
     public void runOpMode() {
@@ -276,13 +277,6 @@ public class Auto_2021 extends BaseAutoOpMode {
         int COUNTS_TICKS_PER_REV_PER_DEGREE = (COUNTS_PER_BORE_MOTOR_REV) / 360;
 
         return COUNTS_TICKS_PER_REV_PER_DEGREE * input;
-    }
-
-
-
-
-
-
 
     }
-
+    }
