@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.robotcontroller.external.samples;
+package org.firstinspires.ftc.teamcode.training;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -22,6 +22,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @Autonomous(name="Encoder Training", group="Linear Opmode")
+@Disabled
 public class Stokes_Encoder extends LinearOpMode {
 
     // Declare OpMode members.

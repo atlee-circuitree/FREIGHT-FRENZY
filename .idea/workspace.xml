@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62dc9451-e0a0-4649-a853-c7fbfc284f64" name="Default Changelist" comment="" />
+    <list default="true" id="62dc9451-e0a0-4649-a853-c7fbfc284f64" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/VuforiaTest_2021.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/Stokes_Encoder.java" beforeDir="false" afterPath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/training/Stokes_Encoder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Auto_2021.java" beforeDir="false" afterPath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Auto_2021.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Odometry_Test.java" beforeDir="false" afterPath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/Odometry_Test.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/settings.gradle" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,7 +39,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/FtcRobotController-master" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">

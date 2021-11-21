@@ -77,7 +77,7 @@ public class Auto_2021 extends BaseAutoOpMode {
         drive_FL.setDirection(DcMotor.Direction.FORWARD);
         drive_RL.setDirection(DcMotor.Direction.FORWARD);
         drive_FR.setDirection(DcMotor.Direction.REVERSE);
-        drive_RR.setDirection(DcMotor.Direction.FORWARD);
+        drive_RR.setDirection(DcMotor.Direction.REVERSE);
 
         //Drive Modes
         drive_FL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
