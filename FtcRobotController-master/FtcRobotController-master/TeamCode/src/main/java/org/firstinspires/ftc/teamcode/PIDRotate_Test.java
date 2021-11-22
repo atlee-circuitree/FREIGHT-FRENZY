@@ -49,7 +49,7 @@ public class PIDRotate_Test extends BaseAutoOpMode {
 
         waitForStart();
 
-        PIDRotate(90, 5);
+        PIDRotate(90, .05);
 
     }
 }

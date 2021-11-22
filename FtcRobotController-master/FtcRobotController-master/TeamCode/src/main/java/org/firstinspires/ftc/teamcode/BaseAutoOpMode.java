@@ -335,7 +335,6 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
                     rampSpeed = rampSpeed + 2 * (speed/20);
                     telemetry.addData("rampSpeed",rampSpeed);
                 }
-//prostate test :)
                 if (yawPIDResult.isOnTarget()) {
                     drive_FL.setPower(rampSpeed);
                     drive_FR.setPower(rampSpeed);
@@ -365,10 +364,10 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
     }
 
 
-    public void PIDRotate(double targetDegrees, double timeout) throws InterruptedException{
+    public void PIDRotate(double targetDegrees, double speed) throws InterruptedException{
 
-        final double toleranceDegrees = 1.0;
-        final double P = 0.01;
+        final double toleranceDegrees = 5.0;
+        final double P = 0.02;
         final double I = 0.00;
         final double D = 0.00;
 
@@ -376,18 +375,24 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         yawPIDController.setTolerance(navXPIDController.ToleranceType.ABSOLUTE, toleranceDegrees);
         yawPIDController.setContinuous(true);
         yawPIDController.setInputRange(-180, 180);
-        yawPIDController.setInputRange(-1, 1);
+        yawPIDController.setInputRange(-.5, .5);
         yawPIDController.setSetpoint(targetDegrees);
         yawPIDController.enable(true);
 
-        navXPIDController.PIDResult PIDResult = new navXPIDController.PIDResult();
 
-        double output = PIDResult.getOutput();
 
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
-        if(yawPIDController.waitForNewUpdate(PIDResult, 500)) {
             while (opModeIsActive()) {
+
+                navXPIDController.PIDResult PIDResult = new navXPIDController.PIDResult();
+
+                double output = PIDResult.getOutput();
+
+                if (navx_centered.getYaw() < 0) {
+
+
+                }
 
                 if (PIDResult.isOnTarget()) {
                     telemetry.addData("PID Output", "On target");
@@ -399,20 +404,13 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
                 else {
                     telemetry.addData("PID Output", PIDResult.getOutput());
                     telemetry.addData("NavX Yaw", navx_centered.getYaw());
-                    drive_FL.setPower(output);
-                    drive_FR.setPower(output);
-                    drive_RL.setPower(output);
-                    drive_RR.setPower(output);
+                    drive_FL.setPower(speed);
+                    drive_FR.setPower(-speed);
+                    drive_RL.setPower(speed);
+                    drive_RR.setPower(-speed);
                 }
                 telemetry.update();
             }
-        }
-        else{
-            telemetry.addData("PID Output", "PID got sent to timeout");
-            telemetry.update();
-        }
-
-
 
     }
 
