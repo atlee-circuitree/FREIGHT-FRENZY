@@ -387,7 +387,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
         if(yawPIDController.waitForNewUpdate(PIDResult, 500)) {
-            while (runtime.milliseconds() < timeout && opModeIsActive()) {
+            while (opModeIsActive()) {
 
                 if (PIDResult.isOnTarget()) {
                     telemetry.addData("PID Output", "On target");
