@@ -276,56 +276,6 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         }
     }
 
-    public void SimpleRotate(double angle, double speed) {
-
-        yawPIDController.setInputRange(0, 360);
-
-        targetAngle = navx_centered.getYaw() + angle;
-
-        if (navx_centered.getYaw() >= targetAngle) {
-
-            while (navx_centered.getYaw() >= targetAngle - 1) {
-
-                drive_FL.setPower(speed);
-                drive_FR.setPower(-speed);
-                drive_RL.setPower(speed);
-                drive_RR.setPower(-speed);
-
-                telemetry.addData("Target Angle ", targetAngle);
-                telemetry.addData("Current Angle ", navx_centered.getYaw());
-                telemetry.update();
-
-            }
-
-        }
-
-        if (navx_centered.getYaw() <= targetAngle + 1) {
-
-            while (navx_centered.getYaw() <= targetAngle) {
-
-                drive_FL.setPower(-speed);
-                drive_FR.setPower(speed);
-                drive_RL.setPower(-speed);
-                drive_RR.setPower(speed);
-
-                telemetry.addData("Target Angle ", targetAngle);
-                telemetry.addData("Current Angle ", navx_centered.getYaw());
-                telemetry.update();
-
-            }
-
-        }
-
-        drive_FL.setPower(0);
-        drive_FR.setPower(0);
-        drive_RL.setPower(0);
-        drive_RR.setPower(0);
-
-        telemetry.addData("Target Angle ", targetAngle);
-        telemetry.addData("Current Angle ", navx_centered.getYaw());
-        telemetry.update();
-    }
-
     public void encoderPIDDrive(double speed, double distance, double targetAngle, double timeout) throws InterruptedException {
 
         final double TARGET_ANGLE_DEGREES = targetAngle;

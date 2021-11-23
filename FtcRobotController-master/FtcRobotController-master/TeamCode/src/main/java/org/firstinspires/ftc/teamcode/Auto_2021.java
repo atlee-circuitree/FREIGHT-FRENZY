@@ -93,9 +93,6 @@ public class Auto_2021 extends BaseAutoOpMode {
         //Disable this to skip the kickout
         //Kickout();
 
-        //Move Forward
-        runForwardsEncoder(.5, 12);
-
         //Strafe Left
         strafeLeftEncoder(.5, 12);
 
@@ -160,6 +157,31 @@ public class Auto_2021 extends BaseAutoOpMode {
         ResetDriveEncoder();
         turnOnEncoders();
 
+
+    }
+
+    public void SimpleRotate(double angle, double speed) {
+
+        yawPIDController.setInputRange(-180, 180);
+
+        double targetAngle = navx_centered.getYaw() + angle;
+
+        if (navx_centered.getYaw() <= targetAngle) {
+
+            while (navx_centered.getYaw() <= targetAngle) {
+
+                drive_FL.setPower(speed);
+                drive_FR.setPower(-speed);
+                drive_RL.setPower(speed);
+                drive_RR.setPower(-speed);
+
+                telemetry.addData("Target Angle ", targetAngle);
+                telemetry.addData("Current Angle ", navx_centered.getYaw());
+                telemetry.update();
+
+            }
+
+        }
 
     }
 

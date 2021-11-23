@@ -6,6 +6,9 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import org.firstinspires.ftc.teamcode.BaseAutoOpMode;
+import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.AHRS;
+import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.navXPIDController;
 
 
 /**
