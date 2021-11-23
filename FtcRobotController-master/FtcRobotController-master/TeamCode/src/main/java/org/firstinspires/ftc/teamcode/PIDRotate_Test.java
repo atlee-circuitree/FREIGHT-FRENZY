@@ -67,9 +67,9 @@ public class PIDRotate_Test extends BaseAutoOpMode {
 
                 // Turns Left
                 drive_FL.setPower(speed);
-                drive_FR.setPower(speed);
+                drive_FR.setPower(-speed);
                 drive_RL.setPower(speed);
-                drive_RR.setPower(speed);
+                drive_RR.setPower(-speed);
 
                 telemetry.addData("Target Angle ", targetAngle);
                 telemetry.addData("Current Angle ", navx_centered.getYaw());
