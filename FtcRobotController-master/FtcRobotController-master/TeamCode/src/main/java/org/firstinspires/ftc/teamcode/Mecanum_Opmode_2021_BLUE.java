@@ -37,6 +37,9 @@ public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
     private Servo kickout = null;
     private CRServo leftDucky = null;
     private CRServo rightDucky = null;
+    private Servo claw = null;
+    private Servo odometryLift1 = null;
+
 
     @Override
     public void runOpMode() {
@@ -53,9 +56,12 @@ public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
         armExtend = hardwareMap.get(DcMotor.class, "extend_Arm");
         feeder = hardwareMap.get(DcMotor.class, "feeder");
 
+
         kickout = hardwareMap.get(Servo.class, "kickout");
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
+        claw = hardwareMap.get(Servo.class, "clawOfDeath");
+        odometryLift1 = hardwareMap.get(Servo.class, "Odometry_Lift1");
 
         leftArm.setDirection(DcMotor.Direction.REVERSE);
         rightArm.setDirection(DcMotor.Direction.FORWARD);
@@ -64,6 +70,9 @@ public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Slowmode Variables
+        double SV = 1;
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the batter;
@@ -98,6 +107,7 @@ public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
             telemetry.addData("Feeder", feeder.getCurrentPosition());
             telemetry.addData("Arm Extend", armExtend.getCurrentPosition());
             telemetry.addData("Arm Extend Power", armExtend.getPower());
+            telemetry.addData("Claw Position", claw.getPosition());
             telemetry.update();
 
             //Mecanum Drive Code
@@ -138,15 +148,25 @@ public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
                 rightDucky.setPower(0);
             }
 
+            if (gamepad1.y)
+                odometryLift1.setPosition(.5);
+
 
             //Controller 2
-            //Manually turns arm in case it doesn't extend and turn to set position automatically (FAILSAFE)
+            //Manually turns arm :)
+
+            if (gamepad2.a) {
+                SV = .5;
+            } else {
+                SV = 1;
+            }
+
             if (gamepad2.dpad_up) {
-                leftArm.setPower(-1);
-                rightArm.setPower(-1);
-            } else if (gamepad2.dpad_down)  {
-                leftArm.setPower(1);
-                rightArm.setPower(1);
+                leftArm.setPower(-1 * SV);
+                rightArm.setPower(-1 * SV);
+            } else if (gamepad2.dpad_down) {
+                leftArm.setPower(1 * SV);
+                rightArm.setPower(1 * SV);
             } else {
                 leftArm.setPower(0);
                 rightArm.setPower(0);
@@ -161,108 +181,31 @@ public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
                 feeder.setPower(0);
             }
 
-            //Moves arm to set levels (Note: you have to hold the button)
-            //Pickup level
-            if (gamepad2.a) {
-
-                if (rightArm.getCurrentPosition() < degreesBore(-5) - 40) {
-
-                    rightArm.setPower(-.5);
-                    leftArm.setPower(-.5);
-
-                } else if (rightArm.getCurrentPosition() > degreesBore(-5) + 40) {
-
-                    rightArm.setPower(.25);
-                    leftArm.setPower(.25);
-
-                } else {
-
-                    rightArm.setPower(0);
-                    leftArm.setPower(0);
-
-                }
-
-            }
-
-            //Medium level
-            if (gamepad2.b) {
-
-                if (rightArm.getCurrentPosition() < degreesBore(25) - 40) {
-
-                    rightArm.setPower(-.5);
-                    leftArm.setPower(-.5);
-
-                } else if (rightArm.getCurrentPosition() > degreesBore(25) + 40) {
-
-                    rightArm.setPower(.25);
-                    leftArm.setPower(.25);
-
-                } else {
-
-                    rightArm.setPower(0);
-                    leftArm.setPower(0);
-
-                }
-
-            }
-
-            //High Level
-            if (gamepad2.y) {
-
-                if (rightArm.getCurrentPosition() < degreesBore(45) - 40) {
-
-                    rightArm.setPower(-.5);
-                    leftArm.setPower(-.5);
-
-                } else if (rightArm.getCurrentPosition() > degreesBore(45) + 40) {
-
-                    rightArm.setPower(.25);
-                    leftArm.setPower(.25);
-
-                } else {
-
-                    rightArm.setPower(0);
-                    leftArm.setPower(0);
-
-                }
-
-            }
-
-            //Capstone level
-            if (gamepad2.x) {
-
-                if (rightArm.getCurrentPosition() < degreesBore(55) - 40) {
-
-                    rightArm.setPower(-.5);
-                    leftArm.setPower(-.5);
-
-                } else if (rightArm.getCurrentPosition() > degreesBore(55) + 40) {
-
-                    rightArm.setPower(.25);
-                    leftArm.setPower(.25);
-
-                } else {
-
-                    rightArm.setPower(0);
-                    leftArm.setPower(0);
-
-                }
-
-            }
 
             //Extends and Retracts the arm
-            if (gamepad2.dpad_right) {
+            if (gamepad2.x) {
 
                 armExtend.setPower(1);
 
-            } else if (gamepad2.dpad_left) {
-
-                armExtend.setPower(-.75);
 
             } else {
                 armExtend.setPower(0);
 
             }
+
+
+            //moves claw n stuff
+            if (gamepad2.left_bumper)
+                claw.setPosition(1);
+            else
+                claw.setPosition(0);
+
+            if (gamepad2.right_bumper)
+                claw.setPosition(.6);
+            else
+                claw.setPosition(0);
+
+
 
         }
 
