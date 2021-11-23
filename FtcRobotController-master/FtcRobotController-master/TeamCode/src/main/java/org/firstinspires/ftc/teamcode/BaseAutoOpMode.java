@@ -291,6 +291,9 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
                 drive_RL.setPower(speed);
                 drive_RR.setPower(-speed);
 
+                telemetry.addData("Angle ", navx_centered.getYaw());
+                telemetry.update();
+
             }
 
         }
@@ -304,9 +307,20 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
                 drive_RL.setPower(-speed);
                 drive_RR.setPower(speed);
 
+                telemetry.addData("Angle ", navx_centered.getYaw());
+                telemetry.update();
+
             }
 
         }
+
+        drive_FL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RL.setPower(0);
+        drive_RR.setPower(0);
+
+        telemetry.addData("Angle ", navx_centered.getYaw());
+        telemetry.update();
 
     }
 
