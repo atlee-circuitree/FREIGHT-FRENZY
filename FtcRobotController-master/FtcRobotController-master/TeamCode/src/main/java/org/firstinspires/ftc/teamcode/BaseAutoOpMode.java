@@ -276,6 +276,40 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         }
     }
 
+    public void SimpleRotate(double angle, double speed) {
+
+        yawPIDController.setInputRange(0, 360);
+
+        targetAngle = navx_centered.getYaw() + angle;
+
+        if (navx_centered.getYaw() >= targetAngle) {
+
+            while (navx_centered.getYaw() >= targetAngle) {
+
+                drive_FL.setPower(speed);
+                drive_FR.setPower(-speed);
+                drive_RL.setPower(speed);
+                drive_RR.setPower(-speed);
+
+            }
+
+        }
+
+        if (navx_centered.getYaw() <= targetAngle) {
+
+            while (navx_centered.getYaw() <= targetAngle) {
+
+                drive_FL.setPower(-speed);
+                drive_FR.setPower(speed);
+                drive_RL.setPower(-speed);
+                drive_RR.setPower(speed);
+
+            }
+
+        }
+
+    }
+
     public void encoderPIDDrive(double speed, double distance, double targetAngle, double timeout) throws InterruptedException {
 
         final double TARGET_ANGLE_DEGREES = targetAngle;
