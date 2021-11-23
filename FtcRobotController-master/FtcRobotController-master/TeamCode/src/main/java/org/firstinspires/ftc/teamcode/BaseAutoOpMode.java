@@ -284,21 +284,22 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
 
         if (navx_centered.getYaw() >= targetAngle) {
 
-            while (navx_centered.getYaw() >= targetAngle) {
+            while (navx_centered.getYaw() >= targetAngle - 1) {
 
                 drive_FL.setPower(speed);
                 drive_FR.setPower(-speed);
                 drive_RL.setPower(speed);
                 drive_RR.setPower(-speed);
 
-                telemetry.addData("Angle ", navx_centered.getYaw());
+                telemetry.addData("Target Angle ", targetAngle);
+                telemetry.addData("Current Angle ", navx_centered.getYaw());
                 telemetry.update();
 
             }
 
         }
 
-        if (navx_centered.getYaw() <= targetAngle) {
+        if (navx_centered.getYaw() <= targetAngle + 1) {
 
             while (navx_centered.getYaw() <= targetAngle) {
 
@@ -307,7 +308,8 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
                 drive_RL.setPower(-speed);
                 drive_RR.setPower(speed);
 
-                telemetry.addData("Angle ", navx_centered.getYaw());
+                telemetry.addData("Target Angle ", targetAngle);
+                telemetry.addData("Current Angle ", navx_centered.getYaw());
                 telemetry.update();
 
             }
@@ -319,9 +321,9 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         drive_RL.setPower(0);
         drive_RR.setPower(0);
 
-        telemetry.addData("Angle ", navx_centered.getYaw());
+        telemetry.addData("Target Angle ", targetAngle);
+        telemetry.addData("Current Angle ", navx_centered.getYaw());
         telemetry.update();
-
     }
 
     public void encoderPIDDrive(double speed, double distance, double targetAngle, double timeout) throws InterruptedException {
