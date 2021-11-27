@@ -367,7 +367,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
     public void PIDRotate(double targetDegrees, double speed) throws InterruptedException{
 
         final double toleranceDegrees = 5.0;
-        final double P = 0.02;
+        final double P = 0.005;
         final double I = 0.00;
         final double D = 0.00;
 
@@ -389,10 +389,6 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
 
                 double output = PIDResult.getOutput();
 
-                if (navx_centered.getYaw() < 0) {
-
-
-                }
 
                 if (PIDResult.isOnTarget()) {
                     telemetry.addData("PID Output", "On target");
@@ -402,12 +398,12 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
                     drive_RR.setPower(0);
                 }
                 else {
-                    telemetry.addData("PID Output", PIDResult.getOutput());
+                    telemetry.addData("PID Output", output);
                     telemetry.addData("NavX Yaw", navx_centered.getYaw());
-                    drive_FL.setPower(speed);
-                    drive_FR.setPower(-speed);
-                    drive_RL.setPower(speed);
-                    drive_RR.setPower(-speed);
+                    drive_FL.setPower(output);
+                    drive_FR.setPower(-output);
+                    drive_RL.setPower(output);
+                    drive_RR.setPower(-output);
                 }
                 telemetry.update();
             }

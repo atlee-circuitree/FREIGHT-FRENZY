@@ -49,43 +49,8 @@ public class PIDRotate_Test extends BaseAutoOpMode {
 
         waitForStart();
 
-        SimpleRotateLeft(-90, .25);
+        PIDRotate(-90, 1);
 
     }
 
-    public void SimpleRotateLeft(double angle, double speed) {
-
-        // Sets the range between -180 and 180
-        yawPIDController.setInputRange(-180, 180);
-
-        // Creates a target angle
-        double targetAngle = navx_centered.getYaw() + angle;
-
-        if (navx_centered.getYaw() >= targetAngle) {
-
-            while (navx_centered.getYaw() >= targetAngle) {
-
-                // Turns Left
-                drive_FL.setPower(speed);
-                drive_FR.setPower(-speed);
-                drive_RL.setPower(speed);
-                drive_RR.setPower(-speed);
-
-                telemetry.addData("Target Angle ", targetAngle);
-                telemetry.addData("Current Angle ", navx_centered.getYaw());
-                telemetry.update();
-
-            }
-
-        }
-
-        drive_FL.setPower(0);
-        drive_FR.setPower(0);
-        drive_RL.setPower(0);
-        drive_RR.setPower(0);
-
-        telemetry.addData("Target Angle ", targetAngle);
-        telemetry.addData("Current Angle ", navx_centered.getYaw());
-        telemetry.update();
-    }
 }

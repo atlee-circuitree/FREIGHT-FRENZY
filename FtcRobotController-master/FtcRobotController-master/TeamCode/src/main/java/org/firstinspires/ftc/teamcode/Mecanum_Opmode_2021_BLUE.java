@@ -63,7 +63,7 @@ public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
         kickout = hardwareMap.get(Servo.class, "kickout");
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
-        claw = hardwareMap.get(Servo.class, "clawOfDeath");
+        claw = hardwareMap.get(Servo.class, "claw");
         odometryLift1 = hardwareMap.get(Servo.class, "Odometry_Lift1");
 
         leftArm.setDirection(DcMotor.Direction.REVERSE);

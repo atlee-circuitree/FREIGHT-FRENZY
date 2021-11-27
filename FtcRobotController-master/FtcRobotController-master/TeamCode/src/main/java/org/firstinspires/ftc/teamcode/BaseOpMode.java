@@ -70,6 +70,10 @@ public abstract class BaseOpMode extends LinearOpMode {
     public Servo kickout = null;
     public CRServo leftDucky = null;
     public CRServo rightDucky = null;
+    private DistanceSensor LS_distance;
+    private DistanceSensor RS_distance;
+    private DistanceSensor RL_distance;
+    private DistanceSensor RR_distance;
 
     public AHRS navx_centered;
 
@@ -129,6 +133,12 @@ public abstract class BaseOpMode extends LinearOpMode {
         kickout = hardwareMap.get(Servo.class, "kickout");
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
+
+        LS_distance = hardwareMap.get(DistanceSensor.class, "LS_distance");
+        RS_distance = hardwareMap.get(DistanceSensor.class, "RS_distance");
+        RL_distance = hardwareMap.get(DistanceSensor.class, "RL_distance");
+        RR_distance = hardwareMap.get(DistanceSensor.class, "RR_distance");
+
 
 
         // Most robots need the motor on one side to be reversed to drive forward
