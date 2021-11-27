@@ -143,10 +143,10 @@ public abstract class BaseOpMode extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        drive_FL.setDirection(DcMotor.Direction.REVERSE);
-        drive_RL.setDirection(DcMotor.Direction.REVERSE);
-        drive_FR.setDirection(DcMotor.Direction.FORWARD);
-        drive_RR.setDirection(DcMotor.Direction.FORWARD);
+        drive_FL.setDirection(DcMotor.Direction.FORWARD);
+        drive_RL.setDirection(DcMotor.Direction.FORWARD);
+        drive_FR.setDirection(DcMotor.Direction.REVERSE);
+        drive_RR.setDirection(DcMotor.Direction.REVERSE);
 
         SetDriveMode(Mode.STOP_RESET_ENCODER);
 

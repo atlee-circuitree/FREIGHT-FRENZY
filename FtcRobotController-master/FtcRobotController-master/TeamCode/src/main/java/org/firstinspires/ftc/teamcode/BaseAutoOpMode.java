@@ -48,6 +48,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
     public navXPIDController yawPIDController;
 
 
+
     @Override
 
     public void GetHardware() {
@@ -366,44 +367,44 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
 
     public void PIDRotate(double targetDegrees, double speed) throws InterruptedException{
 
-        final double toleranceDegrees = 5.0;
-        final double P = 0.005;
+        final double P = 0.0075;
         final double I = 0.00;
         final double D = 0.00;
 
-        yawPIDController.setPID(P,I,D);
-        yawPIDController.setTolerance(navXPIDController.ToleranceType.ABSOLUTE, toleranceDegrees);
-        yawPIDController.setContinuous(true);
-        yawPIDController.setInputRange(-180, 180);
-        yawPIDController.setInputRange(-.5, .5);
-        yawPIDController.setSetpoint(targetDegrees);
-        yawPIDController.enable(true);
+        PIDControllerAlgorithm PID = new PIDControllerAlgorithm(P,I,D);
 
+        PID.setPID(P,I,D);
+        PID.setContinuous(true);
+        PID.setInputRange(-180,180);
+        PID.setOutputRange(-1,1);
+        PID.setTolerance(1.0);
+        PID.setInput(navx_centered.getYaw());
+        PID.setSetpoint(targetDegrees);
+        PID.enable();
 
 
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
             while (opModeIsActive()) {
 
-                navXPIDController.PIDResult PIDResult = new navXPIDController.PIDResult();
-
-                double output = PIDResult.getOutput();
+                double output = PID.performPID(navx_centered.getYaw());
 
 
-                if (PIDResult.isOnTarget()) {
+                if(PID.onTarget()){
                     telemetry.addData("PID Output", "On target");
+                    telemetry.addData("NavX Yaw", navx_centered.getYaw());
                     drive_FL.setPower(0);
                     drive_FR.setPower(0);
                     drive_RL.setPower(0);
                     drive_RR.setPower(0);
                 }
-                else {
+                else{
                     telemetry.addData("PID Output", output);
                     telemetry.addData("NavX Yaw", navx_centered.getYaw());
-                    drive_FL.setPower(output);
-                    drive_FR.setPower(-output);
-                    drive_RL.setPower(output);
-                    drive_RR.setPower(-output);
+                    drive_FL.setPower(-output);
+                    drive_FR.setPower(output);
+                    drive_RL.setPower(-output);
+                    drive_RR.setPower(output);
                 }
                 telemetry.update();
             }
