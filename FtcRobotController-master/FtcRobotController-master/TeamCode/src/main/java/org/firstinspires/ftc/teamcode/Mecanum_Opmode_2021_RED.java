@@ -193,16 +193,19 @@ public class Mecanum_Opmode_2021_RED extends LinearOpMode {
             //Moves claw n stuff
             if (gamepad2.left_bumper) {
                 claw.setPosition(1);
-            } else {
-                claw.setPosition(0);
             }
 
             if (gamepad2.right_bumper) {
                 claw.setPosition(.6);
-            } else {
-                claw.setPosition(0);
             }
 
+            if (gamepad2.b) {
+                odometryLift1.setPosition(1);
+            }
+
+            if (gamepad2.y) {
+                odometryLift1.setPosition(.5);
+            }
 
         }
 

@@ -110,10 +110,10 @@ public class REV_2M_Distanece_Sensor_Test extends LinearOpMode {
             telemetry.addData("Feeder", feeder.getCurrentPosition());
             telemetry.addData("Arm Extend", armExtend.getCurrentPosition());
             telemetry.addData("Arm Extend Power", armExtend.getPower());
-            telemetry.addData("range", String.format("%.01f cm", LS_distance.getDistance(DistanceUnit.CM)));
-            telemetry.addData("range", String.format("%.01f cm", RS_distance.getDistance(DistanceUnit.CM)));
-            telemetry.addData("range", String.format("%.01f cm", RL_distance.getDistance(DistanceUnit.CM)));
-            telemetry.addData("range", String.format("%.01f cm", RR_distance.getDistance(DistanceUnit.CM)));
+            telemetry.addData("LS Distnace", String.format("%.01f cm", LS_distance.getDistance(DistanceUnit.CM)));
+            telemetry.addData("RS Distance", String.format("%.01f cm", RS_distance.getDistance(DistanceUnit.CM)));
+            telemetry.addData("RL Distance", String.format("%.01f cm", RL_distance.getDistance(DistanceUnit.CM)));
+            telemetry.addData("RR Distance", String.format("%.01f cm", RR_distance.getDistance(DistanceUnit.CM)));
             telemetry.update();
 
             //Mecanum Drive Code
