@@ -110,10 +110,10 @@ public class REV_2M_Distanece_Sensor_Test extends LinearOpMode {
             telemetry.addData("Feeder", feeder.getCurrentPosition());
             telemetry.addData("Arm Extend", armExtend.getCurrentPosition());
             telemetry.addData("Arm Extend Power", armExtend.getPower());
-            telemetry.addData("LS Distnace", String.format("%.01f cm", LS_distance.getDistance(DistanceUnit.CM)));
-            telemetry.addData("RS Distance", String.format("%.01f cm", RS_distance.getDistance(DistanceUnit.CM)));
-            telemetry.addData("RL Distance", String.format("%.01f cm", RL_distance.getDistance(DistanceUnit.CM)));
-            telemetry.addData("RR Distance", String.format("%.01f cm", RR_distance.getDistance(DistanceUnit.CM)));
+            telemetry.addData("LS Distnace", String.format("%.01f in", LS_distance.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("RS Distance", String.format("%.01f in", RS_distance.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("RL Distance", String.format("%.01f in", RL_distance.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("RR Distance", String.format("%.01f in", RR_distance.getDistance(DistanceUnit.INCH)));
             telemetry.update();
 
             //Mecanum Drive Code
@@ -156,17 +156,17 @@ public class REV_2M_Distanece_Sensor_Test extends LinearOpMode {
 
             //Corrects robots position using distance sensors
             if (gamepad1.x) {
-                if (LS_distance.getDistance(DistanceUnit.CM) < 30) {
+                if (LS_distance.getDistance(DistanceUnit.INCH) < 30) {
                     drive_FL.setPower(0.5);
                     drive_RL.setPower(-0.5);
                     drive_FR.setPower(-0.5);
                     drive_RR.setPower(0.5);
-                } else if (RL_distance.getDistance(DistanceUnit.CM) < (RR_distance.getDistance(DistanceUnit.CM))) {
+                } else if (RL_distance.getDistance(DistanceUnit.INCH) < (RR_distance.getDistance(DistanceUnit.INCH))) {
                     drive_FL.setPower(0.5);
                     drive_RL.setPower(0.5);
                     drive_FR.setPower(-0.5);
                     drive_RR.setPower(-0.5);
-                } else if (RR_distance.getDistance(DistanceUnit.CM) < (RL_distance.getDistance(DistanceUnit.CM))) {
+                } else if (RR_distance.getDistance(DistanceUnit.INCH) < (RL_distance.getDistance(DistanceUnit.INCH))) {
                     drive_FL.setPower(-0.5);
                     drive_RL.setPower(-0.5);
                     drive_FR.setPower(0.5);
