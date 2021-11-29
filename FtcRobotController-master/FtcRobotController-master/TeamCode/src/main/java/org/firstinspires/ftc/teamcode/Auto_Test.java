@@ -115,9 +115,9 @@ public class Auto_Test extends BaseAutoOpMode {
         runtime.reset();
 
         //Auto Starts Here
-        runForwardsEncoder(.5,4);
+        runForwardsEncoder(-.5,4);
 
-        Kickout();
+        //Kickout();
 
         //armTurn();
 
