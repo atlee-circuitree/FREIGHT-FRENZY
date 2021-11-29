@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="QCAR_Dataset_config.xsd">
+<QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsg">
   <Tracking>
-    <ObjectTarget name="Element" />
+    <ObjectTarget name="Element"/>
   </Tracking>
 </QCARConfig>

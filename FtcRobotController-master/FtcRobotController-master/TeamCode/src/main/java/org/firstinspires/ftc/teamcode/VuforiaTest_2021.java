@@ -88,33 +88,14 @@ public class ConceptVuMarkIdentificationWebcam extends LinearOpMode {
 
     @Override public void runOpMode() {
 
-        /*
-         * Retrieve the camera we are to use.
-         */
+
         webcamName = hardwareMap.get(WebcamName.class, "Webcam 1");
 
-        /*
-         * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
-         * If no camera monitor is desired, use the parameterless constructor instead (commented out below).
-         */
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        // OR...  Do Not Activate the Camera Monitor View, to save power
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
-        /*
-         * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
-         * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
-         * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
-         * web site at https://developer.vuforia.com/license-manager.
-         *
-         * Vuforia license keys are always 380 characters long, and look as if they contain mostly
-         * random data. As an example, here is a example of a fragment of a valid key:
-         *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
-         * Once you've obtained a license key, copy the string from the Vuforia web site
-         * and paste it in to your code on the next line, between the double quotes.
-         */
         parameters.vuforiaLicenseKey = "AbVcZG//////AAABmQPlNeXRzk8glfTRqvppVjUOmOIRBK16erQdj6yDdeQn14HZHv+h8uHCFeD+wexFFrNYJDgLTDVJMCITskbcb7KMToJc0JJbS6785XHsq8tVhhTTqXxBYdxnlG6HDADRpXTC5Q9I29fZklWzex9e4ctI5f59p+ozzKNk2G41Xdrv1ogVpJaD7UO1FLxoquF+A9Z7Kf2KhxCmUz2AodIiHh/lxwctryPbj9B99RU3u+FfNoew+s+4BHANZQjT6q765G3qPyz15PyRKMuqs/KqGqv/RB+i08hakNU1bk8wmgabFXSWRFXeqno//yMnUyY+XWRXfJgdYmDI1nQm5dqQnjOJ/MG8ZPcJY3HxTtVhjgu4";
 
 
@@ -131,15 +112,14 @@ public class ConceptVuMarkIdentificationWebcam extends LinearOpMode {
          * but differ in their instance id information.
          * @see VuMarkInstanceId
          */
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("15304Database_OT");
+
+        VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("15304Database_OT.xml");
         VuforiaTrackable Element = relicTrackables.get(0);
         Element.setName("Element"); // can help in debugging; otherwise not necessary
 
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
         waitForStart();
-
-        relicTrackables.activate();
 
         while (opModeIsActive()) {
 
