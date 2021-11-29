@@ -67,13 +67,22 @@ public abstract class BaseOpMode extends LinearOpMode {
     public DcMotor rightArm = null;
     public DcMotor armExtend = null;
     public DcMotor feeder = null;
+
     public Servo kickout = null;
     public CRServo leftDucky = null;
     public CRServo rightDucky = null;
-    private DistanceSensor LS_distance;
-    private DistanceSensor RS_distance;
-    private DistanceSensor RL_distance;
-    private DistanceSensor RR_distance;
+
+    public DcMotor armEncoder = null;
+    public DcMotor extendEncoder = null;
+    public DcMotor feedEncoder = null;
+    public DcMotor leftEncoder = null;
+    public DcMotor rightEncoder = null;
+    public DcMotor rearEncoder = null;
+
+    public DistanceSensor LS_distance;
+    public DistanceSensor RS_distance;
+    public DistanceSensor RL_distance;
+    public DistanceSensor RR_distance;
 
     public AHRS navx_centered;
 
@@ -139,7 +148,13 @@ public abstract class BaseOpMode extends LinearOpMode {
         RL_distance = hardwareMap.get(DistanceSensor.class, "RL_distance");
         RR_distance = hardwareMap.get(DistanceSensor.class, "RR_distance");
 
+        leftArm.setDirection(DcMotor.Direction.FORWARD);
+        rightArm.setDirection(DcMotor.Direction.REVERSE);
 
+        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery

@@ -31,10 +31,17 @@ package org.firstinspires.ftc.teamcode;
 
 //import android.util.Log;
 
+import static java.lang.Math.abs;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.navXPIDController;
 
 /**
@@ -59,11 +66,13 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
 
     }
 
-    public void ResetDriveEncoder(){
-        SetDriveMode(Mode.STOP_RESET_ENCODER);
-        SetDriveMode(Mode.RUN_WITH_ENCODER);
-    }
+    HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
 
+    static final double     FORWARD_SPEED = 1;
+    static final double     TURN_SPEED    = 1;
+
+    private Orientation lastAngles = new Orientation();
+    private double currAngle = 0.0;
 
     public void encoderStrafeV4( double speed, double distance, double timeout) {
         int RevEncoderTarget;
@@ -456,6 +465,310 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
         drive_RL.setPower(0);
         drive_RR.setPower(0);
     }
+
+    public void distanceDrive(int distance, String distanceSensor) {
+        if (distanceSensor == "LS") {
+            if (LS_distance.getDistance(DistanceUnit.INCH) < distance) {
+                drive_FL.setPower(1);
+                drive_RL.setPower(1);
+                drive_FR.setPower(1);
+                drive_RR.setPower(1);
+            } else {
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+            }
+        } else if (distanceSensor == "RS") {
+            if (RS_distance.getDistance(DistanceUnit.INCH) < distance) {
+                drive_FL.setPower(1);
+                drive_RL.setPower(1);
+                drive_FR.setPower(1);
+                drive_RR.setPower(1);
+            } else {
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+            }
+        } else if (distanceSensor == "RL") {
+            if (RL_distance.getDistance(DistanceUnit.INCH) < distance) {
+                drive_FL.setPower(1);
+                drive_RL.setPower(1);
+                drive_FR.setPower(1);
+                drive_RR.setPower(1);
+            } else {
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+            }
+        } else if(distanceSensor == "RR") {
+            if (RR_distance.getDistance(DistanceUnit.INCH) < distance) {
+                drive_FL.setPower(1);
+                drive_RL.setPower(1);
+                drive_FR.setPower(1);
+                drive_RR.setPower(1);
+            } else {
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+            }
+        }
+    }
+
+    public void backDistanceDrive(int distance, String distanceSensor) {
+        if (distanceSensor == "RL") {
+            if (LS_distance.getDistance(DistanceUnit.INCH) < distance) {
+                drive_FL.setPower(-1);
+                drive_RL.setPower(-1);
+                drive_FR.setPower(-1);
+                drive_RR.setPower(-1);
+            } else {
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+            }
+        } else if (distanceSensor == "RR") {
+            if (RR_distance.getDistance(DistanceUnit.INCH) < distance) {
+                drive_FL.setPower(-1);
+                drive_RL.setPower(-1);
+                drive_FR.setPower(-1);
+                drive_RR.setPower(-1);
+            } else {
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+            }
+        }
+    }
+
+    public void distanceDriveRight() {
+        if (RL_distance.getDistance(DistanceUnit.INCH) < 28) {
+            drive_FL.setPower(0.5);
+            drive_RL.setPower(-0.5);
+            drive_FR.setPower(-0.5);
+            drive_RR.setPower(0.5);
+        }
+    }
+
+    public void ResetDriveEncoder() {
+        drive_FL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        drive_RL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        drive_FR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        drive_RR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    }
+
+    public void turnOnEncoders() {
+        drive_FL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        drive_RL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        drive_FR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        drive_RR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void Kickout() {
+        kickout.setPosition(.25);
+    }
+
+    public void armTurn() {
+        if (rightArm.getCurrentPosition() < degreesBore(-50)) {
+
+            rightArm.setPower(-.5);
+            leftArm.setPower(-.5);
+            ResetDriveEncoder();
+            turnOnEncoders();
+        }
+    }
+
+    public void Feeder() {
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() <= 3.0))
+            feeder.setPower(.5);
+    }
+
+    public int degreesBore(int input) {
+
+        final int COUNTS_PER_BORE_MOTOR_REV = 8192;    // eg: GOBUILDA Motor Encoder
+        int COUNTS_TICKS_PER_REV_PER_DEGREE = (COUNTS_PER_BORE_MOTOR_REV) / 360;
+
+        return COUNTS_TICKS_PER_REV_PER_DEGREE * input;
+    }
+
+    public double inchesBore(double input) {
+
+        final double     COUNTS_PER_MOTOR_REV    = 8192;    // eg: REV Bore Encoder
+        final double     DRIVE_GEAR_REDUCTION    = 1;     // This is < 1.0 if geared UP
+        final double     WHEEL_DIAMETER_INCHES   = 2.83465;     // For figuring circumference
+        final double     COUNTS_PER_INCH  = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
+
+        return COUNTS_PER_INCH * input;
+
+    }
+
+    public void runForwardsEncoder(double speed, double inputInches) {
+
+        double encoderValue = inchesBore(inputInches);
+
+        while (abs(drive_RR.getCurrentPosition()) < encoderValue) {
+
+            drive_FL.setPower(speed);
+            drive_RL.setPower(speed);
+            drive_FR.setPower(speed);
+            drive_RR.setPower(speed);
+
+            telemetry.addData("Encoder Target", encoderValue);
+            telemetry.addData("Right Dead Encoder Running", drive_RR.getCurrentPosition());
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+
+        telemetry.addData("Encoder Target", encoderValue);
+        telemetry.addData("Right Dead Encoder Finished", drive_RR.getCurrentPosition());
+        telemetry.update();
+
+        ResetDriveEncoder();
+        turnOnEncoders();
+
+
+    }
+
+    public void compareBackSensors() {
+        if (RL_distance.getDistance(DistanceUnit.INCH) < (RR_distance.getDistance(DistanceUnit.INCH))) {
+            drive_FL.setPower(0.5);
+            drive_RL.setPower(0.5);
+            drive_FR.setPower(-0.5);
+            drive_RR.setPower(-0.5);
+        } else if (RR_distance.getDistance(DistanceUnit.INCH) < (RL_distance.getDistance(DistanceUnit.INCH))) {
+            drive_FL.setPower(-0.5);
+            drive_RL.setPower(-0.5);
+            drive_FR.setPower(0.5);
+            drive_RR.setPower(0.5);
+        } else if (RL_distance.getDistance(DistanceUnit.INCH) == (RR_distance.getDistance(DistanceUnit.INCH))) {
+            drive_FL.setPower(0);
+            drive_RL.setPower(0);
+            drive_FR.setPower(0);
+            drive_RR.setPower(0);
+        }
+    }
+
+    public void strafeLeft() {
+        if (LS_distance.getDistance(DistanceUnit.INCH) < 30) {
+            drive_FL.setPower(-0.5);
+            drive_RL.setPower(0.5);
+            drive_FR.setPower(0.5);
+            drive_RR.setPower(-0.5);
+        } else if (LS_distance.getDistance(DistanceUnit.INCH) == 7.75) {
+            drive_FL.setPower(0);
+            drive_RL.setPower(0);
+            drive_FR.setPower(0);
+            drive_RR.setPower(0);
+        }
+    }
+
+    public void spinDuckyLeft(double speed) {
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() <= 3.0))
+            leftDucky.setPower(speed);
+        telemetry.addData("Left Ducky Wheel", runtime.seconds());
+        telemetry.update();
+    }
+
+    // resets currAngle Value
+    public void resetAngle() {
+        lastAngles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        currAngle = 0;
+    }
+
+    public double getAngle() {
+
+        // Get current orientation
+        Orientation orientation = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        // Change in angle = current angle - previous angle
+        double deltaAngle = orientation.firstAngle - lastAngles.firstAngle;
+
+        // Gyro only ranges from -179 to 180
+        // If it turns -1 degree over from -179 to 180, subtract 360 from the 359 to get -1
+        if (deltaAngle < -180) {
+            deltaAngle += 360;
+        } else if (deltaAngle > 180) {
+            deltaAngle -= 360;
+        }
+
+        // Add change in angle to current angle to get current angle
+        currAngle += deltaAngle;
+        lastAngles = orientation;
+        telemetry.addData("gyro", orientation.firstAngle);
+        return currAngle;
+    }
+
+    public void turn(double degrees){
+        resetAngle();
+
+        double error = degrees;
+
+        while (opModeIsActive() && Math.abs(error) > 2) {
+            double motorPower = (error < 0 ? -0.3 : 0.3);
+            robot.setMotorPower(-motorPower, motorPower, -motorPower, motorPower);
+            error = degrees - getAngle();
+            telemetry.addData("error", error);
+            telemetry.update();
+        }
+
+        robot.setAllPower(0);
+    }
+
+    public void turnTo(double degrees){
+
+        Orientation orientation = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        System.out.println(orientation.firstAngle);
+        double error = degrees - orientation.firstAngle;
+
+        if (error > 180) {
+            error -= 360;
+        } else if (error < -180) {
+            error += 360;
+        }
+
+        turn(error);
+    }
+
+    public double getAbsoluteAngle() {
+        return robot.imu.getAngularOrientation(
+                AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES
+        ).firstAngle;
+    }
+
+    public void turnPID(double degrees) {
+        turnToPID(degrees + getAbsoluteAngle());
+    }
+
+    void turnToPID(double targetAngle) {
+        TurnPIDController pid = new TurnPIDController(targetAngle, 0.01, 0, 0.003);
+        telemetry.setMsTransmissionInterval(50);
+        // Checking lastSlope to make sure that it's not oscillating when it quits
+        while (Math.abs(targetAngle - getAbsoluteAngle()) > 0.5 || pid.getLastSlope() > 0.75) {
+            double motorPower = pid.update(getAbsoluteAngle());
+            robot.setMotorPower(-motorPower, motorPower, -motorPower, motorPower);
+
+            telemetry.addData("Current Angle", getAbsoluteAngle());
+            telemetry.addData("Target Angle", targetAngle);
+            telemetry.addData("Slope", pid.getLastSlope());
+            telemetry.addData("Power", motorPower);
+            telemetry.update();
+        }
+        robot.setAllPower(0);
+    }
+
 }
 
 
