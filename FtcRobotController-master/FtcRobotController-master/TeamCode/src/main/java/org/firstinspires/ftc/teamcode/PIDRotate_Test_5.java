@@ -85,7 +85,7 @@ public class PIDRotate_Test_5 extends LinearOpMode{
         double error = degrees;
 
         while (opModeIsActive() && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -.8 : .8);
+            double motorPower = (error < 0 ? -.3 : .3);
             robot.setMotorPower(-motorPower, motorPower, -motorPower, motorPower);
             error = degrees - getAngle();
             telemetry.addData("error", error);

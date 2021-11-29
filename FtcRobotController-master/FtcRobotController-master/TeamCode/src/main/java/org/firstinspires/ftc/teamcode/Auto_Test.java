@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Math.abs;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -59,6 +60,8 @@ public class Auto_Test extends BaseAutoOpMode {
     private DistanceSensor RL_distance;
     private DistanceSensor RR_distance;
 
+    BNO055IMU imu;
+
     HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
 
     static final double     FORWARD_SPEED = 1;
@@ -71,6 +74,8 @@ public class Auto_Test extends BaseAutoOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+        robot.init(hardwareMap);
 
         drive_FL = hardwareMap.get(DcMotor.class, "drive_FL");
         drive_RL = hardwareMap.get(DcMotor.class, "drive_RL");
@@ -115,25 +120,24 @@ public class Auto_Test extends BaseAutoOpMode {
         runtime.reset();
 
         //Auto Starts Here
-        runForwardsEncoder(-.5,4);
 
-        //Kickout();
+        //runForwardsEncoder(-.5, 4);
 
-        //armTurn();
+        // Kickout Functions
 
-        compareBackSensorsStart();
+        //strafeLeft();
 
-        strafeLeft();
+        spinDuckyLeft(-1);
 
-        spinDuckyLeft(1);
+        runForwardsEncoder(-.5, 30);
 
-        forwardsDistanceDrive1();
+        sleep(3000);
 
-        turnPID(90);
+        turnPID(-90);
 
-        //Add forwardsDistanceDrive2 here
+        runForwardsEncoder(-.5, 24);
 
-        //Add backwardsDistanceDrive here
+        armTurn(-65);
 
         //Add driveRight to alliance storage unit here
 
@@ -215,8 +219,8 @@ public class Auto_Test extends BaseAutoOpMode {
         kickout.setPosition(.25);
     }
 
-    public void armTurn() {
-        if (rightArm.getCurrentPosition() < degreesBore(-50)) {
+    public void armTurn(int degrees) {
+        if (rightArm.getCurrentPosition() < degreesBore(degrees)) {
 
             rightArm.setPower(-.5);
             leftArm.setPower(-.5);
@@ -253,17 +257,16 @@ public class Auto_Test extends BaseAutoOpMode {
     }
 
     public void strafeLeft() {
-        if (LS_distance.getDistance(DistanceUnit.INCH) < 30) {
-            drive_FL.setPower(-0.5);
-            drive_RL.setPower(0.5);
-            drive_FR.setPower(0.5);
-            drive_RR.setPower(-0.5);
-        } else if (LS_distance.getDistance(DistanceUnit.INCH) == 7.75) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) > 9.2 + 4) {
+            drive_FL.setPower(0.6);
+            drive_RL.setPower(-0.6);
+            drive_FR.setPower(-0.6);
+            drive_RR.setPower(0.6);
+        }
             drive_FL.setPower(0);
             drive_RL.setPower(0);
             drive_FR.setPower(0);
             drive_RR.setPower(0);
-        }
     }
 
     public void spinDuckyLeft(double speed) {
@@ -274,12 +277,20 @@ public class Auto_Test extends BaseAutoOpMode {
         telemetry.update();
     }
 
-    public void forwardsDistanceDrive1() {
-        if (RL_distance.getDistance(DistanceUnit.INCH) < 40) {
-            drive_FL.setPower(1);
-            drive_RL.setPower(1);
-            drive_FR.setPower(1);
-            drive_RR.setPower(1);
+    public void feederSpit(double speed) {
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() <= 3.0))
+            feeder.setPower(-.5);
+        telemetry.addData("Feeder", runtime.seconds());
+        telemetry.update();
+    }
+
+    public void forwardsDistanceDrive(int inches) {
+        if (RL_distance.getDistance(DistanceUnit.INCH) < inches) {
+            drive_FL.setPower(.3);
+            drive_RL.setPower(.3);
+            drive_FR.setPower(.3);
+            drive_RR.setPower(.3);
         } else {
             drive_FL.setPower(0);
             drive_RL.setPower(0);

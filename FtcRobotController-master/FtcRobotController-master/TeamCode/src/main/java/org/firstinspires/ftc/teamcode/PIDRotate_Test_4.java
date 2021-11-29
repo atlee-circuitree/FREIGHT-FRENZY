@@ -85,7 +85,7 @@ public class PIDRotate_Test_4 extends LinearOpMode{
         double error = degrees;
 
         while (opModeIsActive() && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -.6 : .6);
+            double motorPower = (error < 0 ? -5 : .5);
             robot.setMotorPower(-motorPower, motorPower, -motorPower, motorPower);
             error = degrees - getAngle();
             telemetry.addData("error", error);
@@ -122,7 +122,7 @@ public class PIDRotate_Test_4 extends LinearOpMode{
     }
 
     void turnToPID(double targetAngle) {
-        TurnPIDController pid = new TurnPIDController(targetAngle, 0.01, 0, 0.003);
+        TurnPIDController pid = new TurnPIDController(targetAngle, 0.015, 0, 0.003);
         telemetry.setMsTransmissionInterval(50);
         // Checking lastSlope to make sure that it's not oscillating when it quits
         while (Math.abs(targetAngle - getAbsoluteAngle()) > 0.5 || pid.getLastSlope() > 0.75) {

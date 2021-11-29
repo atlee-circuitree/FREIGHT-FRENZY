@@ -94,9 +94,9 @@ public class VuforiaTest_2021 extends LinearOpMode {
          * @see VuMarkInstanceId
          */
 
-        VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("15304Database_OT.xml");
-        VuforiaTrackable Element = relicTrackables.get(0);
-        Element.setName("Element"); // can help in debugging; otherwise not necessary
+        VuforiaTrackables relicTrackables = vuforia.loadTrackablesFromAsset("RelicVuMark.xml");
+        VuforiaTrackable RelicRecovery = relicTrackables.get(0);
+        RelicRecovery.setName("Element"); // can help in debugging; otherwise not necessary
 
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
@@ -110,7 +110,7 @@ public class VuforiaTest_2021 extends LinearOpMode {
              * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
              * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
              */
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(Element);
+            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(RelicRecovery);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
                 /* Found an instance of the template. In the actual game, you will probably
@@ -121,7 +121,7 @@ public class VuforiaTest_2021 extends LinearOpMode {
                 /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
                  * it is perhaps unlikely that you will actually need to act on this pose information, but
                  * we illustrate it nevertheless, for completeness. */
-                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)Element.getListener()).getFtcCameraFromTarget();
+                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)RelicRecovery.getListener()).getFtcCameraFromTarget();
                 telemetry.addData("Pose", format(pose));
 
                 /* We further illustrate how to decompose the pose into useful rotational and
