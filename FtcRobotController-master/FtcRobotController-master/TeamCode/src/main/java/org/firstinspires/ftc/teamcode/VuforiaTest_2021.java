@@ -67,7 +67,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  */
 
 @TeleOp(name="Concept: VuMark Id Webcam", group ="Concept")
-@Disabled
+
 public class ConceptVuMarkIdentificationWebcam extends LinearOpMode {
 
     public static final String TAG = "Vuforia VuMark Sample";
@@ -115,7 +115,7 @@ public class ConceptVuMarkIdentificationWebcam extends LinearOpMode {
          * Once you've obtained a license key, copy the string from the Vuforia web site
          * and paste it in to your code on the next line, between the double quotes.
          */
-        parameters.vuforiaLicenseKey = " -- YOUR NEW VUFORIA KEY GOES HERE  --- ";
+        parameters.vuforiaLicenseKey = "AbVcZG//////AAABmQPlNeXRzk8glfTRqvppVjUOmOIRBK16erQdj6yDdeQn14HZHv+h8uHCFeD+wexFFrNYJDgLTDVJMCITskbcb7KMToJc0JJbS6785XHsq8tVhhTTqXxBYdxnlG6HDADRpXTC5Q9I29fZklWzex9e4ctI5f59p+ozzKNk2G41Xdrv1ogVpJaD7UO1FLxoquF+A9Z7Kf2KhxCmUz2AodIiHh/lxwctryPbj9B99RU3u+FfNoew+s+4BHANZQjT6q765G3qPyz15PyRKMuqs/KqGqv/RB+i08hakNU1bk8wmgabFXSWRFXeqno//yMnUyY+XWRXfJgdYmDI1nQm5dqQnjOJ/MG8ZPcJY3HxTtVhjgu4";
 
 
         /**
@@ -131,9 +131,9 @@ public class ConceptVuMarkIdentificationWebcam extends LinearOpMode {
          * but differ in their instance id information.
          * @see VuMarkInstanceId
          */
-        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
-        VuforiaTrackable relicTemplate = relicTrackables.get(0);
-        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("15304Database_OT");
+        VuforiaTrackable Element = relicTrackables.get(0);
+        Element.setName("Element"); // can help in debugging; otherwise not necessary
 
         telemetry.addData(">", "Press Play to start");
         telemetry.update();
@@ -144,12 +144,12 @@ public class ConceptVuMarkIdentificationWebcam extends LinearOpMode {
         while (opModeIsActive()) {
 
             /**
-             * See if any of the instances of {@link relicTemplate} are currently visible.
+             * See if any of the instances of {@link Element} are currently visible.
              * {@link RelicRecoveryVuMark} is an enum which can have the following values:
              * UNKNOWN, LEFT, CENTER, and RIGHT. When a VuMark is visible, something other than
              * UNKNOWN will be returned by {@link RelicRecoveryVuMark#from(VuforiaTrackable)}.
              */
-            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(Element);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
                 /* Found an instance of the template. In the actual game, you will probably
@@ -160,7 +160,7 @@ public class ConceptVuMarkIdentificationWebcam extends LinearOpMode {
                 /* For fun, we also exhibit the navigational pose. In the Relic Recovery game,
                  * it is perhaps unlikely that you will actually need to act on this pose information, but
                  * we illustrate it nevertheless, for completeness. */
-                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getFtcCameraFromTarget();
+                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)Element.getListener()).getFtcCameraFromTarget();
                 telemetry.addData("Pose", format(pose));
 
                 /* We further illustrate how to decompose the pose into useful rotational and
