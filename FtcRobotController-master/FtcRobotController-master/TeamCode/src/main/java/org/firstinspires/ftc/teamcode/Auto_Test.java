@@ -9,7 +9,11 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 
 /**
@@ -54,6 +58,14 @@ public class Auto_Test extends BaseAutoOpMode {
     private DistanceSensor RS_distance;
     private DistanceSensor RL_distance;
     private DistanceSensor RR_distance;
+
+    HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
+
+    static final double     FORWARD_SPEED = 1;
+    static final double     TURN_SPEED    = 1;
+
+    private Orientation lastAngles = new Orientation();
+    private double currAngle = 0.0;
 
     @Override
     public void runOpMode() {
@@ -113,11 +125,11 @@ public class Auto_Test extends BaseAutoOpMode {
 
         strafeLeft();
 
-        spinDuckyLeft(1,3);
+        spinDuckyLeft(1);
 
         forwardsDistanceDrive1();
 
-        //Add turn 90 degrees right using PID here
+        turnPID(90);
 
         //Add forwardsDistanceDrive2 here
 
@@ -254,9 +266,12 @@ public class Auto_Test extends BaseAutoOpMode {
         }
     }
 
-    public void spinDuckyLeft(double speed, double seconds) {
-
+    public void spinDuckyLeft(double speed) {
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() <= 3.0))
         leftDucky.setPower(speed);
+        telemetry.addData("Left Ducky Wheel", runtime.seconds());
+        telemetry.update();
     }
 
     public void forwardsDistanceDrive1() {
@@ -271,5 +286,107 @@ public class Auto_Test extends BaseAutoOpMode {
             drive_FR.setPower(0);
             drive_RR.setPower(0);
         }
+    }
+
+    public void forwardsDistanceDrive2() {
+        if (RL_distance.getDistance(DistanceUnit.INCH) < 40) {
+            drive_FL.setPower(1);
+            drive_RL.setPower(1);
+            drive_FR.setPower(1);
+            drive_RR.setPower(1);
+        } else {
+            drive_FL.setPower(0);
+            drive_RL.setPower(0);
+            drive_FR.setPower(0);
+            drive_RR.setPower(0);
+        }
+    }
+
+    // resets currAngle Value
+    public void resetAngle() {
+        lastAngles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        currAngle = 0;
+    }
+
+    public double getAngle() {
+
+        // Get current orientation
+        Orientation orientation = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        // Change in angle = current angle - previous angle
+        double deltaAngle = orientation.firstAngle - lastAngles.firstAngle;
+
+        // Gyro only ranges from -179 to 180
+        // If it turns -1 degree over from -179 to 180, subtract 360 from the 359 to get -1
+        if (deltaAngle < -180) {
+            deltaAngle += 360;
+        } else if (deltaAngle > 180) {
+            deltaAngle -= 360;
+        }
+
+        // Add change in angle to current angle to get current angle
+        currAngle += deltaAngle;
+        lastAngles = orientation;
+        telemetry.addData("gyro", orientation.firstAngle);
+        return currAngle;
+    }
+
+    public void turn(double degrees){
+        resetAngle();
+
+        double error = degrees;
+
+        while (opModeIsActive() && Math.abs(error) > 2) {
+            double motorPower = (error < 0 ? -0.3 : 0.3);
+            robot.setMotorPower(-motorPower, motorPower, -motorPower, motorPower);
+            error = degrees - getAngle();
+            telemetry.addData("error", error);
+            telemetry.update();
+        }
+
+        robot.setAllPower(0);
+    }
+
+    public void turnTo(double degrees){
+
+        Orientation orientation = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+
+        System.out.println(orientation.firstAngle);
+        double error = degrees - orientation.firstAngle;
+
+        if (error > 180) {
+            error -= 360;
+        } else if (error < -180) {
+            error += 360;
+        }
+
+        turn(error);
+    }
+
+    public double getAbsoluteAngle() {
+        return robot.imu.getAngularOrientation(
+                AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES
+        ).firstAngle;
+    }
+
+    public void turnPID(double degrees) {
+        turnToPID(degrees + getAbsoluteAngle());
+    }
+
+    void turnToPID(double targetAngle) {
+        TurnPIDController pid = new TurnPIDController(targetAngle, 0.01, 0, 0.003);
+        telemetry.setMsTransmissionInterval(50);
+        // Checking lastSlope to make sure that it's not oscillating when it quits
+        while (Math.abs(targetAngle - getAbsoluteAngle()) > 0.5 || pid.getLastSlope() > 0.75) {
+            double motorPower = pid.update(getAbsoluteAngle());
+            robot.setMotorPower(-motorPower, motorPower, -motorPower, motorPower);
+
+            telemetry.addData("Current Angle", getAbsoluteAngle());
+            telemetry.addData("Target Angle", targetAngle);
+            telemetry.addData("Slope", pid.getLastSlope());
+            telemetry.addData("Power", motorPower);
+            telemetry.update();
+        }
+        robot.setAllPower(0);
     }
 }
