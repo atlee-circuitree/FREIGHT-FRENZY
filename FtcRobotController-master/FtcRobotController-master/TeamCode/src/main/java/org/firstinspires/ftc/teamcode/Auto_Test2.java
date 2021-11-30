@@ -30,8 +30,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Test", group="Linear Opmode")
-public class Auto_Test extends BaseAutoOpMode {
+@Autonomous(name="Auto Test 2", group="Linear Opmode")
+public class Auto_Test2 extends BaseAutoOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -121,6 +121,8 @@ public class Auto_Test extends BaseAutoOpMode {
 
         //Auto Starts Here
 
+        kickout.setPosition(1);
+
         forwardsDistanceDrive(4);
 
         sleep(1000);
@@ -133,13 +135,15 @@ public class Auto_Test extends BaseAutoOpMode {
 
         sleep(1000);
 
-        forwardsDistanceDrive(40);
+        forwardsDistanceDrive(38);
 
         sleep(1000);
 
-        turn(90);
+        turn(85);
 
-        runForwardsEncoder(-.5, 24);
+        sleep(1000);
+
+        forwardsDistanceDrive(20);
 
         armTurn(-65);
 
@@ -275,7 +279,7 @@ public class Auto_Test extends BaseAutoOpMode {
 
     public void spinDuckyLeft(double speed) {
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() <= 3.0))
+        while (opModeIsActive() && (runtime.seconds() <= 2.0))
         leftDucky.setPower(speed);
         telemetry.addData("Left Ducky Wheel", runtime.seconds());
         telemetry.update();
