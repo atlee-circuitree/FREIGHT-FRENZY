@@ -131,20 +131,33 @@ public class Auto_Test extends BaseAutoOpMode {
 
         spinDuckyLeft(1);
 
-        sleep(1000);
+        leftDucky.setPower(0);
+
+        forwardsDistanceDrive(12);
+
+        compareBackSensorsNew();
 
         forwardsDistanceDrive(40);
 
-        sleep(1000);
-
         turn(90);
 
-        runForwardsEncoder(-.5, 24);
+        compareBackSensorsNew();
 
-        armTurn(-65);
+        forwardsDistanceDrive(31);
+
+        armMoveUp(-75);
 
         feederSpit(.5);
-        //Add driveRight to alliance storage unit here
+
+        compareBackSensorsNew();
+
+        backwardsDistanceDrive(6);
+
+        sleep(1000);
+
+        strafeRight();
+
+        armMoveUp(-90);
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Wheel Encoder", drive_FL.getCurrentPosition());
@@ -171,6 +184,42 @@ public class Auto_Test extends BaseAutoOpMode {
         final double     COUNTS_PER_INCH  = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
 
         return COUNTS_PER_INCH * input;
+
+    }
+
+    public void compareBackSensorsNew() {
+
+        double error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
+
+        while (error > .4) {
+
+            error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
+
+            drive_FL.setPower(0.2);
+            drive_RL.setPower(0.2);
+            drive_FR.setPower(-0.2);
+            drive_RR.setPower(-0.2);
+            telemetry.addData("Error", error);
+            telemetry.addData("Left Distance", RL_distance.getDistance(DistanceUnit.INCH));
+            telemetry.addData("Left Distance", RR_distance.getDistance(DistanceUnit.INCH));
+            telemetry.update();
+
+        }
+
+        while (error < -.4) {
+
+            error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
+
+            drive_FL.setPower(-0.2);
+            drive_RL.setPower(-0.2);
+            drive_FR.setPower(0.2);
+            drive_RR.setPower(0.2);
+            telemetry.addData("Error", error);
+            telemetry.addData("Left Distance", RL_distance.getDistance(DistanceUnit.INCH));
+            telemetry.addData("Left Distance", RR_distance.getDistance(DistanceUnit.INCH));
+            telemetry.update();
+
+        }
 
     }
 
@@ -223,14 +272,24 @@ public class Auto_Test extends BaseAutoOpMode {
         kickout.setPosition(.25);
     }
 
-    public void armTurn(int degrees) {
-        if (rightArm.getCurrentPosition() < degreesBore(degrees)) {
+    public void armMoveUp(int degrees) {
 
-            rightArm.setPower(-.5);
-            leftArm.setPower(-.5);
-            ResetDriveEncoder();
-            turnOnEncoders();
+        while (-degreesBore(rightArm.getCurrentPosition()) > degreesBore(degrees) * 20) {
+
+            rightArm.setPower(.3);
+            leftArm.setPower(.3);
+            telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
+            telemetry.addData("Target Degrees", degreesBore(degrees));
+            telemetry.update();
+
         }
+
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+        telemetry.addData("Current Angle", getAbsoluteAngle());
+        telemetry.addData("Target Degrees", degreesBore(degrees));
+        telemetry.update();
+
     }
 
     public int degreesBore(int input) {
@@ -242,26 +301,31 @@ public class Auto_Test extends BaseAutoOpMode {
     }
 
     public void compareBackSensorsStart() {
-        if (RL_distance.getDistance(DistanceUnit.INCH) < (RR_distance.getDistance(DistanceUnit.INCH))) {
-            drive_FL.setPower(0.5);
-            drive_RL.setPower(0.5);
-            drive_FR.setPower(-0.5);
-            drive_RR.setPower(-0.5);
-        } else if (RR_distance.getDistance(DistanceUnit.INCH) < (RL_distance.getDistance(DistanceUnit.INCH))) {
-            drive_FL.setPower(-0.5);
-            drive_RL.setPower(-0.5);
-            drive_FR.setPower(0.5);
-            drive_RR.setPower(0.5);
-        } else if (RL_distance.getDistance(DistanceUnit.INCH) == (RR_distance.getDistance(DistanceUnit.INCH))) {
-            drive_FL.setPower(0);
-            drive_RL.setPower(0);
-            drive_FR.setPower(0);
-            drive_RR.setPower(0);
+
+        double error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
+
+        while (error > 1) {
+
+            drive_FL.setPower(0.0);
+            drive_RL.setPower(0.0);
+            drive_FR.setPower(-0.1);
+            drive_RR.setPower(-0.1);
+
         }
+
+        while (error < -1) {
+
+            drive_FL.setPower(0.0);
+            drive_RL.setPower(0.0);
+            drive_FR.setPower(-0.1);
+            drive_RR.setPower(-0.1);
+
+        }
+
     }
 
     public void strafeLeft() {
-        while (LS_distance.getDistance(DistanceUnit.INCH) > 8.4 + 4) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) > 8 + 4) {
             drive_FL.setPower(0.6);
             drive_RL.setPower(-0.6);
             drive_FR.setPower(-0.6);
@@ -273,9 +337,22 @@ public class Auto_Test extends BaseAutoOpMode {
             drive_RR.setPower(0);
     }
 
+    public void strafeRight() {
+        while (RS_distance.getDistance(DistanceUnit.INCH) > 27 + 4) {
+            drive_FL.setPower(-0.6);
+            drive_RL.setPower(0.6);
+            drive_FR.setPower(0.6);
+            drive_RR.setPower(-0.6);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
     public void spinDuckyLeft(double speed) {
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() <= 3.0))
+        while (opModeIsActive() && (runtime.seconds() <= 4.0))
         leftDucky.setPower(speed);
         telemetry.addData("Left Ducky Wheel", runtime.seconds());
         telemetry.update();
@@ -284,7 +361,7 @@ public class Auto_Test extends BaseAutoOpMode {
     public void feederSpit(double speed) {
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() <= 3.0))
-            feeder.setPower(-.5);
+            feeder.setPower(speed);
         telemetry.addData("Feeder", runtime.seconds());
         telemetry.update();
     }
@@ -300,6 +377,19 @@ public class Auto_Test extends BaseAutoOpMode {
             drive_RL.setPower(0);
             drive_FR.setPower(0);
             drive_RR.setPower(0);
+    }
+
+    public void backwardsDistanceDrive(int inches) {
+        while (RL_distance.getDistance(DistanceUnit.INCH) > inches) {
+            drive_FL.setPower(.3);
+            drive_RL.setPower(.3);
+            drive_FR.setPower(.3);
+            drive_RR.setPower(.3);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
     }
 
     public void forwardsDistanceDrive2() {

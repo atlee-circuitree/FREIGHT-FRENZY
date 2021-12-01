@@ -121,49 +121,9 @@ public class Auto_Test2 extends BaseAutoOpMode {
 
         //Auto Starts Here
 
-        kickout.setPosition(1);
+        compareBackSensorsNew();
 
-        forwardsDistanceDrive(4);
-
-        sleep(1000);
-
-        // Add Kickout Functions
-
-        strafeLeft();
-
-        spinDuckyLeft(1);
-
-        sleep(1000);
-
-        forwardsDistanceDrive(38);
-
-        sleep(1000);
-
-        turn(85);
-
-        sleep(1000);
-
-        forwardsDistanceDrive(20);
-
-        armTurn(-65);
-
-        feederSpit(.5);
         //Add driveRight to alliance storage unit here
-
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Wheel Encoder", drive_FL.getCurrentPosition());
-        telemetry.addData("Arm Angle", rightArm.getCurrentPosition() / 20);
-        telemetry.addData("Left Arm Power", leftArm.getPower());
-        telemetry.addData("Right Arm Power", rightArm.getPower());
-        telemetry.addData("Kickout", kickout.getPosition());
-        telemetry.addData("Left Ducky Wheel", leftDucky.getPower());
-        telemetry.addData("Right Ducky Wheel", rightDucky.getPower());
-        telemetry.addData("LS Distnace", String.format("%.01f in", LS_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("RS Distance", String.format("%.01f in", RS_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("RL Distance", String.format("%.01f in", RL_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("RR Distance", String.format("%.01f in", RR_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.update();
-
 
     }
 
@@ -175,6 +135,42 @@ public class Auto_Test2 extends BaseAutoOpMode {
         final double     COUNTS_PER_INCH  = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
 
         return COUNTS_PER_INCH * input;
+
+    }
+
+    public void compareBackSensorsNew() {
+
+        double error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
+
+        while (error > .7) {
+
+            error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
+
+            drive_FL.setPower(0.2);
+            drive_RL.setPower(0.2);
+            drive_FR.setPower(-0.2);
+            drive_RR.setPower(-0.2);
+            telemetry.addData("Error", error);
+            telemetry.addData("Left Distance", RL_distance.getDistance(DistanceUnit.INCH));
+            telemetry.addData("Left Distance", RR_distance.getDistance(DistanceUnit.INCH));
+            telemetry.update();
+
+        }
+
+        while (error < -.7) {
+
+            error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
+
+            drive_FL.setPower(-0.2);
+            drive_RL.setPower(-0.2);
+            drive_FR.setPower(0.2);
+            drive_RR.setPower(0.2);
+            telemetry.addData("Error", error);
+            telemetry.addData("Left Distance", RL_distance.getDistance(DistanceUnit.INCH));
+            telemetry.addData("Left Distance", RR_distance.getDistance(DistanceUnit.INCH));
+            telemetry.update();
+
+        }
 
     }
 
