@@ -64,7 +64,7 @@ public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
         claw = hardwareMap.get(Servo.class, "claw");
-        odometryLift1 = hardwareMap.get(Servo.class, "Odometry_Lift1");
+        odometryLift1 = hardwareMap.get(Servo.class, "odometryLift1");
 
         leftArm.setDirection(DcMotor.Direction.REVERSE);
         rightArm.setDirection(DcMotor.Direction.FORWARD);
@@ -194,7 +194,6 @@ public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
 
 
             //Moves claw n stuff
-            //Moves claw n stuff
             if (gamepad2.left_bumper) {
                 claw.setPosition(1);
             }
@@ -203,17 +202,10 @@ public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
                 claw.setPosition(.6);
             }
 
-            if (gamepad2.b) {
-                odometryLift1.setPosition(1);
-            }
-
             if (gamepad2.y) {
                 odometryLift1.setPosition(.5);
             }
-
-
         }
-
     }
 
     public int degreesBore(int input) {

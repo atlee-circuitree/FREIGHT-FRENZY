@@ -45,6 +45,7 @@ public class Auto_Test extends BaseAutoOpMode {
     private DcMotor feeder = null;
 
     private Servo kickout = null;
+    private Servo odometryLift1 = null;
     private CRServo leftDucky = null;
     private CRServo rightDucky = null;
 
@@ -59,6 +60,7 @@ public class Auto_Test extends BaseAutoOpMode {
     private DistanceSensor RS_distance;
     private DistanceSensor RL_distance;
     private DistanceSensor RR_distance;
+    private DistanceSensor frontDistance;
 
     BNO055IMU imu;
 
@@ -87,6 +89,7 @@ public class Auto_Test extends BaseAutoOpMode {
         feeder = hardwareMap.get(DcMotor.class, "feeder");
 
         kickout = hardwareMap.get(Servo.class, "kickout");
+        odometryLift1 = hardwareMap.get(Servo.class,"odometryLift1");
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
 
@@ -94,6 +97,7 @@ public class Auto_Test extends BaseAutoOpMode {
         RS_distance = hardwareMap.get(DistanceSensor.class, "RS_distance");
         RL_distance = hardwareMap.get(DistanceSensor.class, "RL_distance");
         RR_distance = hardwareMap.get(DistanceSensor.class, "RR_distance");
+        frontDistance = hardwareMap.get(DistanceSensor.class, "frontDistance");
 
         leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.REVERSE);
@@ -121,31 +125,39 @@ public class Auto_Test extends BaseAutoOpMode {
 
         //Auto Starts Here
 
+        odometryLift1.setPosition(.5);
+
+        armMoveUp(-75); //Moved armMoveUp to beginning -Viassna 12/1/21
+
         forwardsDistanceDrive(4);
 
         sleep(1000);
 
         // Add Kickout Functions
 
+        //Strafes to Ducky Wheel
         strafeLeft();
 
         spinDuckyLeft(1);
 
         leftDucky.setPower(0);
 
+        //Moves a little forward to allow angle adjustment
         forwardsDistanceDrive(12);
 
         compareBackSensorsNew();
 
+        //Moves towards Alliance Storage Unit
         forwardsDistanceDrive(40);
 
+        //Turns towards Alliance Shipping Hub
         turn(90);
 
         compareBackSensorsNew();
 
-        forwardsDistanceDrive(31);
-
-        armMoveUp(-75);
+        //Moves forward towards hub with front distance sensors
+        //forwardsDistanceHub(3); Added this -Viassna 12/1/21
+        forwardsDistanceDrive(36);
 
         feederSpit(.5);
 
@@ -171,6 +183,7 @@ public class Auto_Test extends BaseAutoOpMode {
         telemetry.addData("RS Distance", String.format("%.01f in", RS_distance.getDistance(DistanceUnit.INCH)));
         telemetry.addData("RL Distance", String.format("%.01f in", RL_distance.getDistance(DistanceUnit.INCH)));
         telemetry.addData("RR Distance", String.format("%.01f in", RR_distance.getDistance(DistanceUnit.INCH)));
+        telemetry.addData("frontDistance", String.format("%.01f in", frontDistance.getDistance(DistanceUnit.INCH)));
         telemetry.update();
 
 
@@ -366,6 +379,11 @@ public class Auto_Test extends BaseAutoOpMode {
         telemetry.update();
     }
 
+    public void setOdometryLift1(double angle) {
+        while (opModeIsActive())
+            odometryLift1.setPosition(angle);
+    }
+
     public void forwardsDistanceDrive(int inches) {
         while (RL_distance.getDistance(DistanceUnit.INCH) < inches) {
             drive_FL.setPower(-.3);
@@ -392,17 +410,21 @@ public class Auto_Test extends BaseAutoOpMode {
         drive_RR.setPower(0);
     }
 
-    public void forwardsDistanceDrive2() {
-        if (RL_distance.getDistance(DistanceUnit.INCH) < 40) {
-            drive_FL.setPower(1);
-            drive_RL.setPower(1);
-            drive_FR.setPower(1);
-            drive_RR.setPower(1);
+    public void forwardsDistanceHub(int inches) {
+        if (frontDistance.getDistance(DistanceUnit.INCH) > inches) {
+            drive_FL.setPower(-.3);
+            drive_RL.setPower(-.3);
+            drive_FR.setPower(-.3);
+            drive_RR.setPower(-.3);
+            telemetry.addData("frontDistance", String.format("%.01f in", frontDistance.getDistance(DistanceUnit.INCH)));
+            telemetry.update();
         } else {
             drive_FL.setPower(0);
             drive_RL.setPower(0);
             drive_FR.setPower(0);
             drive_RR.setPower(0);
+            telemetry.addData("frontDistance", String.format("%.01f in", frontDistance.getDistance(DistanceUnit.INCH)));
+            telemetry.update();
         }
     }
 
