@@ -30,8 +30,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Auto Test", group="Linear Opmode")
-public class Auto_Test extends BaseAutoOpMode {
+@Autonomous(name="Red Wheel Side", group="Linear Opmode")
+public class Red_Wheel_Side extends BaseAutoOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -125,15 +125,34 @@ public class Auto_Test extends BaseAutoOpMode {
 
         //Auto Starts Here
 
-        odometryLift1.setPosition(.5);
+        int armPosition = 3;
 
-        armMoveUp(-75); //Moved armMoveUp to beginning -Viassna 12/1/21
+        int distanceReduction = 0;
+        int angle = 0;
+        // 1 Top, 2 Middle, 3 Bottom
+
+        if (armPosition == 1) {
+            distanceReduction = 0;
+            angle = 75;
+        } else if (armPosition == 1) {
+            distanceReduction = 3;
+            angle = 50;
+        } else {
+            distanceReduction = 5;
+            angle = 25;
+        }
+
+        kickout.setPosition(0);
+
+        sleep(1500);
+
+        armMoveUp(-angle); //Moved armMoveUp to beginning -Viassna 12/1/21
 
         forwardsDistanceDrive(4);
 
-        sleep(1000);
+        odometryLift1.setPosition(.5);
 
-        // Add Kickout Functions
+        sleep(500);
 
         //Strafes to Ducky Wheel
         strafeLeft();
@@ -148,7 +167,7 @@ public class Auto_Test extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Moves towards Alliance Storage Unit
-        forwardsDistanceDrive(40);
+        forwardsDistanceDrive(37 );
 
         //Turns towards Alliance Shipping Hub
         turn(90);
@@ -157,9 +176,11 @@ public class Auto_Test extends BaseAutoOpMode {
 
         //Moves forward towards hub with front distance sensors
         //forwardsDistanceHub(3); Added this -Viassna 12/1/21
-        forwardsDistanceDrive(36);
+        forwardsDistanceDrive(36 - distanceReduction);
 
-        feederSpit(.5);
+        feederSpit(1);
+
+        feeder.setPower(0);
 
         compareBackSensorsNew();
 
@@ -204,7 +225,7 @@ public class Auto_Test extends BaseAutoOpMode {
 
         double error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
-        while (error > .4) {
+        while (error > .2) {
 
             error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
@@ -219,7 +240,7 @@ public class Auto_Test extends BaseAutoOpMode {
 
         }
 
-        while (error < -.4) {
+        while (error < -.2) {
 
             error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
@@ -338,7 +359,7 @@ public class Auto_Test extends BaseAutoOpMode {
     }
 
     public void strafeLeft() {
-        while (LS_distance.getDistance(DistanceUnit.INCH) > 8 + 4) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) > 7.5 + 4) {
             drive_FL.setPower(0.6);
             drive_RL.setPower(-0.6);
             drive_FR.setPower(-0.6);
@@ -395,6 +416,19 @@ public class Auto_Test extends BaseAutoOpMode {
             drive_RL.setPower(0);
             drive_FR.setPower(0);
             drive_RR.setPower(0);
+    }
+
+    public void forwardsDistanceDriveFront(int inches) {
+        while (frontDistance.getDistance(DistanceUnit.INCH) > inches) {
+            drive_FL.setPower(-.3);
+            drive_RL.setPower(-.3);
+            drive_FR.setPower(-.3);
+            drive_RR.setPower(-.3);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
     }
 
     public void backwardsDistanceDrive(int inches) {
