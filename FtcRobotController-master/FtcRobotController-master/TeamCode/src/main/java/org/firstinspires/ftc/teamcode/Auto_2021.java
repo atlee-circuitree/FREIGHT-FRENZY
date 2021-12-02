@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -22,6 +23,7 @@ import static java.lang.Math.abs;
  */
 
 @Autonomous(name="Auto 2021", group="Linear Opmode")
+@Disabled
 public class Auto_2021 extends BaseAutoOpMode {
 
     // Declare OpMode members.

@@ -37,6 +37,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 @Autonomous(name="PIDRotate_test", group="Pushbot")
+@Disabled
 
 public class PIDRotate_Test extends BaseAutoOpMode {
 

@@ -48,6 +48,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 @TeleOp(name="Concept: VuMark Id Webcam", group ="Concept")
+@Disabled
 
 public class VuforiaTest_2021 extends LinearOpMode {
 

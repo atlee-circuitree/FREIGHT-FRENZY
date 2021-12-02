@@ -124,29 +124,12 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         runtime.reset();
 
         //Auto Starts Here
-
-        int armPosition = 3;
-
-        int distanceReduction = 0;
-        int angle = 0;
         // 1 Top, 2 Middle, 3 Bottom
-
-        if (armPosition == 1) {
-            distanceReduction = 0;
-            angle = 75;
-        } else if (armPosition == 1) {
-            distanceReduction = 3;
-            angle = 50;
-        } else {
-            distanceReduction = 5;
-            angle = 25;
-        }
+        Boolean isMiddle = readDisVision1();
 
         kickout.setPosition(0);
 
         sleep(1500);
-
-        armMoveUp(-angle); //Moved armMoveUp to beginning -Viassna 12/1/21
 
         forwardsDistanceDrive(4);
 
@@ -154,8 +137,19 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         sleep(500);
 
+        strafeLeft(19);
+
+        sleep(500);
+
+        int angle = calibrateDisVisionAngle(readDisVision2(isMiddle));
+        int reduction = calibrateDisVisionReduction(readDisVision2(isMiddle));
+
+        sleep(500);
+
+        armMoveUp(-angle);
+
         //Strafes to Ducky Wheel
-        strafeLeft();
+        strafeLeft(7.5);
 
         spinDuckyLeft(1);
 
@@ -170,13 +164,13 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         forwardsDistanceDrive(37 );
 
         //Turns towards Alliance Shipping Hub
-        turn(90);
+        turnRight(90);
 
         compareBackSensorsNew();
 
         //Moves forward towards hub with front distance sensors
         //forwardsDistanceHub(3); Added this -Viassna 12/1/21
-        forwardsDistanceDrive(36 - distanceReduction);
+        forwardsDistanceDrive(36 - reduction);
 
         feederSpit(1);
 
@@ -188,7 +182,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         sleep(1000);
 
-        strafeRight();
+        strafeRight(27);
 
         armMoveUp(-90);
 
@@ -207,6 +201,74 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         telemetry.addData("frontDistance", String.format("%.01f in", frontDistance.getDistance(DistanceUnit.INCH)));
         telemetry.update();
 
+
+    }
+
+    public boolean readDisVision1() {
+
+        if (frontDistance.getDistance(DistanceUnit.INCH) < 20) {
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+
+    }
+
+    public int readDisVision2(boolean Middle) {
+
+        if (Middle == true) {
+
+            return 2;
+
+        } else if (frontDistance.getDistance(DistanceUnit.INCH) < 20) {
+
+            return 3;
+
+        } else {
+
+            return 1;
+
+        }
+
+    }
+
+    public int calibrateDisVisionAngle(int Position) {
+
+        if (Position == 1) {
+
+            return 75;
+
+        } else if (Position == 2){
+
+            return 50;
+
+        } else {
+
+            return 25;
+
+        }
+
+    }
+
+    public int calibrateDisVisionReduction(int Position) {
+
+        if (Position == 1) {
+
+            return 0;
+
+        } else if (Position == 2){
+
+            return 3;
+
+        } else {
+
+            return 5;
+
+        }
 
     }
 
@@ -358,8 +420,8 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
     }
 
-    public void strafeLeft() {
-        while (LS_distance.getDistance(DistanceUnit.INCH) > 7.5 + 4) {
+    public void strafeLeft(double inches) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
             drive_FL.setPower(0.6);
             drive_RL.setPower(-0.6);
             drive_FR.setPower(-0.6);
@@ -371,8 +433,8 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
             drive_RR.setPower(0);
     }
 
-    public void strafeRight() {
-        while (RS_distance.getDistance(DistanceUnit.INCH) > 27 + 4) {
+    public void strafeRight(double inches) {
+        while (RS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
             drive_FL.setPower(-0.6);
             drive_RL.setPower(0.6);
             drive_FR.setPower(0.6);
@@ -491,7 +553,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         return currAngle;
     }
 
-    public void turn(double degrees){
+    public void turnRight(double degrees){
         resetAngle();
 
         double error = degrees;
@@ -499,6 +561,25 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         while (opModeIsActive() && Math.abs(error) > 2) {
             double motorPower = (error < 0 ? -0.3 : 0.3);
             robot.setMotorPower(-motorPower, motorPower, -motorPower, motorPower);
+            error = degrees - abs(getAngle());
+            telemetry.addData("error", error);
+            telemetry.update();
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
+    public void turnLeft(double degrees){
+        resetAngle();
+
+        double error = degrees;
+
+        while (opModeIsActive() && Math.abs(error) > 2) {
+            double motorPower = (error < 0 ? -0.3 : 0.3);
+            robot.setMotorPower(motorPower, -motorPower, motorPower, -motorPower);
             error = degrees - abs(getAngle());
             telemetry.addData("error", error);
             telemetry.update();
@@ -523,7 +604,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
             error += 360;
         }
 
-        turn(error);
+        turnRight(error);
     }
 
     public double getAbsoluteAngle() {
