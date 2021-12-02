@@ -6,9 +6,6 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.teamcode.BaseAutoOpMode;
-import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.AHRS;
-import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.navXPIDController;
 
 
 /**
@@ -24,8 +21,8 @@ import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.navXPIDController;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Blue Teleop", group="Linear Opmode")
-public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
+@TeleOp(name="TeleOp", group="Linear Opmode")
+public class Tele_Opmode_2021 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -94,6 +91,8 @@ public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        claw.setPosition(1);
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -137,17 +136,17 @@ public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
                 kickout.setPosition(1);
             }
 
-            //Controls Left Ducky Wheel
+            //Spins ducky wheels
+            //LeftDucky = Spin only for Red Ducky Carousel
+            //Right = Sin only for Blue Ducky Carousel
             if (gamepad1.left_bumper) {
                 leftDucky.setPower(-1);
-            } else {
-                leftDucky.setPower(0);
-            }
-
-            //Controls Right Ducky Wheel
-            if (gamepad1.right_bumper) {
+                rightDucky.setPower(-1);
+            } else if (gamepad1.right_bumper) {
+                leftDucky.setPower(1);
                 rightDucky.setPower(1);
             } else {
+                leftDucky.setPower(0);
                 rightDucky.setPower(0);
             }
 
@@ -164,56 +163,56 @@ public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
             }
 
             //Manually turns arm :)
-            if (gamepad2.dpad_up) {
-                leftArm.setPower(-1 * SV);
-                rightArm.setPower(-1 * SV);
-            } else if (gamepad2.dpad_down) {
-                leftArm.setPower(1 * SV);
-                rightArm.setPower(1 * SV);
-            } else {
+            if (gamepad2.left_stick_y > .1 || gamepad2.left_stick_y < -.1) {
+                leftArm.setPower(gamepad2.left_stick_y * .75);
+                rightArm.setPower(gamepad2.left_stick_y * .75);
+            } else  {
                 leftArm.setPower(0);
                 rightArm.setPower(0);
             }
 
-            //Manually turns arm :)
-            if (gamepad2.left_stick_y > .15) {
-                leftArm.setPower(-gamepad2.left_stick_y * SV);
-                rightArm.setPower(-gamepad2.left_stick_y * SV);
-
-                //Turns Feeder Motor Inward
-                if (gamepad2.left_trigger > .5) {
-                    feeder.setPower(.5);
-                } else if (gamepad2.right_trigger > .5) {
-                    feeder.setPower(-1);
-                } else {
-                    feeder.setPower(0);
-                }
+            //Turns Feeder Motor Inward
+            if (gamepad2.left_trigger > .5) {
+                feeder.setPower(.5);
+            } else if (gamepad2.right_trigger > .5) {
+                feeder.setPower(-1);
+            } else {
+                feeder.setPower(0);
+            }
 
 
-                //Extends and Retracts the arm
-                if (gamepad2.x) {
-                    armExtend.setPower(1);
-                } else {
-                    armExtend.setPower(0);
-                }
+            //Extends and Retracts the arm
+            if (gamepad2.x) {
+                armExtend.setPower(.3);
+            } else if (gamepad2.y) {
+                armExtend.setPower(-.3);
+            } else {
+                armExtend.setPower(0);
+            }
 
 
-                //Moves claw n stuff
-                if (gamepad2.left_bumper) {
-                    claw.setPosition(0);
-                }
 
-                if (gamepad2.right_bumper) {
-                    claw.setPosition(.3);
-                }
+            //Moves claw n stuff
+            if (gamepad2.left_bumper) {
+                claw.setPosition(.3);
+            }
 
-                if (gamepad2.y) {
-                    odometryLift1.setPosition(.5);
-                }
+            if (gamepad2.right_bumper) {
+                claw.setPosition(0);
+            }
 
+            if (gamepad2.y) {
+                odometryLift1.setPosition(.5);
             }
         }
+    }
 
+    public int degreesBore(int input) {
+
+        final int COUNTS_PER_BORE_MOTOR_REV = 8192;    // eg: GOBUILDA Motor Encoder
+        int COUNTS_TICKS_PER_REV_PER_DEGREE = (COUNTS_PER_BORE_MOTOR_REV) / 360 * 2;
+
+        return COUNTS_TICKS_PER_REV_PER_DEGREE * input;
 
     }
 }

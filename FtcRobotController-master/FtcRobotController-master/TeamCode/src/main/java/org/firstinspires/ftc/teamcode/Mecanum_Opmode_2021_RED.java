@@ -184,7 +184,7 @@ public class Mecanum_Opmode_2021_RED extends LinearOpMode {
 
             //Extends and Retracts the arm
             if (gamepad2.x) {
-                armExtend.setPower(1);
+                armExtend.setPower(.3);
             } else {
                 armExtend.setPower(0);
             }
@@ -192,11 +192,11 @@ public class Mecanum_Opmode_2021_RED extends LinearOpMode {
 
             //Moves claw n stuff
             if (gamepad2.left_bumper) {
-                claw.setPosition(1);
+                claw.setPosition(0);
             }
 
             if (gamepad2.right_bumper) {
-                claw.setPosition(.6);
+                claw.setPosition(.4);
             }
 
             if (gamepad2.y) {
