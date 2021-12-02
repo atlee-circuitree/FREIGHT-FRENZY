@@ -30,7 +30,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Red Wheel Side", group="Linear Opmode")
+@Autonomous(name="Blue Wheel Side", group="Linear Opmode")
 public class Blue_Wheel_Side extends BaseAutoOpMode {
 
     // Declare OpMode members.
