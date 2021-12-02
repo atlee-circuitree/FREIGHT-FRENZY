@@ -24,7 +24,7 @@ import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.navXPIDController;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Mecanum_Opmode_2021_BLUE", group="Linear Opmode")
+@TeleOp(name="Blue Teleop", group="Linear Opmode")
 public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
 
     // Declare OpMode members.
