@@ -124,22 +124,23 @@ public class CollectAuto extends BaseAutoOpMode {
         //armTurn();
 
         compareBackSensorsStart();
-
+        int firstloop = 1;
         encoderStrafeV4(1, 40, 4); //assuming the robot starts out parallel to dots
-
-        //for loop starts here
-
         encoderDrive(1, 40, 4); //to tile next to drop off
         //do cube drop off
-        encoderDrive(1, -40, 4); //reverse
-        turnPID(90); //to parallel to wall
-        encoderStrafeV4(0.25, 7, 4); //"slam" wall. the only one of these with non-placeholder units
-        encoderDrive(1, 40, 4); //to warehouse
-        //do cube pick up
-        encoderDrive(1, -40, 4); //reverse
-        encoderStrafeV4(0.25, -40, 4); //be careful replacing placeholder, might be some offset in the loop
-        turnPID(-90); // negative cause its the opposite turn, idk about what should actually be used
+        encoderDrive(1, -40, 4);
 
+        for  (int _time = 10; _time >= 1; _time = _time - 1) {
+            turnPID(90); //to parallel to wal
+            encoderStrafeV4(0.25, 7, 4); //"slam" wall. the only one of these with non-placeholder units
+            encoderDrive(1, 40, 4); //to warehouse
+            //do cube pick up
+            encoderDrive(1, -40, 4);
+            encoderStrafeV4(0.25, -40, 4);
+            turnPID(-90);
+            encoderDrive(1, 41, 4);
+            encoderDrive(1, -41, 4);
+        }
         //loop ends here
 
         encoderDrive(1, 40, 4);
