@@ -30,7 +30,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Red Wheel Side", group="Linear Opmode")
+@Autonomous(name="Red Freight Side", group="Linear Opmode")
 public class Red_Freight_Side extends BaseAutoOpMode {
 
     // Declare OpMode members.
@@ -130,17 +130,17 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         // 1 Top, 2 Middle, 3 Bottom
         Boolean isMiddle = readDisVision1();
 
-        kickout.setPosition(0);
+       // kickout.setPosition(0);
 
-        sleep(1500);
+        //sleep(1500);
 
-        forwardsDistanceDrive(4);
+        //forwardsDistanceDrive(5);
 
         compareBackSensorsNew();
 
-        sleep(500);
+        sleep(1000);
 
-        strafeLeftEncoder(.5, 9);
+        strafeLeftEncoder(.5, 7);
 
         sleep(500);
 
@@ -155,7 +155,7 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
         sleep(500);
 
-        forwardsDistanceDrive(12 - reduction);
+        forwardsDistanceDrive(19 - reduction);
 
         feederSpit(1);
 
@@ -189,7 +189,9 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
         double encoderValue = inchesBore(inputInches);
 
-        while (abs(drive_RL.getCurrentPosition()) < encoderValue) {
+        double startingValue = drive_RL.getCurrentPosition();
+
+        while (abs(drive_RL.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
 
             drive_FL.setPower(speed);
             drive_RL.setPower(-speed);
@@ -210,10 +212,6 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         telemetry.addData("Encoder Target", encoderValue);
         telemetry.addData("Back Dead Encoder Finished", drive_RL.getCurrentPosition());
         telemetry.update();
-
-        ResetDriveEncoder();
-        turnOnEncoders();
-
 
     }
 
@@ -335,8 +333,9 @@ public class Red_Freight_Side extends BaseAutoOpMode {
     public void runForwardsEncoder(double speed, double inputInches) {
 
         double encoderValue = inchesBore(inputInches);
+        double startingValue = drive_RR.getCurrentPosition();
 
-        while (abs(drive_RR.getCurrentPosition()) < encoderValue) {
+        while (abs(drive_RR.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
 
             drive_FL.setPower(speed);
             drive_RL.setPower(speed);
@@ -357,9 +356,6 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         telemetry.addData("Encoder Target", encoderValue);
         telemetry.addData("Right Dead Encoder Finished", drive_RR.getCurrentPosition());
         telemetry.update();
-
-        ResetDriveEncoder();
-        turnOnEncoders();
 
     }
 
