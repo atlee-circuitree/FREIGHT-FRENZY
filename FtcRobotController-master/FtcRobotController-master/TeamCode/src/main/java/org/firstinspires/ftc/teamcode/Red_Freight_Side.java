@@ -130,15 +130,11 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         // 1 Top, 2 Middle, 3 Bottom
         Boolean isMiddle = readDisVision1();
 
-       // kickout.setPosition(0);
+        kickout.setPosition(0);
 
-        //sleep(1500);
+        sleep(1500);
 
-        //forwardsDistanceDrive(5);
-
-        compareBackSensorsNew();
-
-        sleep(1000);
+        forwardsDistanceDrive(4);
 
         strafeLeftEncoder(.5, 7);
 
@@ -149,23 +145,33 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
         armMoveUp(-angle);
 
-        strafeLeftEncoder(.5, 15);
-
-        compareBackSensorsNew();
+        strafeLeftEncoder(.5, 14);
 
         sleep(500);
 
-        forwardsDistanceDrive(19 - reduction);
+        compareBackSensorsNew();
+
+        forwardsDistanceDrive(23 - reduction);
 
         feederSpit(1);
 
-        feeder.setPower(0);
+        turnRight(90);
+
+        armMoveDown(-5);
 
         compareBackSensorsNew();
 
-        turnRight(90);
-
         strafeRight(2);
+
+        extendArm(2200);
+
+        runForwardsEncoder(-.6, 48);
+
+        armMoveDown(40);
+
+        feeder.setPower(1);
+
+        runForwardsEncoder(.3, 6);
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Wheel Encoder", drive_FL.getCurrentPosition());
@@ -394,6 +400,38 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         telemetry.addData("Current Angle", getAbsoluteAngle());
         telemetry.addData("Target Degrees", degreesBore(degrees));
         telemetry.update();
+
+    }
+
+    public void armMoveDown(int degrees) {
+
+        while (-degreesBore(rightArm.getCurrentPosition()) < degreesBore(degrees) * 20) {
+
+            rightArm.setPower(-.3);
+            leftArm.setPower(-.3);
+            telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
+            telemetry.addData("Target Degrees", degreesBore(degrees));
+            telemetry.update();
+
+        }
+
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+        telemetry.addData("Current Angle", getAbsoluteAngle());
+        telemetry.addData("Target Degrees", degreesBore(degrees));
+        telemetry.update();
+
+    }
+
+    public void extendArm(int ticks) {
+
+        while (armExtend.getCurrentPosition() < ticks) {
+
+            armExtend.setPower(.3);
+
+        }
+
+        armExtend.setPower(0);
 
     }
 
