@@ -138,7 +138,7 @@ public class Tele_Opmode_2021 extends LinearOpMode {
 
             //Spins ducky wheels
             //LeftDucky = Spin only for Red Ducky Carousel
-            //Right = Sin only for Blue Ducky Carousel
+            //Right = Spin only for Blue Ducky Carousel
             if (gamepad1.left_bumper) {
                 leftDucky.setPower(-1);
                 rightDucky.setPower(-1);
@@ -191,7 +191,6 @@ public class Tele_Opmode_2021 extends LinearOpMode {
             }
 
 
-
             //Moves claw n stuff
             if (gamepad2.left_bumper) {
                 claw.setPosition(.3);
@@ -199,10 +198,6 @@ public class Tele_Opmode_2021 extends LinearOpMode {
 
             if (gamepad2.right_bumper) {
                 claw.setPosition(0);
-            }
-
-            if (gamepad2.y) {
-                odometryLift1.setPosition(.5);
             }
         }
     }

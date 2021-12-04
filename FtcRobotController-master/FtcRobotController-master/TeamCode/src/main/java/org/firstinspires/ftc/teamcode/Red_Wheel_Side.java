@@ -172,7 +172,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         //forwardsDistanceHub(3); Added this -Viassna 12/1/21
         forwardsDistanceDrive(36 - reduction);
 
-        feederSpit(1);
+        feederSpit(.5);
 
         feeder.setPower(0);
 
@@ -449,22 +449,17 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
     public void spinDuckyLeft(double speed) {
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() <= 4.0))
-        leftDucky.setPower(speed);
+            leftDucky.setPower(speed);
         telemetry.addData("Left Ducky Wheel", runtime.seconds());
         telemetry.update();
     }
 
     public void feederSpit(double speed) {
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() <= 3.0))
+        while (opModeIsActive() && (runtime.seconds() <= 2.0)) //12/4/2021 1:55 pm Changed from 3 to 2 seconds -Viassna
             feeder.setPower(speed);
         telemetry.addData("Feeder", runtime.seconds());
         telemetry.update();
-    }
-
-    public void setOdometryLift1(double angle) {
-        while (opModeIsActive())
-            odometryLift1.setPosition(angle);
     }
 
     public void forwardsDistanceDrive(int inches) {

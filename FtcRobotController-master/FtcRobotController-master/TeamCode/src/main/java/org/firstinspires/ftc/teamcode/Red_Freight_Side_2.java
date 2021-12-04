@@ -30,8 +30,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Red Freight Side", group="Linear Opmode")
-public class Red_Freight_Side extends BaseAutoOpMode {
+@Autonomous(name="Red Freight Side 2", group="Linear Opmode")
+public class Red_Freight_Side_2 extends BaseAutoOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -130,81 +130,55 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         // 1 Top, 2 Middle, 3 Bottom
         Boolean isMiddle = readDisVision1();
 
-        //Kickout kicks
+        // kickout.setPosition(0);
         kickout.setPosition(0);
 
+        //sleep(1500);
         sleep(1500);
 
-        //Moves forward
-        forwardsDistanceDrive(5); //12/4/2021 4:36 pm Added missing forward drive -Viassna
+        forwardsDistanceDrive(5);
 
-        compareBackSensorsNew(); //12/4/2021 4:36 pm Added missing distance compare code -Viassna
+        compareBackSensorsNew();
 
+        sleep(1000);
         forwardsDistanceDrive(4);
 
-        //Strafes left to check capstone position
         strafeLeftEncoder(.5, 7);
 
         sleep(500);
 
-        //Moves arm up to according to capstone position
         int angle = calibrateDisVisionAngle(readDisVision2(isMiddle));
         int reduction = calibrateDisVisionReduction(readDisVision2(isMiddle));
 
         armMoveUp(-angle);
 
-        compareBackSensorsNew(); //12/4/2021 4:46 pm Added missing compare function -Viassna
-        //Strafes left to shipping hub
+        compareBackSensorsNew();
         strafeLeftEncoder(.5, 14);
 
         sleep(500);
 
-        //Straightens robot
-        compareBackSensorsNew();
+        forwardsDistanceDrive(23 - reduction);
 
-        //Moves towards shipping hub
-        // !NOTE! An idea to fix this is to use the frontDistanceDrive function from the ducky wheel autonomous when its about to spit it out on the wobble -Viassna 12/4/2021 6:08 pm
-        forwardsDistanceHub(2 - reduction); //12/4/2021 5:06 pm Changed from 23 to 25 -Viassna 5:23 pm Changed from forwardDistanceDrive to forwardDistanceHub and 23 in to 2 -Viassna
+        feederSpit(.5);
 
-        sleep(500); //12/4/2021 5:47 Added sleep -Viassna, sleep is needed because feederSpit spits too early
-
-        //Feeder spits starting block
-        feederSpit(0.5); //12/4/2021 11:19 am Changed spit speed from .75 to .50 and changed runtime from 3 to 1 second -Viassna
-
-        //Add backwards encoder drive here to allow turnRight to not hit the wobble
-
-        //Turns 90 degrees right
         turnRight(90);
 
-        //Moves arm to -11
-        armMoveDown(-10); //12/4/2021 - 10:22 am Changed from -5 to -11 -Viassna, 5:05 pm Changed from -11 to -12 -Viassna 5:15 pm Changed from -10 -Viassna
+        compareBackSensorsNew();
+        armMoveDown(-11);
 
-        //Straightens robot
         compareBackSensorsNew();
 
-        //Strafes right until RS_Distance sensor is 2 in away from wall
         strafeRight(2);
 
-        //Extends arm to block pickup arm position
-        extendArm(1700); // 12/4/2021 - 9:30 am - Larson Changed from 2200, Changed from 2000 to 1700 -Viassna
+        extendArm(1700);
 
-        //Moves forward inside warehouse
-        runForwardsEncoder(-.6, 60); //12/4/2021 - 9:30 am - Larson Changed from 48, 11:15 am Changed from 50 in to 62 in -Viassna, 5:09 pm Changed from 62 to 60 -Viassna
+        runForwardsEncoder(-.6, 62);
 
-        //Feeder eats block
-        feederEat(-1); //12/4/2021 11:42 am Added function for feeder to have time to eat block once inside warehouse -Viassna
+        armMoveDown(-25);
 
-        //Moves arm up to allow strafing
-        armMoveUp(-20); //12/4/2021 5:07 pm Changed from -15 to -20
+        feeder.setPower(1);
 
-        //Moves backward 6 in
-        //runForwardsEncoder(.6,6);
-
-        //Strafes left 20 in inside warehouse
-        strafeLeftEncoder(.5, 20); //12/4/2021 11:11 am Added strafeLeft so robot can be more inside warehouse -Viassna
-
-        //Lifts back odometry wheel
-        odometryLift1.setPosition(.5);
+        runForwardsEncoder(.3, 6);
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Wheel Encoder", drive_FL.getCurrentPosition());
@@ -220,6 +194,8 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         telemetry.addData("RR Distance", String.format("%.01f in", RR_distance.getDistance(DistanceUnit.INCH)));
         telemetry.addData("frontDistance", String.format("%.01f in", frontDistance.getDistance(DistanceUnit.INCH)));
         telemetry.update();
+
+
     }
 
     public void strafeLeftEncoder(double speed, double inputInches) {
@@ -310,11 +286,11 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
         } else if (Position == 2){
 
-            return 2; //12/4/2021 5:41 pm Changed from 4 to 2 -Viassna
+            return 4;
 
         } else {
 
-            return 3; //12/4/2021 5:41 pm Changed from 6 to 3 -Viassna
+            return 6;
 
         }
 
@@ -368,10 +344,12 @@ public class Red_Freight_Side extends BaseAutoOpMode {
     }
 
     public void runForwardsEncoder(double speed, double inputInches) {
+
         double encoderValue = inchesBore(inputInches);
         double startingValue = drive_RR.getCurrentPosition();
 
         while (abs(drive_RR.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
+
             drive_FL.setPower(speed);
             drive_RL.setPower(speed);
             drive_FR.setPower(speed);
@@ -380,7 +358,9 @@ public class Red_Freight_Side extends BaseAutoOpMode {
             telemetry.addData("Encoder Target", encoderValue);
             telemetry.addData("Right Dead Encoder Running", drive_RR.getCurrentPosition());
             telemetry.update();
+
         }
+
         drive_FL.setPower(0);
         drive_RL.setPower(0);
         drive_FR.setPower(0);
@@ -389,6 +369,7 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         telemetry.addData("Encoder Target", encoderValue);
         telemetry.addData("Right Dead Encoder Finished", drive_RR.getCurrentPosition());
         telemetry.update();
+
     }
 
     public void ResetDriveEncoder() {
@@ -500,10 +481,10 @@ public class Red_Freight_Side extends BaseAutoOpMode {
             drive_FR.setPower(-0.6);
             drive_RR.setPower(0.6);
         }
-            drive_FL.setPower(0);
-            drive_RL.setPower(0);
-            drive_FR.setPower(0);
-            drive_RR.setPower(0);
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
     }
 
     public void strafeRight(double inches) {
@@ -522,25 +503,22 @@ public class Red_Freight_Side extends BaseAutoOpMode {
     public void spinDuckyLeft(double speed) {
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() <= 4.0))
-        leftDucky.setPower(speed);
+            leftDucky.setPower(speed);
         telemetry.addData("Left Ducky Wheel", runtime.seconds());
         telemetry.update();
     }
 
     public void feederSpit(double speed) {
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() <= 1)) //12/4/2021 11:19 am Changed runtime from 3 to 1 seconds -Viassna
+        while (opModeIsActive() && (runtime.seconds() <= 3.0))
             feeder.setPower(speed);
         telemetry.addData("Feeder", runtime.seconds());
         telemetry.update();
     }
 
-    public void feederEat(double speed) {
-        runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() <= .750)) //12/4/2021 11:42 am Added function for feeder to have time to eat block -Viassna
-            feeder.setPower(speed);
-        telemetry.addData("Feeder", runtime.seconds());
-        telemetry.update();
+    public void setOdometryLift1(double angle) {
+        while (opModeIsActive())
+            odometryLift1.setPosition(angle);
     }
 
     public void forwardsDistanceDrive(int inches) {
@@ -550,10 +528,10 @@ public class Red_Freight_Side extends BaseAutoOpMode {
             drive_FR.setPower(-.3);
             drive_RR.setPower(-.3);
         }
-            drive_FL.setPower(0);
-            drive_RL.setPower(0);
-            drive_FR.setPower(0);
-            drive_RR.setPower(0);
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
     }
 
     public void forwardsDistanceDriveFront(int inches) {

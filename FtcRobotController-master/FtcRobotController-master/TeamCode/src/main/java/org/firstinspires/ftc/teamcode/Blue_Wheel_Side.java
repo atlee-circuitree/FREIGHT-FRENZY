@@ -151,9 +151,9 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         //Strafes to Ducky Wheel
         strafeRight(7.5);
 
-        spinDuckyLeft(1);
+        spinDuckyRight(-1);
 
-        leftDucky.setPower(0);
+        rightDucky.setPower(0);
 
         //Moves a little forward to allow angle adjustment
         forwardsDistanceDrive(12);
@@ -172,7 +172,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         //forwardsDistanceHub(3); Added this -Viassna 12/1/21
         forwardsDistanceDrive(36 - reduction);
 
-        feederSpit(1);
+        feederSpit(.5);
 
         feeder.setPower(0);
 
@@ -240,7 +240,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         if (Position == 1) {
 
-            return 75;
+            return 25; //12/4/2021 1:30 pm Changed from 75 to 25 -Viassna
 
         } else if (Position == 2){
 
@@ -248,7 +248,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         } else {
 
-            return 25;
+            return 75; //12/4/2021 1:30 pm Changed from 25 to 75 -Viassna
 
         }
 
@@ -258,7 +258,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         if (Position == 1) {
 
-            return 0;
+            return 5; //12/4/2021 1:35 pm Changed from 0 to 5 -Viassna
 
         } else if (Position == 2){
 
@@ -266,7 +266,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         } else {
 
-            return 5;
+            return 0; //12/4/2021 1:35 pm Changed from 5 to 0 -Viassna
 
         }
 
@@ -446,25 +446,20 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         drive_RR.setPower(0);
     }
 
-    public void spinDuckyLeft(double speed) {
+    public void spinDuckyRight(double speed) {
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() <= 4.0))
-        leftDucky.setPower(speed);
+            rightDucky.setPower(speed);
         telemetry.addData("Left Ducky Wheel", runtime.seconds());
         telemetry.update();
     }
 
     public void feederSpit(double speed) {
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() <= 3.0))
+        while (opModeIsActive() && (runtime.seconds() <= 2.0)) //12/4/2021 1:55 pm Changed from 3 to 2 seconds -Viassna
             feeder.setPower(speed);
         telemetry.addData("Feeder", runtime.seconds());
         telemetry.update();
-    }
-
-    public void setOdometryLift1(double angle) {
-        while (opModeIsActive())
-            odometryLift1.setPosition(angle);
     }
 
     public void forwardsDistanceDrive(int inches) {
