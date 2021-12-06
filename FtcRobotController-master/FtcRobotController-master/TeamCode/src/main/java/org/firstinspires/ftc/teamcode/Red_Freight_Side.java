@@ -164,7 +164,7 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
         //Moves towards shipping hub
         // !NOTE! An idea to fix this is to use the frontDistanceDrive function from the ducky wheel autonomous when its about to spit it out on the wobble -Viassna 12/4/2021 6:08 pm
-        forwardsDistanceHub(2 - reduction); //12/4/2021 5:06 pm Changed from 23 to 25 -Viassna 5:23 pm Changed from forwardDistanceDrive to forwardDistanceHub and 23 in to 2 -Viassna
+        forwardsDistanceDrive(21);
 
         sleep(500); //12/4/2021 5:47 Added sleep -Viassna, sleep is needed because feederSpit spits too early
 

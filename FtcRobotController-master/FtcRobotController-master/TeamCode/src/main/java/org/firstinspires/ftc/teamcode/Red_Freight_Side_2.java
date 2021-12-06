@@ -155,9 +155,9 @@ public class Red_Freight_Side_2 extends BaseAutoOpMode {
         compareBackSensorsNew();
         strafeLeftEncoder(.5, 14);
 
-        sleep(500);
+        forwardsDistanceDrive(21 - reduction);
 
-        forwardsDistanceDrive(23 - reduction);
+        sleep(1000);
 
         feederSpit(.5);
 

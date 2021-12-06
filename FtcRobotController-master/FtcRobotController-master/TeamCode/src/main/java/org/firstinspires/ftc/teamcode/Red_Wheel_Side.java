@@ -131,7 +131,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         sleep(1500);
 
-        forwardsDistanceDrive(4);
+        forwardsDistanceDrive(7);
 
         odometryLift1.setPosition(.5);
 
@@ -144,8 +144,6 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         int angle = calibrateDisVisionAngle(readDisVision2(isMiddle));
         int reduction = calibrateDisVisionReduction(readDisVision2(isMiddle));
 
-        sleep(500);
-
         armMoveUp(-angle);
 
         //Strafes to Ducky Wheel
@@ -156,7 +154,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         leftDucky.setPower(0);
 
         //Moves a little forward to allow angle adjustment
-        forwardsDistanceDrive(12);
+        forwardsDistanceDrive(10);
 
         compareBackSensorsNew();
 
@@ -170,7 +168,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         //Moves forward towards hub with front distance sensors
         //forwardsDistanceHub(3); Added this -Viassna 12/1/21
-        forwardsDistanceDrive(36 - reduction);
+        forwardsDistanceDrive(35 - reduction);
 
         feederSpit(.5);
 
@@ -182,9 +180,9 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         sleep(1000);
 
-        strafeRight(27);
-
         armMoveUp(-90);
+
+        strafeRight(27);
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Wheel Encoder", drive_FL.getCurrentPosition());
@@ -422,10 +420,10 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
     public void strafeLeft(double inches) {
         while (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
-            drive_FL.setPower(0.6);
-            drive_RL.setPower(-0.6);
-            drive_FR.setPower(-0.6);
-            drive_RR.setPower(0.6);
+            drive_FL.setPower(0.5);
+            drive_RL.setPower(-0.5);
+            drive_FR.setPower(-0.5);
+            drive_RR.setPower(0.5);
         }
             drive_FL.setPower(0);
             drive_RL.setPower(0);
@@ -435,10 +433,10 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
     public void strafeRight(double inches) {
         while (RS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
-            drive_FL.setPower(-0.6);
-            drive_RL.setPower(0.6);
-            drive_FR.setPower(0.6);
-            drive_RR.setPower(-0.6);
+            drive_FL.setPower(-0.5);
+            drive_RL.setPower(0.5);
+            drive_FR.setPower(0.5);
+            drive_RR.setPower(-0.5);
         }
         drive_FL.setPower(0);
         drive_RL.setPower(0);
