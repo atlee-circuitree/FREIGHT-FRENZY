@@ -127,7 +127,7 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
         runtime.reset();
 
         //Auto Starts Here
-        // 1 Bottom, 2 Middle, 3 Top
+        // 1 Top, 2 Middle, 3 Bottom
         Boolean isMiddle = readDisVision1();
 
         //Kickout kicks
@@ -136,10 +136,14 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
         sleep(1500);
 
         //Moves forward
+        forwardsDistanceDrive(5); //12/4/2021 4:36 pm Added missing forward drive -Viassna
+
+        compareBackSensorsNew(); //12/4/2021 4:36 pm Added missing distance compare code -Viassna
+
         forwardsDistanceDrive(4);
 
         //Strafes right to check capstone position
-        strafeRightEncoder(.5, 7);
+        strafeRightEncoder(.5, 6);
 
         sleep(500);
 
@@ -149,8 +153,9 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
 
         armMoveUp(-angle);
 
-        //Strafes right to shipping hub
-        strafeRightEncoder(.5, 14);
+        compareBackSensorsNew(); //12/4/2021 4:46 pm Added missing compare function -Viassna
+        //Strafes left to shipping hub
+        strafeRightEncoder(.5, 13);
 
         sleep(500);
 
@@ -158,43 +163,52 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Moves towards shipping hub
-        forwardsDistanceDrive(23 - reduction);
+        // !NOTE! An idea to fix this is to use the frontDistanceDrive function from the ducky wheel autonomous when its about to spit it out on the wobble -Viassna 12/4/2021 6:08 pm
+        forwardsDistanceDrive(22 - reduction);
+
+        sleep(500); //12/4/2021 5:47 Added sleep -Viassna, sleep is needed because feederSpit spits too early
 
         //Feeder spits starting block
-        feederSpit(0.50); //12/4/2021 11:19 am Changed spit speed from .75 to .50 and changed runtime from 3 to 1 second -Viassna
+        feederSpit(0.5); //12/4/2021 11:19 am Changed spit speed from .75 to .50 and changed runtime from 3 to 1 second -Viassna
+
+        feeder.setPower(0);
+
+        backwardsDistanceDrive(15);
 
         //Turns 90 degrees right
         turnLeft(90);
 
         //Moves arm to -11
-        armMoveDown(-11); //12/4/2021 - 10:22 am Changed from -5 to -11 -Viassna
+        armMoveDown(-10); //12/4/2021 - 10:22 am Changed from -5 to -11 -Viassna, 5:05 pm Changed from -11 to -12 -Viassna 5:15 pm Changed from -10 -Viassna
 
         //Straightens robot
         compareBackSensorsNew();
 
-        //Strafes right until LS_Distance sensor is 2 in away from wall
-        strafeLeft(2);
+        //Strafes right until RS_Distance sensor is 2 in away from wall
+        strafeLeft(1);
 
         //Extends arm to block pickup arm position
         extendArm(1700); // 12/4/2021 - 9:30 am - Larson Changed from 2200, Changed from 2000 to 1700 -Viassna
 
         //Moves forward inside warehouse
-        runForwardsEncoder(-.6, 62); //12/4/2021 - 9:30 am - Larson Changed from 48, 11:15 am Changed from 50 in to 62 in -Viassna
+        runForwardsEncoder(-.6, 58); //12/4/2021 - 9:30 am - Larson Changed from 48, 11:15 am Changed from 50 in to 62 in -Viassna, 5:09 pm Changed from 62 to 60 -Viassna
 
         //Feeder eats block
-        feederEat(-1); //12/4/2021 11:42 am Added function for feeder to have time to eat block once inside warehouse -Viassna
+        feederEat(-.8); //12/4/2021 11:42 am Added function for feeder to have time to eat block once inside warehouse -Viassna
 
-        //Moves arm up (despite being called down) to allow strafing
-        armMoveDown(-25);
+        feeder.setPower(0);
+
+        //Moves arm up to allow strafing
+        armMoveUp(-20); //12/4/2021 5:07 pm Changed from -15 to -20
+
+        //Moves backward 6 in
+        //runForwardsEncoder(.6,6);
+
+        //Strafes left 20 in inside warehouse
+        strafeRightEncoder(.5, 20); //12/4/2021 11:11 am Added strafeLeft so robot can be more inside warehouse -Viassna
 
         //Lifts back odometry wheel
         odometryLift1.setPosition(.5);
-
-        //Moves backward 6 in
-        runForwardsEncoder(.6,6);
-
-        //Strafes right 20 in inside warehouse
-        strafeRightEncoder(.5, 20); //12/4/2021 11:11 am Added strafeLeft so robot can be more inside warehouse -Viassna
 
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Wheel Encoder", drive_FL.getCurrentPosition());
@@ -212,21 +226,21 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
         telemetry.update();
     }
 
-    public void strafeRightEncoder(double speed, double inputInches) {
+    public void strafeLeftEncoder(double speed, double inputInches) {
 
         double encoderValue = inchesBore(inputInches);
 
-        double startingValue = drive_RR.getCurrentPosition();
+        double startingValue = drive_RL.getCurrentPosition();
 
-        while (abs(drive_RR.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
+        while (abs(drive_RL.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
 
-            drive_FL.setPower(-speed);
-            drive_RL.setPower(speed);
-            drive_FR.setPower(speed);
-            drive_RR.setPower(-speed);
+            drive_FL.setPower(speed);
+            drive_RL.setPower(-speed);
+            drive_FR.setPower(-speed);
+            drive_RR.setPower(speed);
 
             telemetry.addData("Encoder Target", encoderValue);
-            telemetry.addData("Back Dead Encoder Running", drive_RR.getCurrentPosition());
+            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
             telemetry.update();
 
         }
@@ -237,7 +251,37 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
         drive_RR.setPower(0);
 
         telemetry.addData("Encoder Target", encoderValue);
-        telemetry.addData("Back Dead Encoder Finished", drive_RR.getCurrentPosition());
+        telemetry.addData("Back Dead Encoder Finished", drive_RL.getCurrentPosition());
+        telemetry.update();
+
+    }
+
+    public void strafeRightEncoder(double speed, double inputInches) {
+
+        double encoderValue = abs(inchesBore(inputInches));
+
+        double startingValue = abs(drive_RL.getCurrentPosition());
+
+        while (abs(drive_RL.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
+
+            drive_FL.setPower(-speed);
+            drive_RL.setPower(speed);
+            drive_FR.setPower(speed);
+            drive_RR.setPower(-speed);
+
+            telemetry.addData("Encoder Target", encoderValue);
+            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+
+        telemetry.addData("Encoder Target", encoderValue);
+        telemetry.addData("Back Dead Encoder Finished", drive_RL.getCurrentPosition());
         telemetry.update();
 
     }
@@ -264,11 +308,11 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
 
         } else if (frontDistance.getDistance(DistanceUnit.INCH) < 20) {
 
-            return 3;
+            return 1;
 
         } else {
 
-            return 1;
+            return 3;
 
         }
 
@@ -278,7 +322,7 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
 
         if (Position == 1) {
 
-            return 25; //12/4/2021 1:30 pm Changed from 75 to 25 -Viassna
+            return 75;
 
         } else if (Position == 2){
 
@@ -286,7 +330,7 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
 
         } else {
 
-            return 75; //12/4/2021 1:30 pm Changed from 25 to 75 -Viassna
+            return 25;
 
         }
 
@@ -296,15 +340,15 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
 
         if (Position == 1) {
 
-            return 6; //12/4/2021 1:35 pm Changed from 1 to 6 -Viassna
+            return 1;
 
         } else if (Position == 2){
 
-            return 4;
+            return 2; //12/4/2021 5:41 pm Changed from 4 to 2 -Viassna
 
         } else {
 
-            return 1; //12/4/2021 1:35 pm Changed from 6 to 1 -Viassna
+            return 3; //12/4/2021 5:41 pm Changed from 6 to 3 -Viassna
 
         }
 

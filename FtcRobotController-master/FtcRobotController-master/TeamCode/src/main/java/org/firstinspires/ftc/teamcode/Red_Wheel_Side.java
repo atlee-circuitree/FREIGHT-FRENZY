@@ -120,6 +120,9 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         drive_RL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive_RR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        telemetry.addData("Can See Element -", readDisVision1());
+        telemetry.update();
+
         waitForStart();
         runtime.reset();
 
@@ -131,7 +134,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         sleep(1500);
 
-        forwardsDistanceDrive(7);
+        forwardsDistanceDrive(9);
 
         odometryLift1.setPosition(.5);
 
@@ -147,7 +150,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         armMoveUp(-angle);
 
         //Strafes to Ducky Wheel
-        strafeLeft(7.5);
+        strafeLeft(5.5);
 
         spinDuckyLeft(1);
 
@@ -159,7 +162,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Moves towards Alliance Storage Unit
-        forwardsDistanceDrive(37 );
+        forwardsDistanceDrive(36);
 
         //Turns towards Alliance Shipping Hub
         turnRight(90);
@@ -176,29 +179,73 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        backwardsDistanceDrive(6);
+        backwardsDistanceDrive(7);
 
-        sleep(1000);
-
-        armMoveUp(-90);
+        compareBackSensorsNew();
 
         strafeRight(27);
 
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Wheel Encoder", drive_FL.getCurrentPosition());
-        telemetry.addData("Arm Angle", rightArm.getCurrentPosition() / 20);
-        telemetry.addData("Left Arm Power", leftArm.getPower());
-        telemetry.addData("Right Arm Power", rightArm.getPower());
-        telemetry.addData("Kickout", kickout.getPosition());
-        telemetry.addData("Left Ducky Wheel", leftDucky.getPower());
-        telemetry.addData("Right Ducky Wheel", rightDucky.getPower());
-        telemetry.addData("LS Distnace", String.format("%.01f in", LS_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("RS Distance", String.format("%.01f in", RS_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("RL Distance", String.format("%.01f in", RL_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("RR Distance", String.format("%.01f in", RR_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("frontDistance", String.format("%.01f in", frontDistance.getDistance(DistanceUnit.INCH)));
+        armMoveUp(-90);
+
+    }
+
+    public void strafeLeftEncoder(double speed, double inputInches) {
+
+        double encoderValue = inchesBore(inputInches);
+
+        double startingValue = drive_RL.getCurrentPosition();
+
+        while (abs(drive_RL.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
+
+            drive_FL.setPower(speed);
+            drive_RL.setPower(-speed);
+            drive_FR.setPower(-speed);
+            drive_RR.setPower(speed);
+
+            telemetry.addData("Encoder Target", encoderValue);
+            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+
+        telemetry.addData("Encoder Target", encoderValue);
+        telemetry.addData("Back Dead Encoder Finished", drive_RL.getCurrentPosition());
         telemetry.update();
 
+    }
+
+    public void strafeRightEncoder(double speed, double inputInches) {
+
+        double encoderValue = inchesBore(inputInches);
+
+        double startingValue = drive_RL.getCurrentPosition();
+
+        while (abs(drive_RL.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
+
+            drive_FL.setPower(-speed);
+            drive_RL.setPower(speed);
+            drive_FR.setPower(speed);
+            drive_RR.setPower(-speed);
+
+            telemetry.addData("Encoder Target", encoderValue);
+            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+
+        telemetry.addData("Encoder Target", encoderValue);
+        telemetry.addData("Back Dead Encoder Finished", drive_RL.getCurrentPosition());
+        telemetry.update();
 
     }
 
@@ -256,7 +303,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         if (Position == 1) {
 
-            return 0;
+            return 1;
 
         } else if (Position == 2){
 
@@ -314,6 +361,11 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
             telemetry.update();
 
         }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
 
     }
 

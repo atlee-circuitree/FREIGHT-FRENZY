@@ -120,6 +120,9 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         drive_RL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive_RR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        telemetry.addData("Can See Element -", readDisVision1());
+        telemetry.update();
+
         waitForStart();
         runtime.reset();
 
@@ -131,7 +134,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         sleep(1500);
 
-        forwardsDistanceDrive(4);
+        forwardsDistanceDrive(9);
 
         odometryLift1.setPosition(.5);
 
@@ -144,24 +147,22 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         int angle = calibrateDisVisionAngle(readDisVision2(isMiddle));
         int reduction = calibrateDisVisionReduction(readDisVision2(isMiddle));
 
-        sleep(500);
-
         armMoveUp(-angle);
 
         //Strafes to Ducky Wheel
-        strafeRight(7.5);
+        strafeRight(5.5);
 
-        spinDuckyRight(-1);
+        spinDuckyLeft(1);
 
-        rightDucky.setPower(0);
+        leftDucky.setPower(0);
 
         //Moves a little forward to allow angle adjustment
-        forwardsDistanceDrive(12);
+        forwardsDistanceDrive(10);
 
         compareBackSensorsNew();
 
         //Moves towards Alliance Storage Unit
-        forwardsDistanceDrive(37 );
+        forwardsDistanceDrive(36);
 
         //Turns towards Alliance Shipping Hub
         turnLeft(90);
@@ -170,7 +171,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         //Moves forward towards hub with front distance sensors
         //forwardsDistanceHub(3); Added this -Viassna 12/1/21
-        forwardsDistanceDrive(36 - reduction);
+        forwardsDistanceDrive(35 - reduction);
 
         feederSpit(.5);
 
@@ -178,29 +179,73 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        backwardsDistanceDrive(6);
+        backwardsDistanceDrive(7);
 
-        sleep(1000);
+        compareBackSensorsNew();
 
         strafeLeft(27);
 
         armMoveUp(-90);
 
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Wheel Encoder", drive_FL.getCurrentPosition());
-        telemetry.addData("Arm Angle", rightArm.getCurrentPosition() / 20);
-        telemetry.addData("Left Arm Power", leftArm.getPower());
-        telemetry.addData("Right Arm Power", rightArm.getPower());
-        telemetry.addData("Kickout", kickout.getPosition());
-        telemetry.addData("Left Ducky Wheel", leftDucky.getPower());
-        telemetry.addData("Right Ducky Wheel", rightDucky.getPower());
-        telemetry.addData("LS Distnace", String.format("%.01f in", LS_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("RS Distance", String.format("%.01f in", RS_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("RL Distance", String.format("%.01f in", RL_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("RR Distance", String.format("%.01f in", RR_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("frontDistance", String.format("%.01f in", frontDistance.getDistance(DistanceUnit.INCH)));
+    }
+
+    public void strafeLeftEncoder(double speed, double inputInches) {
+
+        double encoderValue = inchesBore(inputInches);
+
+        double startingValue = drive_RL.getCurrentPosition();
+
+        while (abs(drive_RL.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
+
+            drive_FL.setPower(speed);
+            drive_RL.setPower(-speed);
+            drive_FR.setPower(-speed);
+            drive_RR.setPower(speed);
+
+            telemetry.addData("Encoder Target", encoderValue);
+            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+
+        telemetry.addData("Encoder Target", encoderValue);
+        telemetry.addData("Back Dead Encoder Finished", drive_RL.getCurrentPosition());
         telemetry.update();
 
+    }
+
+    public void strafeRightEncoder(double speed, double inputInches) {
+
+        double encoderValue = abs(inchesBore(inputInches));
+
+        double startingValue = abs(drive_RL.getCurrentPosition());
+
+        while (abs(drive_RL.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
+
+            drive_FL.setPower(-speed);
+            drive_RL.setPower(speed);
+            drive_FR.setPower(speed);
+            drive_RR.setPower(-speed);
+
+            telemetry.addData("Encoder Target", encoderValue);
+            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+
+        telemetry.addData("Encoder Target", encoderValue);
+        telemetry.addData("Back Dead Encoder Finished", drive_RL.getCurrentPosition());
+        telemetry.update();
 
     }
 
@@ -226,11 +271,11 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         } else if (frontDistance.getDistance(DistanceUnit.INCH) < 20) {
 
-            return 3;
+            return 1;
 
         } else {
 
-            return 1;
+            return 3;
 
         }
 
@@ -240,7 +285,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         if (Position == 1) {
 
-            return 25; //12/4/2021 1:30 pm Changed from 75 to 25 -Viassna
+            return 75;
 
         } else if (Position == 2){
 
@@ -248,7 +293,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         } else {
 
-            return 75; //12/4/2021 1:30 pm Changed from 25 to 75 -Viassna
+            return 25;
 
         }
 
@@ -258,7 +303,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         if (Position == 1) {
 
-            return 5; //12/4/2021 1:35 pm Changed from 0 to 5 -Viassna
+            return 1;
 
         } else if (Position == 2){
 
@@ -266,7 +311,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         } else {
 
-            return 0; //12/4/2021 1:35 pm Changed from 5 to 0 -Viassna
+            return 5;
 
         }
 
@@ -316,6 +361,11 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
             telemetry.update();
 
         }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
 
     }
 
@@ -422,10 +472,10 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
     public void strafeLeft(double inches) {
         while (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
-            drive_FL.setPower(0.6);
-            drive_RL.setPower(-0.6);
-            drive_FR.setPower(-0.6);
-            drive_RR.setPower(0.6);
+            drive_FL.setPower(0.5);
+            drive_RL.setPower(-0.5);
+            drive_FR.setPower(-0.5);
+            drive_RR.setPower(0.5);
         }
             drive_FL.setPower(0);
             drive_RL.setPower(0);
@@ -435,10 +485,10 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
     public void strafeRight(double inches) {
         while (RS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
-            drive_FL.setPower(-0.6);
-            drive_RL.setPower(0.6);
-            drive_FR.setPower(0.6);
-            drive_RR.setPower(-0.6);
+            drive_FL.setPower(-0.5);
+            drive_RL.setPower(0.5);
+            drive_FR.setPower(0.5);
+            drive_RR.setPower(-0.5);
         }
         drive_FL.setPower(0);
         drive_RL.setPower(0);
@@ -446,10 +496,10 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         drive_RR.setPower(0);
     }
 
-    public void spinDuckyRight(double speed) {
+    public void spinDuckyLeft(double speed) {
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() <= 4.0))
-            rightDucky.setPower(speed);
+            leftDucky.setPower(speed);
         telemetry.addData("Left Ducky Wheel", runtime.seconds());
         telemetry.update();
     }

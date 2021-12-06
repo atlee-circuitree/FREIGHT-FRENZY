@@ -155,7 +155,7 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
         compareBackSensorsNew(); //12/4/2021 4:46 pm Added missing compare function -Viassna
         //Strafes left to shipping hub
-        strafeLeftEncoder(.5, 14);
+        strafeLeftEncoder(.5, 12);
 
         sleep(500);
 
@@ -164,14 +164,16 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
         //Moves towards shipping hub
         // !NOTE! An idea to fix this is to use the frontDistanceDrive function from the ducky wheel autonomous when its about to spit it out on the wobble -Viassna 12/4/2021 6:08 pm
-        forwardsDistanceDrive(21);
+        forwardsDistanceDrive(23 - reduction);
 
         sleep(500); //12/4/2021 5:47 Added sleep -Viassna, sleep is needed because feederSpit spits too early
 
         //Feeder spits starting block
         feederSpit(0.5); //12/4/2021 11:19 am Changed spit speed from .75 to .50 and changed runtime from 3 to 1 second -Viassna
 
-        //Add backwards encoder drive here to allow turnRight to not hit the wobble
+        feeder.setPower(0);
+
+        backwardsDistanceDrive(15);
 
         //Turns 90 degrees right
         turnRight(90);
@@ -183,16 +185,18 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Strafes right until RS_Distance sensor is 2 in away from wall
-        strafeRight(2);
+        strafeRight(1);
 
         //Extends arm to block pickup arm position
         extendArm(1700); // 12/4/2021 - 9:30 am - Larson Changed from 2200, Changed from 2000 to 1700 -Viassna
 
         //Moves forward inside warehouse
-        runForwardsEncoder(-.6, 60); //12/4/2021 - 9:30 am - Larson Changed from 48, 11:15 am Changed from 50 in to 62 in -Viassna, 5:09 pm Changed from 62 to 60 -Viassna
+        runForwardsEncoder(-.6, 58); //12/4/2021 - 9:30 am - Larson Changed from 48, 11:15 am Changed from 50 in to 62 in -Viassna, 5:09 pm Changed from 62 to 60 -Viassna
 
         //Feeder eats block
-        feederEat(-1); //12/4/2021 11:42 am Added function for feeder to have time to eat block once inside warehouse -Viassna
+        feederEat(-.8); //12/4/2021 11:42 am Added function for feeder to have time to eat block once inside warehouse -Viassna
+
+        feeder.setPower(0);
 
         //Moves arm up to allow strafing
         armMoveUp(-20); //12/4/2021 5:07 pm Changed from -15 to -20
