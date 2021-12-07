@@ -152,7 +152,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         //Strafes to Ducky Wheel
         strafeRight(5.5);
 
-        spinDuckyLeft(1);
+        spinDuckyRight(1);
 
         leftDucky.setPower(0);
 
@@ -311,7 +311,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         } else {
 
-            return 5;
+            return 4;
 
         }
 
@@ -496,10 +496,10 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         drive_RR.setPower(0);
     }
 
-    public void spinDuckyLeft(double speed) {
+    public void spinDuckyRight(double speed) {
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() <= 4.0))
-            leftDucky.setPower(speed);
+            rightDucky.setPower(-speed);
         telemetry.addData("Left Ducky Wheel", runtime.seconds());
         telemetry.update();
     }
