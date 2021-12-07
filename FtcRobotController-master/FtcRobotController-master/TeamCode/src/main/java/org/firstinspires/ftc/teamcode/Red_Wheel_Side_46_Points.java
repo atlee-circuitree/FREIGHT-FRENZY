@@ -198,6 +198,7 @@ public class Red_Wheel_Side_46_Points extends BaseAutoOpMode {
         turnRight(35);
 
         //Moves forward until frontDistance is 13 inches away from wall (Note: If it overshoots too much switch the function to slower one which is forwardsDistanceDriveFront -Viassna 12/7/2021 11:48 am
+        //I think it's better if it uses the slower one
         forwardsDistanceDriveFrontFast(13);
         //Sleep for half a second
         sleep(500);
