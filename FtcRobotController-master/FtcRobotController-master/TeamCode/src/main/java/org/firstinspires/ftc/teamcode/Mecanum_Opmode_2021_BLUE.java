@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -25,6 +26,7 @@ import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.navXPIDController;
  */
 
 @TeleOp(name="Blue Teleop", group="Linear Opmode")
+@Disabled
 public class Mecanum_Opmode_2021_BLUE extends LinearOpMode {
 
     // Declare OpMode members.
