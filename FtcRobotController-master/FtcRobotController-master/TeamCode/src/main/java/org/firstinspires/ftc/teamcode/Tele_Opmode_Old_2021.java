@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -21,8 +22,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp", group="Linear Opmode")
-public class Tele_Opmode_2_2021 extends LinearOpMode {
+@TeleOp(name="TeleOp 2", group="Linear Opmode")
+@Disabled
+public class Tele_Opmode_Old_2021 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -37,7 +39,7 @@ public class Tele_Opmode_2_2021 extends LinearOpMode {
     private Servo kickout = null;
     private CRServo leftDucky = null;
     private CRServo rightDucky = null;
-    private CRServo tapeArm = null;
+    private Servo claw = null;
     private Servo odometryLift1 = null;
 
 
@@ -60,7 +62,7 @@ public class Tele_Opmode_2_2021 extends LinearOpMode {
         kickout = hardwareMap.get(Servo.class, "kickout");
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
-        tapeArm = hardwareMap.get(CRServo.class, "tapeArm");
+        claw = hardwareMap.get(Servo.class, "claw");
         odometryLift1 = hardwareMap.get(Servo.class, "odometryLift1");
 
         leftArm.setDirection(DcMotor.Direction.REVERSE);
@@ -70,6 +72,9 @@ public class Tele_Opmode_2_2021 extends LinearOpMode {
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Slowmode Variables
+        double SV = 1;
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the batter;
@@ -88,6 +93,8 @@ public class Tele_Opmode_2_2021 extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        claw.setPosition(1);
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -104,7 +111,7 @@ public class Tele_Opmode_2_2021 extends LinearOpMode {
             telemetry.addData("Feeder", feeder.getCurrentPosition());
             telemetry.addData("Arm Extend", armExtend.getCurrentPosition());
             telemetry.addData("Arm Extend Power", armExtend.getPower());
-            telemetry.addData("Tape Arm Position", tapeArm.getPower());
+            telemetry.addData("Claw Position", claw.getPosition());
             telemetry.update();
 
             //Mecanum Drive Code
@@ -132,8 +139,8 @@ public class Tele_Opmode_2_2021 extends LinearOpMode {
             }
 
             //Spins ducky wheels
-            //LeftDucky = Spin only for Blue Ducky Carousel when right ducky wheel is on Blue Carousel
-            //RightDucky = Spin only for Red Ducky Carousel when left ducky wheel is on Red Carousel
+            //LeftDucky = Spin only for Red Ducky Carousel
+            //Right = Spin only for Blue Ducky Carousel
             if (gamepad1.left_bumper) {
                 leftDucky.setPower(-1);
                 rightDucky.setPower(-1);
@@ -145,12 +152,18 @@ public class Tele_Opmode_2_2021 extends LinearOpMode {
                 rightDucky.setPower(0);
             }
 
-            //Lifts back odometry wheel
             if (gamepad1.y)
                 odometryLift1.setPosition(.5);
 
 
             //Controller 2
+            //Slows arm
+            if (gamepad2.a) {
+                SV = .5;
+            } else {
+                SV = 1;
+            }
+
             //Manually turns arm :)
             if (gamepad2.left_stick_y > .1 || gamepad2.left_stick_y < -.1) {
                 leftArm.setPower(gamepad2.left_stick_y * .75);
@@ -169,6 +182,7 @@ public class Tele_Opmode_2_2021 extends LinearOpMode {
                 feeder.setPower(0);
             }
 
+
             //Extends and Retracts the arm
             if (gamepad2.x) {
                 armExtend.setPower(.3);
@@ -178,14 +192,14 @@ public class Tele_Opmode_2_2021 extends LinearOpMode {
                 armExtend.setPower(0);
             }
 
-            //Retracts tapeArm
+
+            //Moves claw n stuff
             if (gamepad2.left_bumper) {
-                tapeArm.setPower(-1);
+                claw.setPosition(.3);
             }
 
-            //Extends tapeArm
             if (gamepad2.right_bumper) {
-                tapeArm.setPower(.1);
+                claw.setPosition(0);
             }
         }
     }
