@@ -1,21 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-import static java.lang.Math.cos;
-import static java.lang.Math.sin;
-
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.AHRS;
-import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.navXPIDController;
 
 
 /**
@@ -31,8 +21,8 @@ import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.navXPIDController;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp Field Orientation", group="Linear Opmode")
-public class Tele_Opmode_2021_FO extends BaseAutoOpMode {
+@TeleOp(name="TeleOp 2", group="Linear Opmode")
+public class Tele_Opmode_2_2021 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -47,8 +37,9 @@ public class Tele_Opmode_2021_FO extends BaseAutoOpMode {
     private Servo kickout = null;
     private CRServo leftDucky = null;
     private CRServo rightDucky = null;
-    private Servo claw = null;
+    private CRServo tapeArm = null;
     private Servo odometryLift1 = null;
+
 
     @Override
     public void runOpMode() {
@@ -65,10 +56,11 @@ public class Tele_Opmode_2021_FO extends BaseAutoOpMode {
         armExtend = hardwareMap.get(DcMotor.class, "extend_Arm");
         feeder = hardwareMap.get(DcMotor.class, "feeder");
 
+
         kickout = hardwareMap.get(Servo.class, "kickout");
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
-        claw = hardwareMap.get(Servo.class, "claw");
+        tapeArm = hardwareMap.get(CRServo.class, "tapeArm");
         odometryLift1 = hardwareMap.get(Servo.class, "odometryLift1");
 
         leftArm.setDirection(DcMotor.Direction.REVERSE);
@@ -78,9 +70,6 @@ public class Tele_Opmode_2021_FO extends BaseAutoOpMode {
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        // Slowmode Variables
-        double SV = 1;
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the batter;
@@ -95,13 +84,9 @@ public class Tele_Opmode_2021_FO extends BaseAutoOpMode {
         drive_RL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive_RR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        GetHardware();
-
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
-
-        claw.setPosition(1);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -119,38 +104,22 @@ public class Tele_Opmode_2021_FO extends BaseAutoOpMode {
             telemetry.addData("Feeder", feeder.getCurrentPosition());
             telemetry.addData("Arm Extend", armExtend.getCurrentPosition());
             telemetry.addData("Arm Extend Power", armExtend.getPower());
-            telemetry.addData("Claw Position", claw.getPosition());
+            telemetry.addData("Tape Arm Position", tapeArm.getPower());
             telemetry.update();
 
             //Mecanum Drive Code
-
-            double y_stick = gamepad1.left_stick_y;
-            double x_stick = gamepad1.left_stick_x;
-
-            double pi = 3.1415926;
-
-            /* Adjust Joystick X/Y inputs by navX MXP yaw angle */
-
-            double gyro_degrees = navx_centered.getYaw();
-            double gyro_radians = gyro_degrees * pi/180;
-            double temp = y_stick * cos(gyro_radians) + x_stick * sin(gyro_radians);
-            x_stick = -y_stick * sin(gyro_radians) + x_stick * cos(gyro_radians);
-
-            /* At this point, Joystick X/Y (strafe/forwrd) vectors have been */
-            /* rotated by the gyro angle, and can be sent to drive system */
-
-            double r = Math.hypot(x_stick, y_stick);
-            double robotAngle = Math.atan2(y_stick, -x_stick) - Math.PI / 4;
+            double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
+            double robotAngle = Math.atan2(gamepad1.left_stick_y, -gamepad1.left_stick_x) - Math.PI / 4;
             double rightX = -gamepad1.right_stick_x;
-            final double v1 = (r * cos(robotAngle) + rightX);
-            final double v2 = (r * Math.sin(robotAngle) - rightX);
-            final double v3 = (r * Math.sin(robotAngle) + rightX);
-            final double v4 = (r * cos(robotAngle) - rightX);
+            final double v1 = r * Math.cos(robotAngle) + rightX;
+            final double v2 = r * Math.sin(robotAngle) - rightX;
+            final double v3 = r * Math.sin(robotAngle) + rightX;
+            final double v4 = r * Math.cos(robotAngle) - rightX;
 
-            drive_FL.setPower(v1 * .7);
-            drive_RL.setPower(v3 * .7);
-            drive_FR.setPower(v2 * .7);
-            drive_RR.setPower(v4 * .7);
+            drive_FL.setPower(v1);
+            drive_RL.setPower(v3);
+            drive_FR.setPower(v2);
+            drive_RR.setPower(v4);
 
             //Controller 1
             //Controls Kickout
@@ -163,8 +132,8 @@ public class Tele_Opmode_2021_FO extends BaseAutoOpMode {
             }
 
             //Spins ducky wheels
-            //LeftDucky = Spin only for Red Ducky Carousel
-            //Right = Spin only for Blue Ducky Carousel
+            //LeftDucky = Spin only for Blue Ducky Carouse
+            //RightDucky = Spin only for Red Ducky Carousel
             if (gamepad1.left_bumper) {
                 leftDucky.setPower(-1);
                 rightDucky.setPower(-1);
@@ -176,18 +145,12 @@ public class Tele_Opmode_2021_FO extends BaseAutoOpMode {
                 rightDucky.setPower(0);
             }
 
+            //Lifts back odometry wheel
             if (gamepad1.y)
                 odometryLift1.setPosition(.5);
 
 
             //Controller 2
-            //Slows arm
-            if (gamepad2.a) {
-                SV = .5;
-            } else {
-                SV = 1;
-            }
-
             //Manually turns arm :)
             if (gamepad2.left_stick_y > .1 || gamepad2.left_stick_y < -.1) {
                 leftArm.setPower(gamepad2.left_stick_y * .75);
@@ -206,7 +169,6 @@ public class Tele_Opmode_2021_FO extends BaseAutoOpMode {
                 feeder.setPower(0);
             }
 
-
             //Extends and Retracts the arm
             if (gamepad2.x) {
                 armExtend.setPower(.3);
@@ -216,14 +178,14 @@ public class Tele_Opmode_2021_FO extends BaseAutoOpMode {
                 armExtend.setPower(0);
             }
 
-
-            //Moves claw n stuff
+            //Retracts tapeArm
             if (gamepad2.left_bumper) {
-                claw.setPosition(.3);
+                tapeArm.setPower(-1);
             }
 
+            //Extends tapeArm
             if (gamepad2.right_bumper) {
-                claw.setPosition(0);
+                tapeArm.setPower(.1);
             }
         }
     }
