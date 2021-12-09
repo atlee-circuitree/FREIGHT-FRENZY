@@ -21,7 +21,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp 2", group="Linear Opmode")
+@TeleOp(name="TeleOp", group="Linear Opmode")
 public class Tele_Opmode_2_2021 extends LinearOpMode {
 
     // Declare OpMode members.
@@ -132,8 +132,8 @@ public class Tele_Opmode_2_2021 extends LinearOpMode {
             }
 
             //Spins ducky wheels
-            //LeftDucky = Spin only for Blue Ducky Carouse
-            //RightDucky = Spin only for Red Ducky Carousel
+            //LeftDucky = Spin only for Blue Ducky Carousel when right ducky wheel is on Blue Carousel
+            //RightDucky = Spin only for Red Ducky Carousel when left ducky wheel is on Red Carousel
             if (gamepad1.left_bumper) {
                 leftDucky.setPower(-1);
                 rightDucky.setPower(-1);
