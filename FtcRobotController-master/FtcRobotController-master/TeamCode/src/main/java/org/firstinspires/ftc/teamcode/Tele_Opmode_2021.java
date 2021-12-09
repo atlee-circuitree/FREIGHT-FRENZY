@@ -71,6 +71,11 @@ public class Tele_Opmode_2021 extends LinearOpMode {
 
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //Slow Mode Variables
+
+        double SD = 1;
+        double SA = 1;
+
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the batter;
         drive_FL.setDirection(DcMotor.Direction.FORWARD);
@@ -116,10 +121,10 @@ public class Tele_Opmode_2021 extends LinearOpMode {
             final double v3 = r * Math.sin(robotAngle) + rightX;
             final double v4 = r * Math.cos(robotAngle) - rightX;
 
-            drive_FL.setPower(v1);
-            drive_RL.setPower(v3);
-            drive_FR.setPower(v2);
-            drive_RR.setPower(v4);
+            drive_FL.setPower(v1 * SD);
+            drive_RL.setPower(v3 * SD);
+            drive_FR.setPower(v2 * SD);
+            drive_RR.setPower(v4 * SD);
 
             //Controller 1
             //Controls Kickout
@@ -149,12 +154,23 @@ public class Tele_Opmode_2021 extends LinearOpMode {
             if (gamepad1.y)
                 odometryLift1.setPosition(.5);
 
+            if (gamepad1.left_stick_button = true) {
+                SD = .5;
+            } else {
+                SD = 1;
+            }
+
+            if (gamepad2.left_stick_button = true) {
+                SA = .5;
+            } else {
+                SA = 1;
+            }
 
             //Controller 2
             //Manually turns arm :)
-            if (gamepad2.left_stick_y > .1 || gamepad2.left_stick_y < -.1) {
-                leftArm.setPower(gamepad2.left_stick_y * .75);
-                rightArm.setPower(gamepad2.left_stick_y * .75);
+            if (gamepad2.left_stick_y > .05 || gamepad2.left_stick_y < -.05) {
+                leftArm.setPower(gamepad2.left_stick_y * .75 * SA);
+                rightArm.setPower(gamepad2.left_stick_y * .75 * SA);
             } else  {
                 leftArm.setPower(0);
                 rightArm.setPower(0);
@@ -181,12 +197,12 @@ public class Tele_Opmode_2021 extends LinearOpMode {
             //Retracts tapeArm
             if (gamepad2.left_bumper) {
                 tapeArm.setPower(-1);
+            } else if (gamepad2.right_bumper) {
+                tapeArm.setPower(1);
+            } else {
+                tapeArm.setPower(0);
             }
 
-            //Extends tapeArm
-            if (gamepad2.right_bumper) {
-                tapeArm.setPower(.1);
-            }
         }
     }
 
