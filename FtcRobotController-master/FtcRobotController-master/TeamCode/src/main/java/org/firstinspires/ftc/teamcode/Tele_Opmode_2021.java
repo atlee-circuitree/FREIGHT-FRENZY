@@ -154,23 +154,23 @@ public class Tele_Opmode_2021 extends LinearOpMode {
             if (gamepad1.y)
                 odometryLift1.setPosition(.5);
 
-            if (gamepad1.left_stick_button = true) {
+            if (gamepad1.left_stick_button) {
                 SD = .5;
             } else {
                 SD = 1;
             }
 
-            if (gamepad2.left_stick_button = true) {
-                SA = .5;
+            if (gamepad2.left_stick_button) {
+                SA = .4;
             } else {
-                SA = 1;
+                SA = .75;
             }
 
             //Controller 2
             //Manually turns arm :)
             if (gamepad2.left_stick_y > .05 || gamepad2.left_stick_y < -.05) {
-                leftArm.setPower(gamepad2.left_stick_y * .75 * SA);
-                rightArm.setPower(gamepad2.left_stick_y * .75 * SA);
+                leftArm.setPower(gamepad2.left_stick_y * SA);
+                rightArm.setPower(gamepad2.left_stick_y * SA);
             } else  {
                 leftArm.setPower(0);
                 rightArm.setPower(0);

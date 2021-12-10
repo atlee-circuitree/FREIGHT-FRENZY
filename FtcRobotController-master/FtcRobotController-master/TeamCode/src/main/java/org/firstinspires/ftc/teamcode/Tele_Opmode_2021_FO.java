@@ -4,6 +4,7 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -32,6 +33,7 @@ import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.navXPIDController;
  */
 
 @TeleOp(name="TeleOp Field Orientation", group="Linear Opmode")
+@Disabled
 public class Tele_Opmode_2021_FO extends BaseAutoOpMode {
 
     // Declare OpMode members.

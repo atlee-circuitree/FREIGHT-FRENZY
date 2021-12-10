@@ -134,7 +134,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         sleep(1500);
 
-        forwardsDistanceDrive(9);
+        forwardsDistanceDrive(6);
 
         odometryLift1.setPosition(.5);
 
