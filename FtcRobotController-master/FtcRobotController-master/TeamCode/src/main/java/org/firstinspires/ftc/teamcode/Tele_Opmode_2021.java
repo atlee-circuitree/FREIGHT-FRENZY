@@ -99,6 +99,7 @@ public class Tele_Opmode_2021 extends LinearOpMode {
             //Show encoder values on the phone
             telemetry.addData("Status", "Initialized");
             telemetry.addData("Wheel Encoder", drive_FL.getCurrentPosition());
+            telemetry.addData("Rear Dead Encoder", drive_RL.getCurrentPosition());
             telemetry.addData("Arm Encoder", rightArm.getCurrentPosition());
             telemetry.addData("Arm Angle", rightArm.getCurrentPosition() / 20);
             telemetry.addData("Left Arm Power", leftArm.getPower());
@@ -109,7 +110,7 @@ public class Tele_Opmode_2021 extends LinearOpMode {
             telemetry.addData("Feeder", feeder.getCurrentPosition());
             telemetry.addData("Arm Extend", armExtend.getCurrentPosition());
             telemetry.addData("Arm Extend Power", armExtend.getPower());
-            telemetry.addData("Tape Arm Position", tapeArm.getPower());
+            telemetry.addData("Tape Arm Power", tapeArm.getPower());
             telemetry.update();
 
             //Mecanum Drive Code
@@ -151,8 +152,15 @@ public class Tele_Opmode_2021 extends LinearOpMode {
             }
 
             //Lifts back odometry wheel
-            if (gamepad1.y)
+            if (gamepad1.y) {
                 odometryLift1.setPosition(.5);
+            }
+            if (gamepad1.x) {
+                odometryLift1.setPosition(0);
+            }
+
+            //Lifts back odometry wheel
+
 
             if (gamepad1.left_stick_button) {
                 SD = .5;
