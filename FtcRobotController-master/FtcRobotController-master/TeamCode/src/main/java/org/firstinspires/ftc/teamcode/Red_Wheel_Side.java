@@ -134,13 +134,13 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         sleep(1500);
 
-        forwardsDistanceDrive(6);
+        forwardsDistanceDrive(7);
 
         odometryLift1.setPosition(.5);
 
         sleep(500);
 
-        strafeLeft(19);
+        strafeLeft(18.5);
 
         sleep(500);
 
@@ -162,7 +162,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Moves towards Alliance Storage Unit
-        forwardsDistanceDrive(36);
+        forwardsDistanceDrive(40);
 
         //Turns towards Alliance Shipping Hub
         turnRight(90);
@@ -173,7 +173,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         //forwardsDistanceHub(3); Added this -Viassna 12/1/21
         forwardsDistanceDrive(35 - reduction);
 
-        feederSpit(.5);
+        feederSpit(.2);
 
         feeder.setPower(0);
 
@@ -183,7 +183,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        strafeRight(27);
+        strafeRight(26);
 
         armMoveUp(-90);
 
