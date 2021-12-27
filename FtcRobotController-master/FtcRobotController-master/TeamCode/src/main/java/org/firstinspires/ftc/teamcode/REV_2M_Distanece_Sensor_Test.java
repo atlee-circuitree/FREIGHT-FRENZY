@@ -44,7 +44,9 @@ public class REV_2M_Distanece_Sensor_Test extends LinearOpMode {
     private DistanceSensor RS_distance;
     private DistanceSensor RL_distance;
     private DistanceSensor RR_distance;
-    private DistanceSensor frontDistance;
+    private DistanceSensor frontDistanceLeft;
+    private DistanceSensor frontDistanceRight;
+
 
     @Override
     public void runOpMode() {
@@ -69,7 +71,8 @@ public class REV_2M_Distanece_Sensor_Test extends LinearOpMode {
         RS_distance = hardwareMap.get(DistanceSensor.class, "RS_distance");
         RL_distance = hardwareMap.get(DistanceSensor.class, "RL_distance");
         RR_distance = hardwareMap.get(DistanceSensor.class, "RR_distance");
-        frontDistance = hardwareMap.get(DistanceSensor.class, "frontDistance");
+        frontDistanceLeft = hardwareMap.get(DistanceSensor.class, "frontDistanceLeft");
+        frontDistanceRight = hardwareMap.get(DistanceSensor.class, "frontDistanceRight");
 
         leftArm.setDirection(DcMotor.Direction.REVERSE);
         rightArm.setDirection(DcMotor.Direction.FORWARD);
@@ -116,7 +119,8 @@ public class REV_2M_Distanece_Sensor_Test extends LinearOpMode {
             telemetry.addData("RS Distance", String.format("%.01f in", RS_distance.getDistance(DistanceUnit.INCH)));
             telemetry.addData("RL Distance", String.format("%.01f in", RL_distance.getDistance(DistanceUnit.INCH)));
             telemetry.addData("RR Distance", String.format("%.01f in", RR_distance.getDistance(DistanceUnit.INCH)));
-            telemetry.addData("frontDistance", String.format("%.01f in", frontDistance.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("frontDistanceLeft", String.format("%.01f in", frontDistanceLeft.getDistance(DistanceUnit.INCH)));
+            telemetry.addData("frontDistanceRight", String.format("%.01f in", frontDistanceRight.getDistance(DistanceUnit.INCH)));
             telemetry.update();
 
             //Mecanum Drive Code
