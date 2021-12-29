@@ -137,23 +137,8 @@ public class Test_Auto extends BaseAutoOpMode {
         waitForStart();
         runtime.reset();
 
-        runForwardsEncoderAndRaiseArm(.4, 0, 40);
+        strafeRightEncoder(.6, 12);
 
-        telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Wheel Encoder", drive_FL.getCurrentPosition());
-        telemetry.addData("Arm Angle", rightArm.getCurrentPosition() / 20);
-        telemetry.addData("Left Arm Power", leftArm.getPower());
-        telemetry.addData("Right Arm Power", rightArm.getPower());
-        telemetry.addData("Kickout", kickout.getPosition());
-        telemetry.addData("Left Ducky Wheel", leftDucky.getPower());
-        telemetry.addData("Right Ducky Wheel", rightDucky.getPower());
-        telemetry.addData("LS Distnace", String.format("%.01f in", LS_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("RS Distance", String.format("%.01f in", RS_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("RL Distance", String.format("%.01f in", RL_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("RR Distance", String.format("%.01f in", RR_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("frontDistance Left", String.format("%.01f in", frontDistanceLeft.getDistance(DistanceUnit.INCH)));
-        telemetry.addData("frontDistance Right", String.format("%.01f in", frontDistanceRight.getDistance(DistanceUnit.INCH)));
-        telemetry.update();
     }
 
     public void strafeLeftEncoder(double speed, double inputInches) {
@@ -199,8 +184,8 @@ public class Test_Auto extends BaseAutoOpMode {
             drive_FR.setPower(speed);
             drive_RR.setPower(-speed);
 
-            telemetry.addData("Encoder Target", encoderValue);
-            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
+            telemetry.addData("Encoder Target", abs(drive_RL.getCurrentPosition()));
+            telemetry.addData("Back Dead Encoder Running", abs(startingValue) + abs(encoderValue));
             telemetry.update();
 
         }
@@ -378,6 +363,55 @@ public class Test_Auto extends BaseAutoOpMode {
 
             telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
             telemetry.addData("Target Degrees", degreesBore(angle) * 20);
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+
+    }
+
+    public void runBackwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
+        double encoderValue = inchesBore(inputInches);
+        double startingValue = drive_RR.getCurrentPosition();
+
+        while (drive_RR.getCurrentPosition() > startingValue - abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+            if (drive_RR.getCurrentPosition() > startingValue - abs(encoderValue)) {
+
+                drive_FL.setPower(speed);
+                drive_RL.setPower(speed);
+                drive_FR.setPower(speed);
+                drive_RR.setPower(speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+                rightArm.setPower(.3);
+                leftArm.setPower(.3);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+            telemetry.addData("Current Encoder",  drive_RR.getCurrentPosition());
+            telemetry.addData("Target Degrees", startingValue - abs(encoderValue));
             telemetry.update();
 
         }

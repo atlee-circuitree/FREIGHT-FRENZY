@@ -30,8 +30,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Blue Freight Side", group="Linear Opmode")
-public class Blue_Freight_Side extends BaseAutoOpMode {
+@Autonomous(name="Blue Freight Cycle", group="Linear Opmode")
+public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -159,14 +159,13 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
         int angle = calibrateDisVisionAngle(readDisVision());
         int reduction = calibrateDisVisionReduction(readDisVision());
 
-        strafeRightEncoder(.5, 14);
+        strafeRightEncoder(.5, 11);
 
         sleep(500);
 
         compareBackSensorsNew();
 
         runForwardsDistanceAndRaiseArm(.4, 18 - reduction, angle);
-
 
         //Feeder spits starting block
         feederSpit(0.5); //12/4/2021 11:19 am Changed spit speed from .75 to .50 and changed runtime from 3 to 1 second -Viassna
@@ -183,20 +182,34 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
         //Strafes right until RS_Distance sensor is 2 in away from wall
         strafeLeft(0.5);
         //Moves forward inside warehouse
-        runForwardsEncoderAndLowerArmAndExtend(.6, 52, 10); //12/4/2021 - 9:30 am - Larson Changed from 48, 11:15 am Changed from 50 in to 62 in -Viassna, 5:09 pm Changed from 62 to 60 -Viassna
+
+        runForwardsDistanceAndLowerArmAndExtend(.6, 20, 10);
+
+        sleep(500);
+
+        runBackwardsEncoderAndRaiseArm(.6, 57, 30);
+
+        strafeRightEncoder(.6, 6);
+
+        turnRight(90);
+
+        compareBackSensorsNew();
+
+        runForwardsDistanceAndRaiseArm(.4, 16, angle);
+
+        feederSpit(0.5); //12/4/2021 11:19 am Changed spit speed from .75 to .50 and changed runtime from 3 to 1 second -Viassna
+
         feeder.setPower(0);
 
-        //Moves arm up to allow strafing
-        armMoveUp(-20); //12/4/2021 5:07 pm Changed from -15 to -20
+        backwardsDistanceDrive(15);
 
-        //Moves backward 6 in
-        //runForwardsEncoder(.6,6);
+        turnLeft(90);
 
-        //Strafes left 20 in inside warehouse
-        strafeRightEncoder(.5, 20); //12/4/2021 11:11 am Added strafeLeft so robot can be more inside warehouse -Viassna
+        sleep(200);
 
-        //Lifts back odometry wheel
-        odometryLift1.setPosition(.5);
+        strafeLeft(0.5);
+
+        runForwardsDistanceAndLowerArmAndExtend(.6, 15, 10);
 
     }
 
@@ -230,15 +243,13 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
 
     }
 
-    public void runForwardsEncoderAndLowerArmAndExtend(double speed, double inputInches, int angle) {
-        double encoderValue = inchesBore(inputInches);
-        double startingValue = drive_RR.getCurrentPosition();
+    public void runForwardsDistanceAndLowerArmAndExtend(double speed, double inches, int angle) {
 
         feederEat(-.8);
 
-        while (abs(drive_RR.getCurrentPosition()) < abs(startingValue) + abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
+        while (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
 
-            if (abs(drive_RR.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
+            if (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches) {
 
                 drive_FL.setPower(-speed);
                 drive_RL.setPower(-speed);
@@ -337,6 +348,55 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
 
     }
 
+    public void runBackwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
+        double encoderValue = inchesBore(inputInches);
+        double startingValue = drive_RR.getCurrentPosition();
+
+        while (drive_RR.getCurrentPosition() > startingValue - abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+            if (drive_RR.getCurrentPosition() > startingValue - abs(encoderValue)) {
+
+                drive_FL.setPower(speed);
+                drive_RL.setPower(speed);
+                drive_FR.setPower(speed);
+                drive_RR.setPower(speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+                rightArm.setPower(.3);
+                leftArm.setPower(.3);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+            telemetry.addData("Current Encoder",  drive_RR.getCurrentPosition());
+            telemetry.addData("Target Degrees", startingValue - abs(encoderValue));
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+
+    }
+
     public void strafeRightEncoder(double speed, double inputInches) {
 
         double encoderValue = abs(inchesBore(inputInches));
@@ -350,8 +410,8 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
             drive_FR.setPower(speed);
             drive_RR.setPower(-speed);
 
-            telemetry.addData("Encoder Target", encoderValue);
-            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
+            telemetry.addData("Encoder Target", abs(drive_RL.getCurrentPosition()));
+            telemetry.addData("Back Dead Encoder Running", abs(startingValue) + abs(encoderValue));
             telemetry.update();
 
         }
@@ -612,8 +672,34 @@ public class Blue_Freight_Side extends BaseAutoOpMode {
             drive_RR.setPower(0);
     }
 
+    public void strafeLeftFromWall(double inches) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
+            drive_FL.setPower(0.6);
+            drive_RL.setPower(-0.6);
+            drive_FR.setPower(-0.6);
+            drive_RR.setPower(0.6);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
     public void strafeRight(double inches) {
         while (RS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
+            drive_FL.setPower(-0.6);
+            drive_RL.setPower(0.6);
+            drive_FR.setPower(0.6);
+            drive_RR.setPower(-0.6);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
+    public void strafeRightFromWall(double inches) {
+        while (RS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
             drive_FL.setPower(-0.6);
             drive_RL.setPower(0.6);
             drive_FR.setPower(0.6);
