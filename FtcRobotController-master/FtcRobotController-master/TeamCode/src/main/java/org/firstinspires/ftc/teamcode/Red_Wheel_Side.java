@@ -179,7 +179,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Moves forward towards hub with front distance sensors
-        //forwardsDistanceHub(3); Added this -Viassna 12/1/21
+        //forwardsDistanceHub(3);
         forwardsDistanceDrive(30 - reduction);
 
         feederSpit(.6);
@@ -193,8 +193,6 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         strafeRight(26);
-
-
     }
 
     public void runForwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {

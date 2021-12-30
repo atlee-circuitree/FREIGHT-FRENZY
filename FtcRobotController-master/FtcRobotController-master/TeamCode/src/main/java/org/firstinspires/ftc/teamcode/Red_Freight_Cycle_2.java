@@ -30,8 +30,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Red Freight Cycle", group="Linear Opmode")
-public class Red_Freight_Cycle extends BaseAutoOpMode {
+@Autonomous(name="Red Freight Cycle 2", group="Linear Opmode")
+public class Red_Freight_Cycle_2 extends BaseAutoOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -127,7 +127,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
             telemetry.addLine("Target : Middle");
             telemetry.update();
 
-        } else if (readDisVision() == 1) {
+        } else if (readDisVision() == 3) {
 
             telemetry.addLine("Target : Low");
             telemetry.update();
@@ -194,12 +194,12 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         sleep(300);
 
         //Moves out of warehouse to center of alliance shipping hub
-        runBackwardsEncoderAndRaiseArm(.6, 52, 50);
+        runBackwardsEncoderAndRaiseArm(.6, 56, 50);
 
-        feeder.setPower(0);
+        sleep(500);
 
         //Strafes left from wall to allow space for turning
-        strafeLeftEncoder(.6, 6);
+        strafeLeftEncoder(.6, 4);
 
         //Turns left 90 degrees
         turnLeft(90);
@@ -208,11 +208,9 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Lifts arm to middle level and moves forward to drop second block in alliance shipping hub
-        runForwardsDistanceAndRaiseArm(.4, 14, 50);
+        runForwardsDistanceAndRaiseArm(.4, 10, 50); //go fo low level 11 inch needed
 
         sleep(500);
-
-        feeder.setPower(0);
 
         feederSpit(0.5);
 
@@ -422,6 +420,8 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         double encoderValue = inchesBore(inputInches);
         double startingValue = drive_FL.getCurrentPosition();
 
+        feeder.setPower(0);
+
         while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
 
             if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
@@ -442,8 +442,8 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
             if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
 
-                rightArm.setPower(.3);
-                leftArm.setPower(.3);
+                rightArm.setPower(1);
+                leftArm.setPower(1);
 
             } else {
 
@@ -501,7 +501,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
         if (frontDistanceLeft.getDistance(DistanceUnit.INCH) < 20) {
 
-            return 3;
+            return 1;
 
         } else if (frontDistanceRight.getDistance(DistanceUnit.INCH) < 20) {
 
@@ -509,7 +509,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
         } else {
 
-            return 1;
+            return 3;
 
         }
 
@@ -541,7 +541,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
         } else if (Position == 2){
 
-            return 2; //12/4/2021 5:41 pm Changed from 4 to 2 -Viassna
+            return 3; //12/4/2021 5:41 pm Changed from 4 to 2 -Viassna
 
         } else {
 
@@ -649,8 +649,8 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
         while (-degreesBore(rightArm.getCurrentPosition()) > degreesBore(degrees) * 20) {
 
-            rightArm.setPower(.3);
-            leftArm.setPower(.3);
+            rightArm.setPower(.6);
+            leftArm.setPower(.6);
             telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
             telemetry.addData("Target Degrees", degreesBore(degrees));
             telemetry.update();
