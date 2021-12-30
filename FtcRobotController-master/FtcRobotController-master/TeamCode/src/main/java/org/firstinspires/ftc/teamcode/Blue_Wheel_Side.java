@@ -159,7 +159,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes to Ducky Wheel
-        strafeRight(4);
+        strafeRight(1.5, .3);
 
         spinDuckyRight(1);
 
@@ -616,12 +616,12 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
             drive_RR.setPower(0);
     }
 
-    public void strafeRight(double inches) {
+    public void strafeRight(double inches, double speed) {
         while (RS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
-            drive_FL.setPower(-0.5);
-            drive_RL.setPower(0.5);
-            drive_FR.setPower(0.5);
-            drive_RR.setPower(-0.5);
+            drive_FL.setPower(-speed);
+            drive_RL.setPower(speed);
+            drive_FR.setPower(speed);
+            drive_RR.setPower(-speed);
         }
         drive_FL.setPower(0);
         drive_RL.setPower(0);

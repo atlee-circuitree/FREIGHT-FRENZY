@@ -159,13 +159,13 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         int angle = calibrateDisVisionAngle(readDisVision());
         int reduction = calibrateDisVisionReduction(readDisVision());
 
-        strafeRightEncoder(.5, 11);
-
-        sleep(500);
+        strafeRightEncoder(.5, 15);
 
         compareBackSensorsNew();
 
-        runForwardsDistanceAndRaiseArm(.4, 18 - reduction, angle);
+        runForwardsDistanceAndRaiseArm(.4, 19 - reduction, angle); //Previously 18 inch `11/29/2021 2:05 pm -Viassna
+
+        compareBackSensorsNew();
 
         //Feeder spits starting block
         feederSpit(0.5); //12/4/2021 11:19 am Changed spit speed from .75 to .50 and changed runtime from 3 to 1 second -Viassna
@@ -175,7 +175,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         backwardsDistanceDrive(15);
 
         //Turns 90 degrees right
-        turnLeft(90);
+        turnLeft(100);
 
         sleep(200);
 
@@ -183,11 +183,13 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         strafeLeft(0.5);
         //Moves forward inside warehouse
 
-        runForwardsDistanceAndLowerArmAndExtend(.6, 20, 10);
+        runForwardsDistanceAndLowerArmAndExtend(.6, 16, 10);
 
-        sleep(500);
+        sleep(300);
 
-        runBackwardsEncoderAndRaiseArm(.6, 57, 30);
+        runBackwardsEncoderAndRaiseArm(.6, 52, 50);
+
+        feeder.setPower(0);
 
         strafeRightEncoder(.6, 6);
 
@@ -195,21 +197,31 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        runForwardsDistanceAndRaiseArm(.4, 16, angle);
+        runForwardsDistanceAndRaiseArm(.4, 14, 50);
 
-        feederSpit(0.5); //12/4/2021 11:19 am Changed spit speed from .75 to .50 and changed runtime from 3 to 1 second -Viassna
+        sleep(500);
 
         feeder.setPower(0);
 
+        feederSpit(0.5); //12/4/2021 11:19 am Changed spit speed from .75 to .50 and changed runtime from 3 to 1 second -Viassna
+
         backwardsDistanceDrive(15);
 
-        turnLeft(90);
+        turnLeft(100);
 
         sleep(200);
 
         strafeLeft(0.5);
 
-        runForwardsDistanceAndLowerArmAndExtend(.6, 15, 10);
+        runForwardsDistanceAndLowerArmAndExtend(.6, 16, 10);
+
+        sleep(200);
+
+        feeder.setPower(0);
+
+        armMoveUp(-30);
+
+        strafeRightFromWall(15);
 
     }
 
@@ -245,7 +257,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
     public void runForwardsDistanceAndLowerArmAndExtend(double speed, double inches, int angle) {
 
-        feederEat(-.8);
+        feederEat(-.6);
 
         while (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
 
@@ -296,7 +308,50 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         rightArm.setPower(0);
         leftArm.setPower(0);
         armExtend.setPower(0);
-        feederEat(0);
+
+        sleep(1000);
+
+    }
+
+    public void strafeRightFromWallAndRaiseArm(double speed, double inches, int angle) {
+
+        while (LS_distance.getDistance(DistanceUnit.INCH) < inches + 4 || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+            if (LS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
+
+                drive_FL.setPower(-speed);
+                drive_RL.setPower(speed);
+                drive_FR.setPower(speed);
+                drive_RR.setPower(-speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20) {
+
+                rightArm.setPower(.3);
+                leftArm.setPower(.3);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
 
     }
 
@@ -350,11 +405,11 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
     public void runBackwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
         double encoderValue = inchesBore(inputInches);
-        double startingValue = drive_RR.getCurrentPosition();
+        double startingValue = drive_FL.getCurrentPosition();
 
-        while (drive_RR.getCurrentPosition() > startingValue - abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
 
-            if (drive_RR.getCurrentPosition() > startingValue - abs(encoderValue)) {
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
 
                 drive_FL.setPower(speed);
                 drive_RL.setPower(speed);
@@ -382,7 +437,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
             }
 
-            telemetry.addData("Current Encoder",  drive_RR.getCurrentPosition());
+            telemetry.addData("Current Encoder",  drive_FL.getCurrentPosition());
             telemetry.addData("Target Degrees", startingValue - abs(encoderValue));
             telemetry.update();
 
@@ -467,7 +522,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
         if (Position == 1) {
 
-            return 1;
+            return 3;
 
         } else if (Position == 2){
 
@@ -496,7 +551,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
         double error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
-        while (error > .1) {
+        while (error > .3) {
 
             error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
@@ -511,7 +566,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
         }
 
-        while (error < -.1) {
+        while (error < -.3) {
 
             error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
@@ -699,7 +754,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
     }
 
     public void strafeRightFromWall(double inches) {
-        while (RS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
             drive_FL.setPower(-0.6);
             drive_RL.setPower(0.6);
             drive_FR.setPower(0.6);

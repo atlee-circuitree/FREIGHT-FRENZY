@@ -4,6 +4,7 @@ import static java.lang.Math.abs;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -31,6 +32,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @Autonomous(name="Red Wheel Side 46 Points", group="Linear Opmode")
+@Disabled
 public class Red_Wheel_Side_46_Points extends BaseAutoOpMode {
 
     // Declare OpMode members.

@@ -137,7 +137,7 @@ public class Test_Auto extends BaseAutoOpMode {
         waitForStart();
         runtime.reset();
 
-        strafeRightEncoder(.6, 12);
+        runBackwardsEncoderAndRaiseArm(.3, 36, 00);
 
     }
 
@@ -378,11 +378,11 @@ public class Test_Auto extends BaseAutoOpMode {
 
     public void runBackwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
         double encoderValue = inchesBore(inputInches);
-        double startingValue = drive_RR.getCurrentPosition();
+        double startingValue = drive_FL.getCurrentPosition();
 
-        while (drive_RR.getCurrentPosition() > startingValue - abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
 
-            if (drive_RR.getCurrentPosition() > startingValue - abs(encoderValue)) {
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
 
                 drive_FL.setPower(speed);
                 drive_RL.setPower(speed);
@@ -410,7 +410,7 @@ public class Test_Auto extends BaseAutoOpMode {
 
             }
 
-            telemetry.addData("Current Encoder",  drive_RR.getCurrentPosition());
+            telemetry.addData("Current Encoder",  drive_FL.getCurrentPosition());
             telemetry.addData("Target Degrees", startingValue - abs(encoderValue));
             telemetry.update();
 
