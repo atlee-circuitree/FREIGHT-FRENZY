@@ -180,7 +180,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         //Moves back from alliance shipping hub
         backwardsDistanceDrive(15);
 
-        //Turns 90 degrees right
+        //Turns 100 degrees right
         turnRight(100);
 
         sleep(200);

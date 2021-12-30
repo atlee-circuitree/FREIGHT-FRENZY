@@ -4,6 +4,7 @@ import static java.lang.Math.abs;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -31,6 +32,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @Autonomous(name="Red Freight Cycle 2", group="Linear Opmode")
+@Disabled
 public class Red_Freight_Cycle_2 extends BaseAutoOpMode {
 
     // Declare OpMode members.
