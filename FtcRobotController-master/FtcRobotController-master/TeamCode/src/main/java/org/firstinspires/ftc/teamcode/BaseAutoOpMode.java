@@ -675,7 +675,7 @@ public abstract class BaseAutoOpMode extends BaseOpMode {
 
     public void spinDuckyLeft(double speed) {
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() <= 3.0))
+        while (opModeIsActive() && (runtime.seconds() <= 4.0))
             leftDucky.setPower(speed);
         telemetry.addData("Left Ducky Wheel", runtime.seconds());
         telemetry.update();

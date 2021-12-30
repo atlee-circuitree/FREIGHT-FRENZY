@@ -208,7 +208,7 @@ public class Red_Freight_Cycle_2 extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Lifts arm to middle level and moves forward to drop second block in alliance shipping hub
-        runForwardsDistanceAndRaiseArm(.4, 10, 50); //go fo low level 11 inch needed
+        runForwardsDistanceAndRaiseArm(.4, 10, 50);
 
         sleep(500);
 
@@ -270,7 +270,7 @@ public class Red_Freight_Cycle_2 extends BaseAutoOpMode {
 
     public void runForwardsDistanceAndLowerArmAndExtend(double speed, double inches, int angle) {
 
-        feederEat(-.6);
+        feederEat(-1);
 
         while (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
 
@@ -545,7 +545,7 @@ public class Red_Freight_Cycle_2 extends BaseAutoOpMode {
 
         } else {
 
-            return 3; //12/4/2021 5:41 pm Changed from 6 to 3 -Viassna
+            return 4; //12/4/2021 5:41 pm Changed from 6 to 3 -Viassna
 
         }
 

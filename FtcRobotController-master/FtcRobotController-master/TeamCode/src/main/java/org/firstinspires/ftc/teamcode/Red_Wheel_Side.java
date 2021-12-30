@@ -627,6 +627,14 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         drive_RR.setPower(0);
     }
 
+    public void spinDuckyLeft(double speed) {
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() <= 4.0))
+            leftDucky.setPower(speed);
+        telemetry.addData("Left Ducky Wheel", runtime.seconds());
+        telemetry.update();
+    }
+
     public void spinDuckyRight(double speed) {
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() <= 4.0))
