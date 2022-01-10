@@ -30,8 +30,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Red Wheel Side", group="Linear Opmode")
-public class Red_Wheel_Side extends BaseAutoOpMode {
+@Autonomous(name="Red Wheel Side What If", group="Linear Opmode")
+public class Red_Wheel_Side_What_If extends BaseAutoOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -129,12 +129,12 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         } else if (readDisVision() == 1) {
 
-            telemetry.addLine("Target : Low");
+            telemetry.addLine("Target : High");
             telemetry.update();
 
         } else {
 
-            telemetry.addLine("Target : High");
+            telemetry.addLine("Target : Low");
             telemetry.update();
 
         }
@@ -149,15 +149,17 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         sleep(500);
 
+        //Moves forward
         forwardsDistanceDrive(7);
 
         sleep(500);
 
+        //Moves arm up to according to capstone position
         int angle = calibrateDisVisionAngle(readDisVision());
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes to Ducky Wheel
-        strafeLeft(1.5);
+        strafeLeft(1.5, .3);
 
         spinDuckyLeft(1);
 
@@ -166,31 +168,52 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         //Moves a little forward to allow angle adjustment
         forwardsDistanceDrive(10);
 
+        //Angle Adjust
         compareBackSensorsNew();
 
-        //Moves towards Alliance Storage Unit
+        //Moves towards Alliance Storage Unit and raises arm
         runForwardsDistanceAndRaiseArm(.3, 37, angle);
 
         //Turns towards Alliance Shipping Hub
         turnRight(90);
 
+        //Angle Adjust
         compareBackSensorsNew();
 
         //Moves forward towards hub with front distance sensors
         //forwardsDistanceHub(3);
         forwardsDistanceDrive(30 - reduction);
 
+        //Feeder spits starting block
+
         feederSpit(.6);
 
         feeder.setPower(0);
 
+        //Angle Adjust
         compareBackSensorsNew();
 
+        //Moves backwards from hub and raises arm
         runBackwardsDistanceAndRaiseArm(.3, 5.5, 90);
 
+        //Angle Adjust
         compareBackSensorsNew();
 
-        strafeRight(26);
+        //Strafes right until RS_distance is 20 inches away from wall
+        strafeRight(20);
+
+        //Turns right 15 degrees to wall
+        turnRight(15);
+
+        //Adjust sleep depending how much time needed for teammate to get out of the way
+        //sleep(1000);
+
+        //Moves inside warehouse to get second block for end of auto period
+        runForwardsDistanceAndLowerArmAndExtend(.6, 16, 10);
+
+        feeder.setPower(0);
+
+        armMoveUp(-30);
     }
 
     public void runForwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
@@ -235,6 +258,64 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         drive_RR.setPower(0);
         rightArm.setPower(0);
         leftArm.setPower(0);
+
+    }
+
+    public void runForwardsDistanceAndLowerArmAndExtend(double speed, double inches, int angle) {
+
+        feederEat(-1);
+
+        while (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
+
+            if (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches) {
+
+                drive_FL.setPower(-speed);
+                drive_RL.setPower(-speed);
+                drive_FR.setPower(-speed);
+                drive_RR.setPower(-speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20) {
+
+                rightArm.setPower(-.3);
+                leftArm.setPower(-.3);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+            if (armExtend.getCurrentPosition() < 1700) {
+
+                armExtend.setPower(1);
+
+            } else {
+
+                armExtend.setPower(0);
+
+            }
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+        armExtend.setPower(0);
+
+        sleep(1000);
 
     }
 
@@ -432,7 +513,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         if (Position == 1) {
 
-            return 1;
+            return 0;
 
         } else if (Position == 2){
 
@@ -599,12 +680,12 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
     }
 
-    public void strafeLeft(double inches) {
+    public void strafeLeft(double inches, double speed) {
         while (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
-            drive_FL.setPower(0.3);
-            drive_RL.setPower(-0.3);
-            drive_FR.setPower(-0.3);
-            drive_RR.setPower(0.3);
+            drive_FL.setPower(speed);
+            drive_RL.setPower(-speed);
+            drive_FR.setPower(-speed);
+            drive_RR.setPower(speed);
         }
             drive_FL.setPower(0);
             drive_RL.setPower(0);
@@ -618,6 +699,19 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
             drive_RL.setPower(0.5);
             drive_FR.setPower(0.5);
             drive_RR.setPower(-0.5);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
+    public void strafeLeftFromWall(double inches) {
+        while (RS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
+            drive_FL.setPower(0.6);
+            drive_RL.setPower(-0.6);
+            drive_FR.setPower(-0.6);
+            drive_RR.setPower(0.6);
         }
         drive_FL.setPower(0);
         drive_RL.setPower(0);
@@ -643,7 +737,15 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
     public void feederSpit(double speed) {
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() <= 2.0)) //12/4/2021 1:55 pm Changed from 3 to 2 seconds -Viassna
+        while (opModeIsActive() && (runtime.seconds() <= 2.0))
+            feeder.setPower(speed);
+        telemetry.addData("Feeder", runtime.seconds());
+        telemetry.update();
+    }
+
+    public void feederEat(double speed) {
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() <= .750))
             feeder.setPower(speed);
         telemetry.addData("Feeder", runtime.seconds());
         telemetry.update();
@@ -662,12 +764,12 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
             drive_RR.setPower(0);
     }
 
-    public void forwardsDistanceDriveFront(int inches) {
+    public void forwardsDistanceDriveFront(double inches, double speed) {
         while (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches) {
-            drive_FL.setPower(-.3);
-            drive_RL.setPower(-.3);
-            drive_FR.setPower(-.3);
-            drive_RR.setPower(-.3);
+            drive_FL.setPower(-speed);
+            drive_RL.setPower(-speed);
+            drive_FR.setPower(-speed);
+            drive_RR.setPower(-speed);
         }
         drive_FL.setPower(0);
         drive_RL.setPower(0);
@@ -755,6 +857,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
     }
 
     public void turnLeft(double degrees){
+        resetAngle();
 
         double error = degrees;
 

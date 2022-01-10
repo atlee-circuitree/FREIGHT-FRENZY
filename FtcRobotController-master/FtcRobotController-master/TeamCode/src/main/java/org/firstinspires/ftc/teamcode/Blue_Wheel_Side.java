@@ -151,8 +151,6 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         forwardsDistanceDrive(7);
 
-        odometryLift1.setPosition(.5);
-
         sleep(500);
 
         int angle = calibrateDisVisionAngle(readDisVision());
@@ -508,10 +506,10 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         while (abs(drive_RR.getCurrentPosition()) < encoderValue) {
 
-            drive_FL.setPower(speed);
-            drive_RL.setPower(speed);
-            drive_FR.setPower(speed);
-            drive_RR.setPower(speed);
+            drive_FL.setPower(-speed);
+            drive_RL.setPower(-speed);
+            drive_FR.setPower(-speed);
+            drive_RR.setPower(-speed);
 
             telemetry.addData("Encoder Target", encoderValue);
             telemetry.addData("Right Dead Encoder Running", drive_RR.getCurrentPosition());
