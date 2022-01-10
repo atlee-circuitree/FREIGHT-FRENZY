@@ -198,8 +198,6 @@ public class Blue_Wheel_Side_What_If extends BaseAutoOpMode {
         //Adjust sleep depending how much time needed for teammate to get out of the way
         //sleep(1000);
 
-        runForwardsEncoder(.6,28);
-
         //Moves inside warehouse to get second block for end of auto period
         runForwardsDistanceAndLowerArmAndExtend(.6, 16, 10);
 
@@ -257,9 +255,9 @@ public class Blue_Wheel_Side_What_If extends BaseAutoOpMode {
 
         feederEat(-1);
 
-        while (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
+        while (frontDistanceRight.getDistance(DistanceUnit.INCH) > inches || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
 
-            if (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches) {
+            if (frontDistanceRight.getDistance(DistanceUnit.INCH) > inches) {
 
                 drive_FL.setPower(-speed);
                 drive_RL.setPower(-speed);
@@ -575,9 +573,9 @@ public class Blue_Wheel_Side_What_If extends BaseAutoOpMode {
 
         double encoderValue = inchesBore(inputInches);
 
-        double startingValue = drive_RL.getCurrentPosition();
+        double startingValue = drive_RR.getCurrentPosition();
 
-        while (abs(drive_RL.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
+        while (abs(drive_RR.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
 
             drive_FL.setPower(-speed);
             drive_RL.setPower(-speed);
