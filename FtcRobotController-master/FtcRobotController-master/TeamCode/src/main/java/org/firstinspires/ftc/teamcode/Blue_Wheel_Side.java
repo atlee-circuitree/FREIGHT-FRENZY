@@ -180,7 +180,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         //forwardsDistanceHub(3); Added this -Viassna 12/1/21
         forwardsDistanceDrive(30 - reduction);
 
-        feederSpit(.6);
+        feederSpit(.4);
 
         feeder.setPower(0);
 

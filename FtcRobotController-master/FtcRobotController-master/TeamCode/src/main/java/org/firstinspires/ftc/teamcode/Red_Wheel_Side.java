@@ -180,7 +180,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         //forwardsDistanceHub(3);
         forwardsDistanceDrive(30 - reduction);
 
-        feederSpit(.6);
+        feederSpit(.4);
 
         feeder.setPower(0);
 

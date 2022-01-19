@@ -186,7 +186,7 @@ public class Red_Wheel_Side_What_If extends BaseAutoOpMode {
 
         //Feeder spits starting block
 
-        feederSpit(.6);
+        feederSpit(.4);
 
         feeder.setPower(0);
 
