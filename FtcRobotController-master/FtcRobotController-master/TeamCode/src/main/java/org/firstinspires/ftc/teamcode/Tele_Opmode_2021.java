@@ -39,6 +39,7 @@ public class Tele_Opmode_2021 extends LinearOpMode {
     private CRServo rightDucky = null;
     private CRServo tapeArm = null;
     private Servo odometryLift1 = null;
+    private Servo armTurn = null;
 
 
     @Override
@@ -62,6 +63,7 @@ public class Tele_Opmode_2021 extends LinearOpMode {
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
         tapeArm = hardwareMap.get(CRServo.class, "tapeArm");
         odometryLift1 = hardwareMap.get(Servo.class, "odometryLift1");
+        armTurn = hardwareMap.get(Servo.class, "armTurn");
 
         leftArm.setDirection(DcMotor.Direction.REVERSE);
         rightArm.setDirection(DcMotor.Direction.FORWARD);
@@ -111,6 +113,8 @@ public class Tele_Opmode_2021 extends LinearOpMode {
             telemetry.addData("Arm Extend", armExtend.getCurrentPosition());
             telemetry.addData("Arm Extend Power", armExtend.getPower());
             telemetry.addData("Tape Arm Power", tapeArm.getPower());
+            telemetry.addData("Stick Value", gamepad2.right_stick_x);
+            telemetry.addData("Servo", armTurn.getPosition());
             telemetry.update();
 
             //Mecanum Drive Code
@@ -210,6 +214,9 @@ public class Tele_Opmode_2021 extends LinearOpMode {
             } else {
                 tapeArm.setPower(0);
             }
+
+            //Move Arm Left - Right
+            armTurn.setPosition(gamepad2.right_stick_x);
 
         }
     }
