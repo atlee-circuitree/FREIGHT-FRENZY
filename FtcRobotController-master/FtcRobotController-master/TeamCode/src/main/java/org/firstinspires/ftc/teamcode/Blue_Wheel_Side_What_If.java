@@ -157,7 +157,9 @@ public class Blue_Wheel_Side_What_If extends BaseAutoOpMode {
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes to Ducky Wheel
-        strafeRight(1.5, .3);
+        strafeRight(2, .3);
+
+        runForwardsEncoder(.2, .5);
 
         spinDuckyRight(1);
 
@@ -205,6 +207,30 @@ public class Blue_Wheel_Side_What_If extends BaseAutoOpMode {
 
         armMoveUp(-30);
     }
+
+    public void runBackwardsEncoder(double speed, double inputInches) {
+        double encoderValue = inchesBore(inputInches);
+        double startingValue = drive_FL.getCurrentPosition();
+
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
+
+                drive_FL.setPower(speed);
+                drive_RL.setPower(speed);
+                drive_FR.setPower(speed);
+                drive_RR.setPower(speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+        }
+    }
+
 
     public void runForwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
         double encoderValue = inchesBore(inputInches);

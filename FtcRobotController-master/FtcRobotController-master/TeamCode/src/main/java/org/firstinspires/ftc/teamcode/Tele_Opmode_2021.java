@@ -215,8 +215,13 @@ public class Tele_Opmode_2021 extends LinearOpMode {
                 tapeArm.setPower(0);
             }
 
-            //Move Arm Left - Right
-            armTurn.setPosition(gamepad2.right_stick_x);
+            if (gamepad2.dpad_left) {
+                armTurn.setPosition(.22);
+            } else if (gamepad2.dpad_right) {
+                armTurn.setPosition(.13);
+            } else if (gamepad2.dpad_up) {
+                armTurn.setPosition(.175);
+            }
 
         }
     }

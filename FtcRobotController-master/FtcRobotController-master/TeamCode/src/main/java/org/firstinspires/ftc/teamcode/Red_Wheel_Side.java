@@ -157,7 +157,9 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes to Ducky Wheel
-        strafeLeft(1.5);
+        strafeLeft(2.0);
+
+        runBackwardsEncoder(.2, .5);
 
         spinDuckyLeft(1);
 
@@ -191,6 +193,29 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         strafeRight(26);
+    }
+
+    public void runBackwardsEncoder(double speed, double inputInches) {
+        double encoderValue = inchesBore(inputInches);
+        double startingValue = drive_FL.getCurrentPosition();
+
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
+
+                drive_FL.setPower(speed);
+                drive_RL.setPower(speed);
+                drive_FR.setPower(speed);
+                drive_RR.setPower(speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+        }
     }
 
     public void runForwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
@@ -432,7 +457,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         if (Position == 1) {
 
-            return 1;
+            return 0;
 
         } else if (Position == 2){
 
