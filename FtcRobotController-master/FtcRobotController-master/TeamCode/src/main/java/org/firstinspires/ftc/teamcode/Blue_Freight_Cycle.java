@@ -183,7 +183,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         strafeLeft(0.5);
 
         //Moves forward inside warehouse
-        runForwardsDistanceAndLowerArmAndExtend(.6, 16, 10);
+        runForwardsEncoderAndLowerArmAndExtend(.6, 52, 10);
 
         sleep(300);
 
@@ -223,7 +223,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
         strafeLeft(0.5);
 
-        runForwardsDistanceAndLowerArmAndExtend(.6, 16, 10);
+        runForwardsEncoderAndLowerArmAndExtend(.6, 52, 10);
 
         sleep(200);
 
@@ -284,6 +284,77 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
                 drive_RL.setPower(0);
                 drive_FR.setPower(0);
                 drive_RR.setPower(0);
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20) {
+
+                rightArm.setPower(-.6);
+                leftArm.setPower(-.6);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+            if (armExtend.getCurrentPosition() < 1700) {
+
+                armExtend.setPower(1);
+
+            } else {
+
+                armExtend.setPower(0);
+
+            }
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+        armExtend.setPower(0);
+
+        sleep(1000);
+
+    }
+
+    public void runForwardsEncoderAndLowerArmAndExtend(double speed, double inches, int angle) {
+
+        feederEat(-.6);
+
+        double encoderValue = inchesBore(inches);
+
+        while (abs(drive_RR.getCurrentPosition()) < encoderValue || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
+
+            if (abs(drive_RR.getCurrentPosition()) < encoderValue) {
+
+                drive_FL.setPower(-speed);
+                drive_RL.setPower(-speed);
+                drive_FR.setPower(-speed);
+                drive_RR.setPower(-speed);
+
+                telemetry.addData("Encoder Target", encoderValue);
+                telemetry.addData("Right Dead Encoder Running", drive_RR.getCurrentPosition());
+                telemetry.update();
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+                telemetry.addData("Encoder Target", encoderValue);
+                telemetry.addData("Right Dead Encoder Finished", drive_RR.getCurrentPosition());
+                telemetry.update();
+
+                ResetDriveEncoder();
+                turnOnEncoders();
 
             }
 

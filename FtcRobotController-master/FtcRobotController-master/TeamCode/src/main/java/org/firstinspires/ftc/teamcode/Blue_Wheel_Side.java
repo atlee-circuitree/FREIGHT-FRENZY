@@ -157,7 +157,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes to Ducky Wheel
-        strafeRight(2.0, .3);
+        strafeRight(3.0, .3);
 
         runBackwardsEncoder(.2, .5);
 
@@ -182,7 +182,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         //forwardsDistanceHub(3); Added this -Viassna 12/1/21
         forwardsDistanceDrive(30 - reduction);
 
-        feederSpit(.4);
+        feederSpit(.6);
 
         feeder.setPower(0);
 
@@ -198,11 +198,12 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
     }
 
     public void runBackwardsEncoder(double speed, double inputInches) {
+        double startRuntime = getRuntime();
         double encoderValue = inchesBore(inputInches);
         double startingValue = drive_FL.getCurrentPosition();
 
-        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
-            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && startRuntime < getRuntime() + 1000) {
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && startRuntime < getRuntime() + 1000) {
 
                 drive_FL.setPower(speed);
                 drive_RL.setPower(speed);
@@ -218,8 +219,13 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
             }
         }
-    }
 
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+
+    }
     public void runForwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
         double encoderValue = inchesBore(inputInches);
         double startingValue = drive_RR.getCurrentPosition();
@@ -467,7 +473,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         } else {
 
-            return 3;
+            return 1;
 
         }
 
