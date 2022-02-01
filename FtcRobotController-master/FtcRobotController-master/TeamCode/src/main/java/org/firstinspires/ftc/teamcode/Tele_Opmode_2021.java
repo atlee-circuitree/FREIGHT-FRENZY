@@ -167,13 +167,13 @@ public class Tele_Opmode_2021 extends LinearOpMode {
 
 
             if (gamepad1.left_stick_button) {
-                SD = .5;
+                SD = .25;
             } else {
                 SD = 1;
             }
 
             if (gamepad2.left_stick_button) {
-                SA = .4;
+                SA = .25;
             } else {
                 SA = .75;
             }
