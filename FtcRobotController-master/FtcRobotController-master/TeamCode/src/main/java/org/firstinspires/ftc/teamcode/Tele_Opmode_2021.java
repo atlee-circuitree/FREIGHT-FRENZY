@@ -41,7 +41,6 @@ public class Tele_Opmode_2021 extends LinearOpMode {
     private Servo odometryLift1 = null;
     private Servo armTurn = null;
 
-
     @Override
     public void runOpMode() {
 
@@ -206,23 +205,15 @@ public class Tele_Opmode_2021 extends LinearOpMode {
                 armExtend.setPower(0);
             }
 
-            //Retracts tapeArm
-            if (gamepad2.left_bumper) {
-                tapeArm.setPower(-1);
-            } else if (gamepad2.right_bumper) {
-                tapeArm.setPower(1);
-            } else {
-                tapeArm.setPower(0);
-            }
-/*
             if (gamepad2.dpad_left) {
-                armTurn.setPosition(.3);
+                armTurn.setPosition(.27);
             } else if (gamepad2.dpad_right) {
-                armTurn.setPosition(.7);
+                armTurn.setPosition(.19);
             } else if (gamepad2.dpad_up) {
-                armTurn.setPosition(.5);
+                armTurn.setPosition(.23);
             }
-*/
+
+
         }
     }
 
