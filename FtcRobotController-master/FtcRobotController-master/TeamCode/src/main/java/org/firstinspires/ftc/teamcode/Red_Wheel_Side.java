@@ -132,12 +132,12 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         } else if (readDisVision() == 1) {
 
-            telemetry.addLine("Target : Low");
+            telemetry.addLine("Target : High");
             telemetry.update();
 
         } else {
 
-            telemetry.addLine("Target : High");
+            telemetry.addLine("Target : Low");
             telemetry.update();
 
         }
@@ -160,7 +160,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes to Ducky Wheel
-        strafeLeft(2.8);
+        strafeLeft(2.5);
 
         runBackwardsEncoder(.2, .5);
 
@@ -174,7 +174,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Moves towards Alliance Storage Unit
-        runForwardsDistanceAndRaiseArm(.3, 37, angle);
+        runForwardsDistanceAndRaiseArm(.3, 39, angle);
 
         //Turns towards Alliance Shipping Hub
         turnRight(80);
@@ -509,8 +509,8 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
             drive_FR.setPower(-0.15);
             drive_RR.setPower(-0.15);
             telemetry.addData("Error", error);
-            telemetry.addData("Left Distance", RL_distance.getDistance(DistanceUnit.INCH));
-            telemetry.addData("Left Distance", RR_distance.getDistance(DistanceUnit.INCH));
+            telemetry.addData("RL Distance", RL_distance.getDistance(DistanceUnit.INCH));
+            telemetry.addData("RR Distance", RR_distance.getDistance(DistanceUnit.INCH));
             telemetry.update();
 
         }
@@ -524,8 +524,8 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
             drive_FR.setPower(0.15);
             drive_RR.setPower(0.15);
             telemetry.addData("Error", error);
-            telemetry.addData("Left Distance", RL_distance.getDistance(DistanceUnit.INCH));
-            telemetry.addData("Left Distance", RR_distance.getDistance(DistanceUnit.INCH));
+            telemetry.addData("RL Distance", RL_distance.getDistance(DistanceUnit.INCH));
+            telemetry.addData("RR Distance", RR_distance.getDistance(DistanceUnit.INCH));
             telemetry.update();
 
         }
@@ -645,10 +645,10 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
             drive_FR.setPower(-0.3);
             drive_RR.setPower(0.3);
         }
-            drive_FL.setPower(0);
-            drive_RL.setPower(0);
-            drive_FR.setPower(0);
-            drive_RR.setPower(0);
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
     }
 
     public void strafeRight(double inches) {
@@ -695,10 +695,10 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
             drive_FR.setPower(-.3);
             drive_RR.setPower(-.3);
         }
-            drive_FL.setPower(0);
-            drive_RL.setPower(0);
-            drive_FR.setPower(0);
-            drive_RR.setPower(0);
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
     }
 
     public void forwardsDistanceDriveFront(int inches) {
