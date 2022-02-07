@@ -99,7 +99,8 @@ public class Tele_Opmode_2021 extends LinearOpMode {
 
             //Show encoder values on the phone
             telemetry.addData("Status", "Initialized");
-            telemetry.addData("Wheel Encoder", drive_FL.getCurrentPosition());
+            telemetry.addData("Wheel 1 Encoder", drive_FL.getCurrentPosition());
+            telemetry.addData("Wheel 2 Encoder", drive_RR.getCurrentPosition());
             telemetry.addData("Rear Dead Encoder", drive_RL.getCurrentPosition());
             telemetry.addData("Arm Encoder", rightArm.getCurrentPosition());
             telemetry.addData("Arm Angle", rightArm.getCurrentPosition() / 20);
@@ -206,11 +207,19 @@ public class Tele_Opmode_2021 extends LinearOpMode {
             }
 
             if (gamepad2.dpad_left) {
-                armTurn.setPosition(.27);
+                armTurn.setPosition(.29);
             } else if (gamepad2.dpad_right) {
                 armTurn.setPosition(.19);
             } else if (gamepad2.dpad_up) {
-                armTurn.setPosition(.23);
+                armTurn.setPosition(.24);
+            }
+
+            if (gamepad2.left_bumper) {
+                tapeArm.setPower(-1);
+            } else if  (gamepad2.right_bumper) {
+                tapeArm.setPower(1);
+            } else {
+                tapeArm.setPower(0);
             }
 
 

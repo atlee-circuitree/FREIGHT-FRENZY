@@ -4,6 +4,7 @@ import static java.lang.Math.abs;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -31,6 +32,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @Autonomous(name="Blue Freight Cycle", group="Linear Opmode")
+@Disabled
 public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
     // Declare OpMode members.
@@ -62,6 +64,8 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
     private DistanceSensor RR_distance;
     private DistanceSensor frontDistanceLeft;
     private DistanceSensor frontDistanceRight;
+
+    private Servo armTurn;
 
     BNO055IMU imu;
 
@@ -100,6 +104,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         RR_distance = hardwareMap.get(DistanceSensor.class, "RR_distance");
         frontDistanceLeft = hardwareMap.get(DistanceSensor.class, "frontDistanceLeft");
         frontDistanceRight = hardwareMap.get(DistanceSensor.class, "frontDistanceRight");
+        armTurn = hardwareMap.get(Servo.class, "armTurn");
 
         leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.REVERSE);
@@ -167,6 +172,8 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
+        armTurn.setPosition(.24);
+
         //Feeder spits starting block
         feederSpit(0.5); //12/4/2021 11:19 am Changed spit speed from .75 to .50 and changed runtime from 3 to 1 second -Viassna
 
@@ -183,9 +190,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         strafeLeft(0.5);
 
         //Moves forward inside warehouse
-        runForwardsEncoderAndLowerArmAndExtend(.6, 52, 10);
-
-        sleep(300);
+        runForwardsEncoderAndLowerArmAndExtend(.3, 52, 13);
 
         /*turnRightArmRaise(20,50); alternate solution
 
@@ -197,7 +202,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         runBackwardsEncoder(.6,52);*/
 
         //Strafes left until RS_Distance sensor is .5 in away from wall and lifts arm
-        runBackwardsEncoderAndRaiseArm(.6, 52, 50);
+        runBackwardsEncoderAndRaiseArm(.6, 50, 50);
 
         feeder.setPower(0);
 
@@ -223,15 +228,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
         strafeLeft(0.5);
 
-        runForwardsEncoderAndLowerArmAndExtend(.6, 52, 10);
-
-        sleep(200);
-
-        feeder.setPower(0);
-
-        armMoveUp(-30);
-
-        strafeRightFromWall(15);
+        runForwardsEncoderAndLowerArmAndExtend(.4, 56, 13);
 
     }
 
@@ -325,13 +322,15 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
     public void runForwardsEncoderAndLowerArmAndExtend(double speed, double inches, int angle) {
 
+        armTurn.setPosition(.24);
+
         feederEat(-.6);
 
-        double encoderValue = inchesBore(inches);
+        double encoderValue = inchesBore(inches) + drive_FL.getCurrentPosition();
 
-        while (abs(drive_RR.getCurrentPosition()) < encoderValue || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
+        while (drive_FL.getCurrentPosition() < encoderValue || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
 
-            if (abs(drive_RR.getCurrentPosition()) < encoderValue) {
+            if (drive_FL.getCurrentPosition() < encoderValue) {
 
                 drive_FL.setPower(-speed);
                 drive_RL.setPower(-speed);
@@ -626,7 +625,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
         if (Position == 1) {
 
-            return 3;
+            return 2;
 
         } else if (Position == 2){
 

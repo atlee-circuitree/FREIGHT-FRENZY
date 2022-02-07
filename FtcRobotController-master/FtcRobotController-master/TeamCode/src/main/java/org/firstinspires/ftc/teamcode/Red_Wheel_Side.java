@@ -55,6 +55,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
     private DcMotor leftEncoder = null;
     private DcMotor rightEncoder = null;
     private DcMotor rearEncoder = null;
+    private Servo armTurn = null;
 
     BNO055IMU imu;
 
@@ -100,6 +101,8 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         RR_distance = hardwareMap.get(DistanceSensor.class, "RR_distance");
         frontDistanceLeft = hardwareMap.get(DistanceSensor.class, "frontDistanceLeft");
         frontDistanceRight = hardwareMap.get(DistanceSensor.class, "frontDistanceRight");
+
+        armTurn = hardwareMap.get(Servo.class, "armTurn");
 
         leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.REVERSE);
@@ -157,7 +160,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes to Ducky Wheel
-        strafeLeft(3.0);
+        strafeLeft(2.8);
 
         runBackwardsEncoder(.2, .5);
 
@@ -166,7 +169,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         leftDucky.setPower(0);
 
         //Moves a little forward to allow angle adjustment
-        forwardsDistanceDrive(10);
+        forwardsDistanceDrive(11);
 
         compareBackSensorsNew();
 
@@ -174,13 +177,17 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         runForwardsDistanceAndRaiseArm(.3, 37, angle);
 
         //Turns towards Alliance Shipping Hub
-        turnRight(90);
+        turnRight(80);
 
         compareBackSensorsNew();
 
         //Moves forward towards hub with front distance sensors
         //forwardsDistanceHub(3);
         forwardsDistanceDrive(30 - reduction);
+
+        armTurn.setPosition(.25);
+
+        sleep(2000);
 
         feederSpit(.6);
 
@@ -472,7 +479,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         } else {
 
-            return 1;
+            return 0;
 
         }
 

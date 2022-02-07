@@ -67,6 +67,8 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
     private DistanceSensor frontDistanceLeft;
     private DistanceSensor frontDistanceRight;
 
+    private Servo armTurn;
+
     static final double     FORWARD_SPEED = 1;
     static final double     TURN_SPEED    = 1;
 
@@ -100,6 +102,8 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         RR_distance = hardwareMap.get(DistanceSensor.class, "RR_distance");
         frontDistanceLeft = hardwareMap.get(DistanceSensor.class, "frontDistanceLeft");
         frontDistanceRight = hardwareMap.get(DistanceSensor.class, "frontDistanceRight");
+
+        armTurn = hardwareMap.get(Servo.class, "armTurn");
 
         leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.REVERSE);
@@ -181,6 +185,10 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         //Moves forward towards hub with front distance sensors
         //forwardsDistanceHub(3); Added this -Viassna 12/1/21
         forwardsDistanceDrive(30 - reduction);
+
+        armTurn.setPosition(.27);
+
+        sleep(2000);
 
         feederSpit(.6);
 

@@ -4,6 +4,7 @@ import static java.lang.Math.abs;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -63,6 +64,8 @@ public class Red_Freight_Side extends BaseAutoOpMode {
     private DistanceSensor frontDistanceLeft;
     private DistanceSensor frontDistanceRight;
 
+    private Servo armTurn = null;
+
     BNO055IMU imu;
 
     HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
@@ -93,6 +96,7 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         odometryLift1 = hardwareMap.get(Servo.class,"odometryLift1");
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
+        armTurn = hardwareMap.get(Servo.class, "armTurn");
 
         LS_distance = hardwareMap.get(DistanceSensor.class, "LS_distance");
         RS_distance = hardwareMap.get(DistanceSensor.class, "RS_distance");
@@ -127,7 +131,7 @@ public class Red_Freight_Side extends BaseAutoOpMode {
             telemetry.addLine("Target : Middle");
             telemetry.update();
 
-        } else if (readDisVision() == 1) {
+        } else if (readDisVision() == 3) {
 
             telemetry.addLine("Target : Low");
             telemetry.update();
@@ -149,9 +153,10 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         sleep(700);
 
         //Moves forward
-        forwardsDistanceDrive(5); //12/4/2021 4:36 pm Added missing forward drive -Viassna
+        forwardsDistanceDrive(5);
 
-        compareBackSensorsNew(); //12/4/2021 4:36 pm Added missing distance compare code -Viassna
+        //Angle adjust
+        compareBackSensorsNew();
 
         sleep(500);
 
@@ -159,44 +164,36 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         int angle = calibrateDisVisionAngle(readDisVision());
         int reduction = calibrateDisVisionReduction(readDisVision());
 
-        strafeLeftEncoder(.5, 14);
+        //Strafes to center of alliance shipping hub
+        strafeLeftEncoder(.5, 15);
 
-        sleep(500);
-
+        //Angle adjust
         compareBackSensorsNew();
 
-        runForwardsDistanceAndRaiseArm(.4, 18 - reduction, angle);
+        //Lifts arm and moves towards alliance shipping hub
+        runForwardsDistanceAndRaiseArm(.4, 19 - reduction, angle);
 
+        //Angle adjust
+        compareBackSensorsNew();
 
         //Feeder spits starting block
-        feederSpit(0.5); //12/4/2021 11:19 am Changed spit speed from .75 to .50 and changed runtime from 3 to 1 second -Viassna
+        feederSpit(0.5);
 
         feeder.setPower(0);
 
+        //Moves back from alliance shipping hub
         backwardsDistanceDrive(15);
 
-        //Turns 90 degrees right
-        turnRight(90);
+        //Turns 100 degrees right
+        turnRight(100);
 
         sleep(200);
 
-        //Strafes right until RS_Distance sensor is 2 in away from wall
+        //Strafes right until RS_Distance sensor is 0.5 in away from wall
         strafeRight(0.5);
-        //Moves forward inside warehouse
-        runForwardsEncoderAndLowerArmAndExtend(.6, 52, 10); //12/4/2021 - 9:30 am - Larson Changed from 48, 11:15 am Changed from 50 in to 62 in -Viassna, 5:09 pm Changed from 62 to 60 -Viassna
-        feeder.setPower(0);
 
-        //Moves arm up to allow strafing
-        armMoveUp(-20); //12/4/2021 5:07 pm Changed from -15 to -20
-
-        //Moves backward 6 in
-        //runForwardsEncoder(.6,6);
-
-        //Strafes left 20 in inside warehouse
-        strafeLeftEncoder(.5, 20); //12/4/2021 11:11 am Added strafeLeft so robot can be more inside warehouse -Viassna
-
-        //Lifts back odometry wheel
-        odometryLift1.setPosition(.5);
+        //Moves forward inside warehouse to get second block
+        runForwardsEncoderAndLowerArmAndExtend(.5, 34, 20);
 
     }
 
@@ -230,15 +227,13 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
     }
 
-    public void runForwardsEncoderAndLowerArmAndExtend(double speed, double inputInches, int angle) {
-        double encoderValue = inchesBore(inputInches);
-        double startingValue = drive_RR.getCurrentPosition();
+    public void runForwardsDistanceAndLowerArmAndExtend(double speed, double inches, int angle) {
 
-        feederEat(-.8);
+        feederEat(-1);
 
-        while (abs(drive_RR.getCurrentPosition()) < abs(startingValue) + abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
+        while (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
 
-            if (abs(drive_RR.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
+            if (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches) {
 
                 drive_FL.setPower(-speed);
                 drive_RL.setPower(-speed);
@@ -285,7 +280,50 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         rightArm.setPower(0);
         leftArm.setPower(0);
         armExtend.setPower(0);
-        feederEat(0);
+
+        sleep(1000);
+
+    }
+
+    public void strafeRightFromWallAndRaiseArm(double speed, double inches, int angle) {
+
+        while (LS_distance.getDistance(DistanceUnit.INCH) < inches + 4 || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+            if (LS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
+
+                drive_FL.setPower(-speed);
+                drive_RL.setPower(speed);
+                drive_FR.setPower(speed);
+                drive_RR.setPower(-speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20) {
+
+                rightArm.setPower(.3);
+                leftArm.setPower(.3);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
 
     }
 
@@ -337,6 +375,57 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
     }
 
+    public void runBackwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
+        double encoderValue = inchesBore(inputInches);
+        double startingValue = drive_FL.getCurrentPosition();
+
+        feeder.setPower(0);
+
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
+
+                drive_FL.setPower(speed);
+                drive_RL.setPower(speed);
+                drive_FR.setPower(speed);
+                drive_RR.setPower(speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+                rightArm.setPower(1);
+                leftArm.setPower(1);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+            telemetry.addData("Current Encoder",  drive_FL.getCurrentPosition());
+            telemetry.addData("Target Degrees", startingValue - abs(encoderValue));
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+
+    }
+
     public void strafeRightEncoder(double speed, double inputInches) {
 
         double encoderValue = abs(inchesBore(inputInches));
@@ -350,8 +439,8 @@ public class Red_Freight_Side extends BaseAutoOpMode {
             drive_FR.setPower(speed);
             drive_RR.setPower(-speed);
 
-            telemetry.addData("Encoder Target", encoderValue);
-            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
+            telemetry.addData("Encoder Target", abs(drive_RL.getCurrentPosition()));
+            telemetry.addData("Back Dead Encoder Running", abs(startingValue) + abs(encoderValue));
             telemetry.update();
 
         }
@@ -371,15 +460,15 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
         if (frontDistanceLeft.getDistance(DistanceUnit.INCH) < 20) {
 
-            return 2;
+            return 1;
 
         } else if (frontDistanceRight.getDistance(DistanceUnit.INCH) < 20) {
 
-            return 3;
+            return 2;
 
         } else {
 
-            return 1;
+            return 3;
 
         }
 
@@ -387,7 +476,7 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
     public int calibrateDisVisionAngle(int Position) {
 
-        if (Position == 3) {
+        if (Position == 1) {
 
             return 75;
 
@@ -405,17 +494,17 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
     public int calibrateDisVisionReduction(int Position) {
 
-        if (Position == 3) {
+        if (Position == 1) {
 
-            return 1;
+            return 3;
 
         } else if (Position == 2){
 
-            return 2; //12/4/2021 5:41 pm Changed from 4 to 2 -Viassna
+            return 3; //12/4/2021 5:41 pm Changed from 4 to 2 -Viassna
 
         } else {
 
-            return 3; //12/4/2021 5:41 pm Changed from 6 to 3 -Viassna
+            return 4; //12/4/2021 5:41 pm Changed from 6 to 3 -Viassna
 
         }
 
@@ -436,7 +525,7 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
         double error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
-        while (error > .1) {
+        while (error > .3) {
 
             error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
@@ -451,7 +540,7 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
         }
 
-        while (error < -.1) {
+        while (error < -.3) {
 
             error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
@@ -519,8 +608,8 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
         while (-degreesBore(rightArm.getCurrentPosition()) > degreesBore(degrees) * 20) {
 
-            rightArm.setPower(.3);
-            leftArm.setPower(.3);
+            rightArm.setPower(.6);
+            leftArm.setPower(.6);
             telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
             telemetry.addData("Target Degrees", degreesBore(degrees));
             telemetry.update();
@@ -599,6 +688,79 @@ public class Red_Freight_Side extends BaseAutoOpMode {
 
     }
 
+    public void runForwardsEncoderAndLowerArmAndExtend(double speed, double inches, int angle) {
+
+        armTurn.setPosition(.24);
+
+        feederEat(-.6);
+
+        double encoderValue = inchesBore(inches) + drive_FL.getCurrentPosition();
+
+        while (drive_FL.getCurrentPosition() < encoderValue || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
+
+            if (drive_FL.getCurrentPosition() < encoderValue) {
+
+                drive_FL.setPower(-speed);
+                drive_RL.setPower(-speed);
+                drive_FR.setPower(-speed);
+                drive_RR.setPower(-speed);
+
+                telemetry.addData("Encoder Target", encoderValue);
+                telemetry.addData("Right Dead Encoder Running", drive_RR.getCurrentPosition());
+                telemetry.update();
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+                telemetry.addData("Encoder Target", encoderValue);
+                telemetry.addData("Right Dead Encoder Finished", drive_RR.getCurrentPosition());
+                telemetry.update();
+
+                ResetDriveEncoder();
+                turnOnEncoders();
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20) {
+
+                rightArm.setPower(-.6);
+                leftArm.setPower(-.6);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+            if (armExtend.getCurrentPosition() < 1700) {
+
+                armExtend.setPower(1);
+
+            } else {
+
+                armExtend.setPower(0);
+
+            }
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+        armExtend.setPower(0);
+
+        sleep(1000);
+
+    }
+
     public void strafeLeft(double inches) {
         while (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
             drive_FL.setPower(0.6);
@@ -606,10 +768,23 @@ public class Red_Freight_Side extends BaseAutoOpMode {
             drive_FR.setPower(-0.6);
             drive_RR.setPower(0.6);
         }
-            drive_FL.setPower(0);
-            drive_RL.setPower(0);
-            drive_FR.setPower(0);
-            drive_RR.setPower(0);
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
+    public void strafeLeftFromWall(double inches) {
+        while (RS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
+            drive_FL.setPower(0.6);
+            drive_RL.setPower(-0.6);
+            drive_FR.setPower(-0.6);
+            drive_RR.setPower(0.6);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
     }
 
     public void strafeRight(double inches) {
@@ -625,10 +800,23 @@ public class Red_Freight_Side extends BaseAutoOpMode {
         drive_RR.setPower(0);
     }
 
+    public void strafeRightFromWall(double inches) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
+            drive_FL.setPower(-0.6);
+            drive_RL.setPower(0.6);
+            drive_FR.setPower(0.6);
+            drive_RR.setPower(-0.6);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
     public void spinDuckyLeft(double speed) {
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() <= 4.0))
-        leftDucky.setPower(speed);
+            leftDucky.setPower(speed);
         telemetry.addData("Left Ducky Wheel", runtime.seconds());
         telemetry.update();
     }
@@ -656,10 +844,10 @@ public class Red_Freight_Side extends BaseAutoOpMode {
             drive_FR.setPower(-.3);
             drive_RR.setPower(-.3);
         }
-            drive_FL.setPower(0);
-            drive_RL.setPower(0);
-            drive_FR.setPower(0);
-            drive_RR.setPower(0);
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
     }
 
     public void forwardsDistanceDriveFront(int inches) {

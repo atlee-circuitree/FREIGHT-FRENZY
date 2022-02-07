@@ -4,6 +4,7 @@ import static java.lang.Math.abs;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -31,6 +32,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @Autonomous(name="Red Freight Cycle", group="Linear Opmode")
+@Disabled
 public class Red_Freight_Cycle extends BaseAutoOpMode {
 
     // Declare OpMode members.
@@ -63,6 +65,8 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
     private DistanceSensor frontDistanceLeft;
     private DistanceSensor frontDistanceRight;
 
+    private Servo armTurn = null;
+
     BNO055IMU imu;
 
     HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
@@ -93,6 +97,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         odometryLift1 = hardwareMap.get(Servo.class,"odometryLift1");
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
+        armTurn = hardwareMap.get(Servo.class, "armTurn");
 
         LS_distance = hardwareMap.get(DistanceSensor.class, "LS_distance");
         RS_distance = hardwareMap.get(DistanceSensor.class, "RS_distance");
@@ -189,12 +194,12 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         strafeRight(0.5);
 
         //Moves forward inside warehouse to get second block
-        runForwardsEncoderAndLowerArmAndExtend(.6, 52, 10);
+        runForwardsEncoderAndLowerArmAndExtend(.5, 34, 20);
 
         sleep(300);
 
         //Moves out of warehouse to center of alliance shipping hub
-        runBackwardsEncoderAndRaiseArm(.6, 56, 50);
+        runBackwardsEncoderAndRaiseArm(.6, 34, 50);
 
         sleep(500);
 
@@ -226,7 +231,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         strafeRight(0.5);
 
         //Moves inside warehouse to get third block for end of auto period
-        runForwardsEncoderAndLowerArmAndExtend(.6, 52, 10);
+        runForwardsEncoderAndLowerArmAndExtend(.5, 34, 20);
 
         sleep(200);
 
@@ -731,13 +736,15 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
     public void runForwardsEncoderAndLowerArmAndExtend(double speed, double inches, int angle) {
 
+        armTurn.setPosition(.24);
+
         feederEat(-.6);
 
-        double encoderValue = inchesBore(inches);
+        double encoderValue = inchesBore(inches) + drive_FL.getCurrentPosition();
 
-        while (abs(drive_RR.getCurrentPosition()) < encoderValue || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
+        while (drive_FL.getCurrentPosition() < encoderValue || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
 
-            if (abs(drive_RR.getCurrentPosition()) < encoderValue) {
+            if (drive_FL.getCurrentPosition() < encoderValue) {
 
                 drive_FL.setPower(-speed);
                 drive_RL.setPower(-speed);
