@@ -160,9 +160,9 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes to Ducky Wheel
-        strafeLeft(2.5);
+        strafeLeft(2);
 
-        runBackwardsEncoder(.2, .5);
+        runBackwardsEncoder(.2, 1);
 
         spinDuckyLeft(1);
 
@@ -199,7 +199,9 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        strafeRight(26);
+        strafeRight(23); //26;
+
+        compareBackSensorsNew(); //New
     }
 
     public void runBackwardsEncoder(double speed, double inputInches) {
