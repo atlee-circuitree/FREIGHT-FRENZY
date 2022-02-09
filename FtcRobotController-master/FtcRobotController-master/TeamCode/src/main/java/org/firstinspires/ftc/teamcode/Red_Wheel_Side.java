@@ -162,7 +162,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         //Strafes to Ducky Wheel
         strafeLeft(2);
 
-        runBackwardsEncoder(.2, 1);
+        runBackwardsEncoder(.2, .5);
 
         spinDuckyLeft(1);
 
@@ -199,7 +199,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        strafeRight(23); //26;
+        strafeRight(29); //26;
 
         compareBackSensorsNew(); //New
     }
