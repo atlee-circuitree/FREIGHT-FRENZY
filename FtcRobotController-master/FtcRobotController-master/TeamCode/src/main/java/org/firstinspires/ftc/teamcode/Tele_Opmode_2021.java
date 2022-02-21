@@ -205,6 +205,7 @@ public class Tele_Opmode_2021 extends LinearOpMode {
                 armExtend.setPower(0);
             }
 
+            //Turns feeder box (Higher number = left, Lower number = right)
             if (gamepad2.dpad_left) {
                 armTurn.setPosition(.29);
             } else if (gamepad2.dpad_right) {

@@ -150,7 +150,11 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         kickout.setPosition(0);
 
-        sleep(500);
+        sleep(1000);
+
+        armTurn.setPosition(.24);
+
+        sleep (1000);
 
         forwardsDistanceDrive(7);
 
@@ -160,9 +164,12 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes to Ducky Wheel
-        strafeLeft(2);
+        strafeLeft(2,0.3);
 
-        runBackwardsEncoder(.2, .5);
+        sleep (250);
+
+        runBackwardsEncoder(.1, .8); //85 before
+        //runBackwardsEncoderTimed(.1,.10); does not work yet, completely skips moving backwards
 
         spinDuckyLeft(1);
 
@@ -177,17 +184,19 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         runForwardsDistanceAndRaiseArm(.3, 39, angle);
 
         //Turns towards Alliance Shipping Hub
-        turnRight(80);
+        turnRight(75);
 
         compareBackSensorsNew();
 
-        //Moves forward towards hub with front distance sensors
-        //forwardsDistanceHub(3);
+        sleep(250);
+
+        //Moves forward towards wobble with RL_distance sensor
         forwardsDistanceDrive(30 - reduction);
 
-        armTurn.setPosition(.25);
+        //Higher number = left, Lower number = right
+        //armTurn.setPosition(.24);
 
-        sleep(2000);
+        sleep(500);
 
         feederSpit(.6);
 
@@ -199,9 +208,9 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        strafeRight(29); //26;
+        strafeRight(28.5);
 
-        compareBackSensorsNew(); //New
+        compareBackSensorsNew();
     }
 
     public void runBackwardsEncoder(double speed, double inputInches) {
@@ -211,6 +220,35 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && startRuntime < getRuntime() + 1000) {
             if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && startRuntime < getRuntime() + 1000) {
+
+                drive_FL.setPower(speed);
+                drive_RL.setPower(speed);
+                drive_FR.setPower(speed);
+                drive_RR.setPower(speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+
+    }
+
+    public void runBackwardsEncoderTimed(double speed, double inputInches) {
+        double encoderValue = inchesBore(inputInches);
+        double startingValue = drive_FL.getCurrentPosition();
+
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 5) {
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 5) {
 
                 drive_FL.setPower(speed);
                 drive_RL.setPower(speed);
@@ -311,6 +349,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
             }
 
+            telemetry.addData("RL Distance Value", RL_distance.getDistance(DistanceUnit.INCH));
             telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
             telemetry.addData("Target Degrees", degreesBore(angle) * 20);
             telemetry.update();
@@ -437,15 +476,15 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         if (frontDistanceLeft.getDistance(DistanceUnit.INCH) < 20) {
 
-            return 1;
+            return 1; //High
 
         } else if (frontDistanceRight.getDistance(DistanceUnit.INCH) < 20) {
 
-            return 2;
+            return 2; //Mid
 
         } else {
 
-            return 3;
+            return 3; //Low
 
         }
 
@@ -453,17 +492,17 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
     public int calibrateDisVisionAngle(int Position) {
 
-        if (Position == 1) {
+        if (Position == 1) { //High
 
             return 75;
 
-        } else if (Position == 2){
+        } else if (Position == 2){ //Mid
 
             return 50;
 
         } else {
 
-            return 22;
+            return 22; //Low
 
         }
 
@@ -481,7 +520,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         } else {
 
-            return 0;
+            return 1;
 
         }
 
@@ -536,6 +575,8 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         drive_RL.setPower(0);
         drive_FR.setPower(0);
         drive_RR.setPower(0);
+
+        sleep (500);
 
     }
 
@@ -640,12 +681,12 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
     }
 
-    public void strafeLeft(double inches) {
+    public void strafeLeft(double inches, double speed) {
         while (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
-            drive_FL.setPower(0.3);
-            drive_RL.setPower(-0.3);
-            drive_FR.setPower(-0.3);
-            drive_RR.setPower(0.3);
+            drive_FL.setPower(speed);
+            drive_RL.setPower(-speed);
+            drive_FR.setPower(-speed);
+            drive_RR.setPower(speed);
         }
         drive_FL.setPower(0);
         drive_RL.setPower(0);
