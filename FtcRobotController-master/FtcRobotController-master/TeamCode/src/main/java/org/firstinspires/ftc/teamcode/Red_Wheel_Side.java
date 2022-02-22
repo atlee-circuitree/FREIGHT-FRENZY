@@ -168,8 +168,8 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         sleep (250);
 
-        runBackwardsEncoder(.1, .8); //85 before
-        //runBackwardsEncoderTimed(.1,.10); does not work yet, completely skips moving backwards
+        //runBackwardsEncoder(.1, .8); //85 before
+        runBackwardsEncoderTimed(.1,.8);
 
         spinDuckyLeft(1);
 
@@ -247,8 +247,9 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         double encoderValue = inchesBore(inputInches);
         double startingValue = drive_FL.getCurrentPosition();
 
-        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 5) {
-            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 5) {
+        runtime.reset();
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 3) {
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 3) {
 
                 drive_FL.setPower(speed);
                 drive_RL.setPower(speed);
@@ -263,13 +264,15 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
                 drive_RR.setPower(0);
 
             }
-        }
 
+            telemetry.addData("Ducky Wheel Backwards Time", runtime.seconds());
+            telemetry.update();
+
+        }
         drive_FL.setPower(0);
         drive_RL.setPower(0);
         drive_FR.setPower(0);
         drive_RR.setPower(0);
-
     }
 
     public void runForwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
