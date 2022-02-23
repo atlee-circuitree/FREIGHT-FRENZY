@@ -4,6 +4,7 @@ import static java.lang.Math.abs;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -30,8 +31,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Red Wheel Side", group="Linear Opmode")
-public class Red_Wheel_Side extends BaseAutoOpMode {
+@Autonomous(name="Red Wheel Side Test", group="Linear Opmode")
+@Disabled
+public class Red_Wheel_Side_Test extends BaseAutoOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -166,12 +168,10 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         //Strafes to Ducky Wheel
         strafeLeft(2,0.3);
 
-        compareBackSensorsNew();
-
-        //sleep (250);
+        sleep (250);
 
         //runBackwardsEncoder(.1, .8); //85 before
-        runBackwardsEncoderTimed(.1,.9);
+        runBackwardsEncoderTimed(.1,.8);
 
         spinDuckyLeft(1);
 
@@ -180,7 +180,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         //Moves a little forward to allow angle adjustment
         forwardsDistanceDrive(11);
 
-        compareBackSensorsNew();
+        compareBackSensors2();
 
         //Moves towards Alliance Storage Unit
         runForwardsDistanceAndRaiseArm(.3, 39, angle);
@@ -188,7 +188,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         //Turns towards Alliance Shipping Hub
         turnRight(75);
 
-        compareBackSensorsNew();
+        compareBackSensors2();
 
         sleep(250);
 
@@ -204,15 +204,15 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         feeder.setPower(0);
 
-        compareBackSensorsNew();
+        compareBackSensors2();
 
-        runBackwardsDistanceAndRaiseArm(.3, 6, 90);
+        runBackwardsDistanceAndRaiseArm(.3, 5.5, 90);
 
-        compareBackSensorsNew();
+        compareBackSensors2();
 
-        strafeRight(29,.3);
+        strafeRight(28.5);
 
-        compareBackSensorsNew();
+        compareBackSensors2();
     }
 
     public void runBackwardsEncoder(double speed, double inputInches) {
@@ -250,8 +250,8 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         double startingValue = drive_FL.getCurrentPosition();
 
         runtime.reset();
-        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 2) {
-            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 2) {
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 3) {
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 3) {
 
                 drive_FL.setPower(speed);
                 drive_RL.setPower(speed);
@@ -581,18 +581,16 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         drive_FR.setPower(0);
         drive_RR.setPower(0);
 
-        sleep (250);
+        sleep (500);
 
     }
 
-    public void compareBackSensors2() {
+    public void compareBackSensors2() { //Doesn't work as well as compareBackSensorsNew, oslillates back and forth
 
         double error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
         while (error > .1 || error < -.1) {
             if (error > .1) {
-
-                error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
                 drive_FL.setPower(0.15);
                 drive_RL.setPower(0.15);
@@ -600,8 +598,6 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
                 drive_RR.setPower(-0.15);
 
             } else if (error < -.1) {
-
-                error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
                 drive_FL.setPower(-0.15);
                 drive_RL.setPower(-0.15);
@@ -747,21 +743,17 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         drive_RR.setPower(0);
     }
 
-    public void strafeRight(double inches, double speed) {
-        while (RS_distance.getDistance(DistanceUnit.INCH) > inches) {
-            drive_FL.setPower(-speed);
-            drive_RL.setPower(speed);
-            drive_FR.setPower(speed);
-            drive_RR.setPower(-speed);
+    public void strafeRight(double inches) {
+        while (RS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
+            drive_FL.setPower(-0.5);
+            drive_RL.setPower(0.5);
+            drive_FR.setPower(0.5);
+            drive_RR.setPower(-0.5);
         }
         drive_FL.setPower(0);
         drive_RL.setPower(0);
         drive_FR.setPower(0);
         drive_RR.setPower(0);
-
-        telemetry.addData("RS Distance", RS_distance.getDistance(DistanceUnit.INCH));
-        telemetry.update();
-
     }
 
     public void spinDuckyLeft(double speed) {
@@ -799,9 +791,6 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         drive_RL.setPower(0);
         drive_FR.setPower(0);
         drive_RR.setPower(0);
-
-        telemetry.addData("RL Distance", (RS_distance.getDistance(DistanceUnit.INCH)));
-        telemetry.update();
     }
 
     public void forwardsDistanceDriveFront(int inches) {
