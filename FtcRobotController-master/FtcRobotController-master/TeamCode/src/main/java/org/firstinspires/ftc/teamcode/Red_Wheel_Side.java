@@ -171,7 +171,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         //sleep (250);
 
         //runBackwardsEncoder(.1, .8); //85 before
-        runBackwardsEncoderTimed(.1,.9);
+        runBackwardsEncoderTimed(.1,2.5);
 
         spinDuckyLeft(1);
 
@@ -182,7 +182,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        //Moves towards Alliance Storage Unit
+        //Moves towards center of wobble
         runForwardsDistanceAndRaiseArm(.3, 39, angle);
 
         //Turns towards Alliance Shipping Hub
@@ -194,9 +194,6 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         //Moves forward towards wobble with RL_distance sensor
         forwardsDistanceDrive(30 - reduction);
-
-        //Higher number = left, Lower number = right
-        //armTurn.setPosition(.24);
 
         sleep(500);
 
@@ -210,7 +207,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        strafeRight(29,.3);
+        strafeRight(30,.3);
 
         compareBackSensorsNew();
     }
@@ -250,8 +247,8 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         double startingValue = drive_FL.getCurrentPosition();
 
         runtime.reset();
-        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 2) {
-            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 2) {
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 1) {
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 1) {
 
                 drive_FL.setPower(speed);
                 drive_RL.setPower(speed);
@@ -267,6 +264,8 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
             }
 
+            telemetry.addData("Encoder Target", encoderValue);
+            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
             telemetry.addData("Ducky Wheel Backwards Time", runtime.seconds());
             telemetry.update();
 
@@ -525,7 +524,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         } else {
 
-            return 1;
+            return 3;
 
         }
 
@@ -581,7 +580,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         drive_FR.setPower(0);
         drive_RR.setPower(0);
 
-        sleep (250);
+        //sleep (250);
 
     }
 

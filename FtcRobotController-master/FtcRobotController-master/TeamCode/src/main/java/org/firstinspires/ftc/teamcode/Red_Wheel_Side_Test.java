@@ -168,10 +168,12 @@ public class Red_Wheel_Side_Test extends BaseAutoOpMode {
         //Strafes to Ducky Wheel
         strafeLeft(2,0.3);
 
-        sleep (250);
+        compareBackSensors2();
+
+        //sleep (250);
 
         //runBackwardsEncoder(.1, .8); //85 before
-        runBackwardsEncoderTimed(.1,.8);
+        runBackwardsEncoderTimed(.1,2.5);
 
         spinDuckyLeft(1);
 
@@ -182,7 +184,7 @@ public class Red_Wheel_Side_Test extends BaseAutoOpMode {
 
         compareBackSensors2();
 
-        //Moves towards Alliance Storage Unit
+        //Moves towards center of wobble
         runForwardsDistanceAndRaiseArm(.3, 39, angle);
 
         //Turns towards Alliance Shipping Hub
@@ -206,11 +208,11 @@ public class Red_Wheel_Side_Test extends BaseAutoOpMode {
 
         compareBackSensors2();
 
-        runBackwardsDistanceAndRaiseArm(.3, 5.5, 90);
+        runBackwardsDistanceAndRaiseArm(.3, 6, 90);
 
         compareBackSensors2();
 
-        strafeRight(28.5);
+        strafeRight(29,.3);
 
         compareBackSensors2();
     }
@@ -250,8 +252,8 @@ public class Red_Wheel_Side_Test extends BaseAutoOpMode {
         double startingValue = drive_FL.getCurrentPosition();
 
         runtime.reset();
-        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 3) {
-            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 3) {
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 2) {
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 2) {
 
                 drive_FL.setPower(speed);
                 drive_RL.setPower(speed);
@@ -267,6 +269,8 @@ public class Red_Wheel_Side_Test extends BaseAutoOpMode {
 
             }
 
+            telemetry.addData("Encoder Target", encoderValue);
+            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
             telemetry.addData("Ducky Wheel Backwards Time", runtime.seconds());
             telemetry.update();
 
@@ -525,7 +529,7 @@ public class Red_Wheel_Side_Test extends BaseAutoOpMode {
 
         } else {
 
-            return 1;
+            return 2;
 
         }
 
@@ -581,11 +585,11 @@ public class Red_Wheel_Side_Test extends BaseAutoOpMode {
         drive_FR.setPower(0);
         drive_RR.setPower(0);
 
-        sleep (500);
+        //sleep (250);
 
     }
 
-    public void compareBackSensors2() { //Doesn't work as well as compareBackSensorsNew, oslillates back and forth
+    public void compareBackSensors2() {
 
         double error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
@@ -625,7 +629,7 @@ public class Red_Wheel_Side_Test extends BaseAutoOpMode {
         drive_FR.setPower(0);
         drive_RR.setPower(0);
 
-        sleep (500);
+        //sleep (250);
 
     }
 
@@ -743,17 +747,21 @@ public class Red_Wheel_Side_Test extends BaseAutoOpMode {
         drive_RR.setPower(0);
     }
 
-    public void strafeRight(double inches) {
-        while (RS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
-            drive_FL.setPower(-0.5);
-            drive_RL.setPower(0.5);
-            drive_FR.setPower(0.5);
-            drive_RR.setPower(-0.5);
+    public void strafeRight(double inches, double speed) {
+        while (RS_distance.getDistance(DistanceUnit.INCH) > inches) {
+            drive_FL.setPower(-speed);
+            drive_RL.setPower(speed);
+            drive_FR.setPower(speed);
+            drive_RR.setPower(-speed);
         }
         drive_FL.setPower(0);
         drive_RL.setPower(0);
         drive_FR.setPower(0);
         drive_RR.setPower(0);
+
+        telemetry.addData("RS Distance", RS_distance.getDistance(DistanceUnit.INCH));
+        telemetry.update();
+
     }
 
     public void spinDuckyLeft(double speed) {
@@ -791,6 +799,9 @@ public class Red_Wheel_Side_Test extends BaseAutoOpMode {
         drive_RL.setPower(0);
         drive_FR.setPower(0);
         drive_RR.setPower(0);
+
+        telemetry.addData("RL Distance", (RS_distance.getDistance(DistanceUnit.INCH)));
+        telemetry.update();
     }
 
     public void forwardsDistanceDriveFront(int inches) {
