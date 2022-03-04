@@ -46,6 +46,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
     private Servo kickout = null;
     private Servo odometryLift1 = null;
+    private Servo armTurn = null;
     private CRServo leftDucky = null;
     private CRServo rightDucky = null;
 
@@ -66,8 +67,6 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
     private DistanceSensor RR_distance;
     private DistanceSensor frontDistanceLeft;
     private DistanceSensor frontDistanceRight;
-
-    private Servo armTurn;
 
     static final double     FORWARD_SPEED = 1;
     static final double     TURN_SPEED    = 1;
@@ -151,9 +150,13 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         kickout.setPosition(0);
 
-        sleep(500);
+        sleep(1000);
 
-        forwardsDistanceDrive(7);
+        armTurn.setPosition(.24);
+
+        sleep(1000);
+
+        forwardsDistanceDrive(8); //7 before 3/4/22
 
         sleep(500);
 
@@ -161,34 +164,35 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes to Ducky Wheel
-        strafeRight(3.0, .3);
+        strafeRight(3, .3);
 
-        runBackwardsEncoder(.2, .5);
+        compareBackSensorsNew();
+
+        runBackwardsEncoderTimed(.1,2.5);
 
         spinDuckyRight(1);
 
         rightDucky.setPower(0);
 
         //Moves a little forward to allow angle adjustment
-        forwardsDistanceDrive(10);
+        forwardsDistanceDrive(11); //10 before 3/4/22
 
         compareBackSensorsNew();
 
         //Moves towards Alliance Storage Unit
-        runForwardsDistanceAndRaiseArm(.3, 37, angle);
+        runForwardsDistanceAndRaiseArm(.3, 39, angle); //37 inches before 3/4/22
 
         //Turns towards Alliance Shipping Hub
-        turnLeft(90);
+        turnLeft(90); //90 before 3/4/22
 
         compareBackSensorsNew();
 
+        sleep(250);
+
         //Moves forward towards hub with front distance sensors
-        //forwardsDistanceHub(3); Added this -Viassna 12/1/21
         forwardsDistanceDrive(30 - reduction);
 
-        armTurn.setPosition(.27);
-
-        sleep(2000);
+        sleep(500);
 
         feederSpit(.6);
 
@@ -200,9 +204,9 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        strafeLeft(26);
+        strafeLeft(29,.3);
 
-
+        compareBackSensorsNew();
     }
 
     public void runBackwardsEncoder(double speed, double inputInches) {
@@ -234,6 +238,41 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         drive_RR.setPower(0);
 
     }
+
+    public void runBackwardsEncoderTimed(double speed, double inputInches) {
+        double encoderValue = inchesBore(inputInches);
+        double startingValue = drive_FL.getCurrentPosition();
+
+        runtime.reset();
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 1) {
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 1) {
+
+                drive_FL.setPower(speed);
+                drive_RL.setPower(speed);
+                drive_FR.setPower(speed);
+                drive_RR.setPower(speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+
+            telemetry.addData("Encoder Target", encoderValue);
+            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
+            telemetry.addData("Ducky Wheel Backwards Time", runtime.seconds());
+            telemetry.update();
+
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
     public void runForwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
         double encoderValue = inchesBore(inputInches);
         double startingValue = drive_RR.getCurrentPosition();
@@ -471,17 +510,17 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
     public int calibrateDisVisionReduction(int Position) {
 
-        if (Position == 1) {
-
-            return 0;
-
-        } else if (Position == 2){
+        if (Position == 2) {
 
             return 2;
 
+        } else if (Position == 3){
+
+            return 3;
+
         } else {
 
-            return 1;
+            return 0;
 
         }
 
@@ -640,17 +679,17 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
     }
 
-    public void strafeLeft(double inches) {
-        while (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
-            drive_FL.setPower(0.5);
-            drive_RL.setPower(-0.5);
-            drive_FR.setPower(-0.5);
-            drive_RR.setPower(0.5);
+    public void strafeLeft(double inches, double speed) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) > inches) {
+            drive_FL.setPower(speed);
+            drive_RL.setPower(-speed);
+            drive_FR.setPower(-speed);
+            drive_RR.setPower(speed);
         }
-            drive_FL.setPower(0);
-            drive_RL.setPower(0);
-            drive_FR.setPower(0);
-            drive_RR.setPower(0);
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
     }
 
     public void strafeRight(double inches, double speed) {
@@ -669,7 +708,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
     public void spinDuckyRight(double speed) {
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() <= 4.0))
-            rightDucky.setPower(-speed);
+            rightDucky.setPower(speed);
         telemetry.addData("Left Ducky Wheel", runtime.seconds());
         telemetry.update();
     }

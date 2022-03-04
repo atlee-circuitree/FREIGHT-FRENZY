@@ -32,6 +32,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @Autonomous(name="Test Auto", group="Linear Opmode")
+@Disabled
 public class Test_Auto extends BaseAutoOpMode {
 
     // Declare OpMode members.

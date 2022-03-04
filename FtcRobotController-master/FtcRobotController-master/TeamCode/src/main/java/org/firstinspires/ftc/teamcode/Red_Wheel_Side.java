@@ -46,6 +46,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
     private Servo kickout = null;
     private Servo odometryLift1 = null;
+    private Servo armTurn = null;
     private CRServo leftDucky = null;
     private CRServo rightDucky = null;
 
@@ -55,7 +56,6 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
     private DcMotor leftEncoder = null;
     private DcMotor rightEncoder = null;
     private DcMotor rearEncoder = null;
-    private Servo armTurn = null;
 
     BNO055IMU imu;
 
@@ -168,9 +168,6 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        //sleep (250);
-
-        //runBackwardsEncoder(.1, .8); //85 before
         runBackwardsEncoderTimed(.1,2.5);
 
         spinDuckyLeft(1);
@@ -580,8 +577,6 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
         drive_FR.setPower(0);
         drive_RR.setPower(0);
 
-        //sleep (250);
-
     }
 
     public void compareBackSensors2() {
@@ -734,7 +729,7 @@ public class Red_Wheel_Side extends BaseAutoOpMode {
     }
 
     public void strafeLeft(double inches, double speed) {
-        while (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) > inches) {
             drive_FL.setPower(speed);
             drive_RL.setPower(-speed);
             drive_FR.setPower(-speed);
