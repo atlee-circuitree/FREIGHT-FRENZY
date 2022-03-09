@@ -180,10 +180,10 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Moves towards Alliance Storage Unit
-        runForwardsDistanceAndRaiseArm(.3, 39, angle); //37 inches before 3/4/22
+        runForwardsDistanceAndRaiseArm(.3, 39, angle);
 
         //Turns towards Alliance Shipping Hub
-        turnLeft(90); //90 before 3/4/22
+        turnLeft(90);
 
         compareBackSensorsNew();
 
@@ -194,7 +194,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         sleep(500);
 
-        feederSpit(.6);
+        feederSpit(.8); //.6 before
 
         feeder.setPower(0);
 
@@ -516,7 +516,7 @@ public class Blue_Wheel_Side extends BaseAutoOpMode {
 
         } else if (Position == 3){
 
-            return 3;
+            return 4;
 
         } else {
 
