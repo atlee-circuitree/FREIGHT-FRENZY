@@ -146,7 +146,7 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
         runtime.reset();
 
         //Auto Starts Here
-        // 1 Top, 2 Middle, 3 Bottom
+        // 1 Top, 2 Middle, 3 Bottom for capstone vision targeting
 
         kickout.setPosition(0);
 
@@ -156,6 +156,7 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
 
         sleep (1000);
 
+        //Moves forwards from starting position
         forwardsDistanceDrive(7);
 
         sleep(500);
@@ -163,11 +164,12 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
         int angle = calibrateDisVisionAngle(readDisVision());
         int reduction = calibrateDisVisionReduction(readDisVision());
 
-        //Strafes to Ducky Wheel
-        strafeLeft(2,0.3);
+        //Strafes left to Ducky Wheel
+        strafeLeft(2,.3);
 
         compareBackSensorsNew();
 
+        //Moves backwards towards ducky wheel
         runBackwardsEncoderTimed(.1,2.5);
 
         spinDuckyLeft(1);
@@ -179,10 +181,10 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        //Moves towards center of wobble
+        //Moves towards center of Red Alliance Wobble/Shipping Hub
         runForwardsDistanceAndRaiseArm(.3, 39, angle);
 
-        //Turns towards Alliance Shipping Hub
+        //Turns right towards Red Alliance Wobble/Shipping Hub
         turnRight(75);
 
         compareBackSensorsNew();
@@ -190,7 +192,11 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
         sleep(250);
 
         //Moves forward towards wobble with RL_distance sensor
-        forwardsDistanceDrive(30 - reduction);
+        forwardsDistanceDrive(30 - reduction);    /*(REDUCE the inches in reduction and not the inches for forwardsDistanceDrive in this particular command)
+                                                           -Scroll down until you find calibrateDisVisionReduction(readDisVision), it's at line #512
+                                                           -Change the number of inches to subtract from the original 30 inches depending on each level.
+                                                           -The lower the inches, the less it moves forward or closer to the wall it will be.
+                                                        */
 
         sleep(500);
 
@@ -200,10 +206,12 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        runBackwardsDistanceAndRaiseArm(.3, 6, 90);
+        //Moves backwards away from wobble to prepare to strafe left into Blue Alliance Parking Spot
+        runBackwardsDistanceAndRaiseArm(.3, 6, 90);     //The lower the inches, the closer it is towards the wall
 
         compareBackSensorsNew();
 
+        //Strafes right into Red Alliance Parking Spot
         strafeRight(30,.3);
 
         compareBackSensorsNew();
@@ -511,17 +519,17 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
 
     public int calibrateDisVisionReduction(int Position) {
 
-        if (Position == 1) {
+        if (Position == 1) { //High capstone position
 
             return 0;
 
-        } else if (Position == 2){
+        } else if (Position == 2){ //Middle capstone position
 
             return 2;
 
         } else {
 
-            return 3;
+            return 3; //Low capstone position
 
         }
 

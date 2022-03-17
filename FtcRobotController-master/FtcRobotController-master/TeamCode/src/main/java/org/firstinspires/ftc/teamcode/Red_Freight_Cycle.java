@@ -32,7 +32,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 
 @Autonomous(name="Red Freight Cycle", group="Linear Opmode")
-@Disabled
 public class Red_Freight_Cycle extends BaseAutoOpMode {
 
     // Declare OpMode members.

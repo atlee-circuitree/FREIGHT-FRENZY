@@ -30,8 +30,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Blue Ducky Wheel", group="Linear Opmode")
-public class Blue_Ducky_Wheel extends BaseAutoOpMode {
+@Autonomous(name="Blue Freight Cycle Test", group="Linear Opmode")
+public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -46,7 +46,6 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
 
     private Servo kickout = null;
     private Servo odometryLift1 = null;
-    private Servo armTurn = null;
     private CRServo leftDucky = null;
     private CRServo rightDucky = null;
 
@@ -57,16 +56,18 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
     private DcMotor rightEncoder = null;
     private DcMotor rearEncoder = null;
 
-    BNO055IMU imu;
-
-    HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
-
     private DistanceSensor LS_distance;
     private DistanceSensor RS_distance;
     private DistanceSensor RL_distance;
     private DistanceSensor RR_distance;
     private DistanceSensor frontDistanceLeft;
     private DistanceSensor frontDistanceRight;
+
+    private Servo armTurn;
+
+    BNO055IMU imu;
+
+    HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
 
     static final double     FORWARD_SPEED = 1;
     static final double     TURN_SPEED    = 1;
@@ -101,7 +102,6 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
         RR_distance = hardwareMap.get(DistanceSensor.class, "RR_distance");
         frontDistanceLeft = hardwareMap.get(DistanceSensor.class, "frontDistanceLeft");
         frontDistanceRight = hardwareMap.get(DistanceSensor.class, "frontDistanceRight");
-
         armTurn = hardwareMap.get(Servo.class, "armTurn");
 
         leftArm.setDirection(DcMotor.Direction.FORWARD);
@@ -146,277 +146,89 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
         runtime.reset();
 
         //Auto Starts Here
-        // 1 Top, 2 Middle, 3 Bottom for capstone vision target
 
         kickout.setPosition(0);
 
-        sleep(1000);
+        sleep(500);
 
         armTurn.setPosition(.24);
 
         sleep(1000);
 
-        //Moves forwards from starting position
-        forwardsDistanceDrive(8);
+        //Moves forward
+        forwardsDistanceDrive(5);
+
+        //compareBackSensorsNew();
 
         sleep(500);
 
+        //Moves arm up to according to capstone position
         int angle = calibrateDisVisionAngle(readDisVision());
         int reduction = calibrateDisVisionReduction(readDisVision());
 
-        //Strafes right to Ducky Wheel
-        strafeRight(3, .3);
+        strafeRightEncoder(.5, 15);
 
         compareBackSensorsNew();
 
-        //Moves backwards towards ducky wheel
-        runBackwardsEncoderTimed(.1,4); //2.5 before 3/16/22
+        runForwardsDistanceAndRaiseArm(.5, 19 - reduction, angle);
 
-        spinDuckyRight(1);
+        //compareBackSensorsNew();
 
-        rightDucky.setPower(0);
-
-        //Moves a little forward to allow angle adjustment
-        forwardsDistanceDrive(11);
-
-        compareBackSensorsNew();
-
-        //Moves towards center line of Blue Alliance Wobble/Shipping Hub
-        runForwardsDistanceAndRaiseArm(.3, 35, angle);
-
-        //Turns left towards Blue Alliance Wobble/Shipping Hub
-        turnLeft(90);
-
-        compareBackSensorsNew();
-
-        sleep(250);
-
-        //Moves forward towards wobble with RL_distance sensor
-        forwardsDistanceDrive(30 - reduction);    /*(REDUCE the inches in reduction and not the inches for forwardsDistanceDrive in this particular command)
-                                                           -Scroll down until you find calibrateDisVisionReduction(readDisVision), it's at line #512
-                                                           -Change the number of inches to subtract from the original 30 inches depending on each level.
-                                                           -The lower the inches, the less it moves forward or closer to the wall it will be.
-                                                        */
-
-        sleep(500);
-
-        feederSpit(.6);
+        //Feeder spits starting block
+        feederSpit(0.5);
 
         feeder.setPower(0);
 
+        backwardsDistanceDrive(15);
+
+        //Turns 100 degrees left
+        turnLeft(100);
+
+        sleep(200);
+
+        //Strafes left until RS_Distance sensor is .5 in away from wall
+        strafeLeft(.7,.5);
+
+        //Moves forward inside warehouse
+        runForwardsEncoderAndLowerArmAndExtend(.7, 52, 13);
+
+
+
+        /*turnRightArmRaise(20,50); alternate solution
+
+        Strafes left until RS_Distance sensor is .5 in away from wall and lifts arm
+        strafeLeftArmRaise(.6, .5, 50);
+
+        sleep(500);
+
+        runBackwardsEncoder(.6,52);*/
+
+        //Strafes left until RS_Distance sensor is .5 in away from wall and lifts arm
+        runBackwardsEncoderAndRaiseArm(.7, 50, 50);
+
+        feeder.setPower(0);
+
+        strafeRightEncoder(.5, 6);
+
+        turnRight(90);
+
         compareBackSensorsNew();
 
-        //Moves backwards away from wobble to prepare to strafe left into Blue Alliance Parking Spot
-        runBackwardsDistanceAndRaiseArm(.3, 4.5, 90);   //The lower the inches, the closer it is towards the wall
+        runForwardsDistanceAndRaiseArm(.5, 14, 50);
 
-        //compareBackSensorsNew(); Hidden for now as it seems better without but add it again if you need it
+        sleep(500);
 
-        //Strafes left into Blue Alliance Parking Spot
-        strafeLeft(29,.3);
+        feeder.setPower(0);
 
-        compareBackSensorsNew();
-    }
+        feederSpit(0.5);
 
-    public void runBackwardsEncoder(double speed, double inputInches) {
-        double startRuntime = getRuntime();
-        double encoderValue = inchesBore(inputInches);
-        double startingValue = drive_FL.getCurrentPosition();
+        backwardsDistanceDrive(15);
 
-        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && startRuntime < getRuntime() + 1000) {
-            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && startRuntime < getRuntime() + 1000) {
+        turnLeft(100);
 
-                drive_FL.setPower(speed);
-                drive_RL.setPower(speed);
-                drive_FR.setPower(speed);
-                drive_RR.setPower(speed);
+        strafeLeft(.7, .5);
 
-            } else {
-
-                drive_FL.setPower(0);
-                drive_RL.setPower(0);
-                drive_FR.setPower(0);
-                drive_RR.setPower(0);
-
-            }
-        }
-
-        drive_FL.setPower(0);
-        drive_RL.setPower(0);
-        drive_FR.setPower(0);
-        drive_RR.setPower(0);
-
-    }
-
-    public void runBackwardsEncoderTimed(double speed, double inputInches) {
-        double encoderValue = inchesBore(inputInches);
-        double startingValue = drive_FL.getCurrentPosition();
-
-        runtime.reset();
-        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 1) {
-            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 1) {
-
-                drive_FL.setPower(speed);
-                drive_RL.setPower(speed);
-                drive_FR.setPower(speed);
-                drive_RR.setPower(speed);
-
-            } else {
-
-                drive_FL.setPower(0);
-                drive_RL.setPower(0);
-                drive_FR.setPower(0);
-                drive_RR.setPower(0);
-
-            }
-
-            telemetry.addData("Encoder Target", encoderValue);
-            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
-            telemetry.addData("Ducky Wheel Backwards Time", runtime.seconds());
-            telemetry.update();
-
-        }
-        drive_FL.setPower(0);
-        drive_RL.setPower(0);
-        drive_FR.setPower(0);
-        drive_RR.setPower(0);
-    }
-
-    public void runForwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
-        double encoderValue = inchesBore(inputInches);
-        double startingValue = drive_RR.getCurrentPosition();
-
-        while (abs(drive_RR.getCurrentPosition()) < abs(startingValue) + abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
-
-            if (abs(drive_RR.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
-
-                drive_FL.setPower(-speed);
-                drive_RL.setPower(-speed);
-                drive_FR.setPower(-speed);
-                drive_RR.setPower(-speed);
-
-            } else {
-
-                drive_FL.setPower(0);
-                drive_RL.setPower(0);
-                drive_FR.setPower(0);
-                drive_RR.setPower(0);
-
-            }
-
-            if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
-
-                rightArm.setPower(.3);
-                leftArm.setPower(.3);
-
-            } else {
-
-                rightArm.setPower(0);
-                leftArm.setPower(0);
-
-            }
-
-        }
-
-        drive_FL.setPower(0);
-        drive_RL.setPower(0);
-        drive_FR.setPower(0);
-        drive_RR.setPower(0);
-        rightArm.setPower(0);
-        leftArm.setPower(0);
-
-    }
-
-    public void runForwardsDistanceAndRaiseArm(double speed, double inches, int angle) {
-
-        while (RL_distance.getDistance(DistanceUnit.INCH) < inches || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
-
-            if (RL_distance.getDistance(DistanceUnit.INCH) < inches) {
-
-                drive_FL.setPower(-speed);
-                drive_RL.setPower(-speed);
-                drive_FR.setPower(-speed);
-                drive_RR.setPower(-speed);
-
-            } else {
-
-                drive_FL.setPower(0);
-                drive_RL.setPower(0);
-                drive_FR.setPower(0);
-                drive_RR.setPower(0);
-
-            }
-
-            if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
-
-                rightArm.setPower(.3);
-                leftArm.setPower(.3);
-
-            } else {
-
-                rightArm.setPower(0);
-                leftArm.setPower(0);
-
-            }
-
-            telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
-            telemetry.addData("Target Degrees", degreesBore(angle) * 20);
-            telemetry.update();
-
-        }
-
-        drive_FL.setPower(0);
-        drive_RL.setPower(0);
-        drive_FR.setPower(0);
-        drive_RR.setPower(0);
-        rightArm.setPower(0);
-        leftArm.setPower(0);
-
-    }
-
-    public void runBackwardsDistanceAndRaiseArm(double speed, double inches, int angle) {
-
-        while (RL_distance.getDistance(DistanceUnit.INCH) > inches || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
-
-            if (RL_distance.getDistance(DistanceUnit.INCH) > inches) {
-
-                drive_FL.setPower(speed);
-                drive_RL.setPower(speed);
-                drive_FR.setPower(speed);
-                drive_RR.setPower(speed);
-
-            } else {
-
-                drive_FL.setPower(0);
-                drive_RL.setPower(0);
-                drive_FR.setPower(0);
-                drive_RR.setPower(0);
-
-            }
-
-            if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
-
-                rightArm.setPower(.3);
-                leftArm.setPower(.3);
-
-            } else {
-
-                rightArm.setPower(0);
-                leftArm.setPower(0);
-
-            }
-
-            telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
-            telemetry.addData("Target Degrees", degreesBore(angle) * 20);
-            telemetry.update();
-
-        }
-
-        drive_FL.setPower(0);
-        drive_RL.setPower(0);
-        drive_FR.setPower(0);
-        drive_RR.setPower(0);
-        rightArm.setPower(0);
-        leftArm.setPower(0);
+        runForwardsEncoderAndLowerArmAndExtend(.7, 56, 13);
 
     }
 
@@ -450,6 +262,342 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
 
     }
 
+    public void runForwardsDistanceAndLowerArmAndExtend(double speed, double inches, int angle) {
+
+        feederEat(-.6);
+
+        while (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
+
+            if (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches) {
+
+                drive_FL.setPower(-speed);
+                drive_RL.setPower(-speed);
+                drive_FR.setPower(-speed);
+                drive_RR.setPower(-speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20) {
+
+                rightArm.setPower(-.6);
+                leftArm.setPower(-.6);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+            if (armExtend.getCurrentPosition() < 1700) {
+
+                armExtend.setPower(1);
+
+            } else {
+
+                armExtend.setPower(0);
+
+            }
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+        armExtend.setPower(0);
+
+        sleep(1000);
+
+    }
+
+    public void runForwardsEncoderAndLowerArmAndExtend(double speed, double inches, int angle) {
+
+        armTurn.setPosition(.24);
+
+        feederEat(-.6);
+
+        double encoderValue = inchesBore(inches) + drive_FL.getCurrentPosition();
+
+        while (drive_FL.getCurrentPosition() < encoderValue || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
+
+            if (drive_FL.getCurrentPosition() < encoderValue) {
+
+                drive_FL.setPower(-speed);
+                drive_RL.setPower(-speed);
+                drive_FR.setPower(-speed);
+                drive_RR.setPower(-speed);
+
+                telemetry.addData("Encoder Target", encoderValue);
+                telemetry.addData("Right Dead Encoder Running", drive_RR.getCurrentPosition());
+                telemetry.update();
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+                telemetry.addData("Encoder Target", encoderValue);
+                telemetry.addData("Right Dead Encoder Finished", drive_RR.getCurrentPosition());
+                telemetry.update();
+
+                ResetDriveEncoder();
+                turnOnEncoders();
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20) {
+
+                rightArm.setPower(-.6);
+                leftArm.setPower(-.6);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+            if (armExtend.getCurrentPosition() < 1700) {
+
+                armExtend.setPower(1);
+
+            } else {
+
+                armExtend.setPower(0);
+
+            }
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+        armExtend.setPower(0);
+
+        sleep(1000);
+
+    }
+
+    public void strafeRightFromWallAndRaiseArm(double speed, double inches, int angle) {
+
+        while (LS_distance.getDistance(DistanceUnit.INCH) < inches + 4 || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+            if (LS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
+
+                drive_FL.setPower(-speed);
+                drive_RL.setPower(speed);
+                drive_FR.setPower(speed);
+                drive_RR.setPower(-speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20) {
+
+                rightArm.setPower(.3);
+                leftArm.setPower(.3);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+
+    }
+
+
+    public void runForwardsDistanceAndRaiseArm(double speed, double inches, int angle) {
+
+        while (RL_distance.getDistance(DistanceUnit.INCH) < inches || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+            if (RL_distance.getDistance(DistanceUnit.INCH) < inches) {
+
+                drive_FL.setPower(-speed);
+                drive_RL.setPower(-speed);
+                drive_FR.setPower(-speed);
+                drive_RR.setPower(-speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+                rightArm.setPower(.6);
+                leftArm.setPower(.6);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+            telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
+            telemetry.addData("Target Degrees", degreesBore(angle) * 20);
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+
+    }
+
+    public void runBackwardsEncoder(double speed, double inputInches) {
+        double encoderValue = inchesBore(inputInches);
+        double startingValue = drive_FL.getCurrentPosition();
+
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
+
+                drive_FL.setPower(speed);
+                drive_RL.setPower(speed);
+                drive_FR.setPower(speed);
+                drive_RR.setPower(speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+        }
+    }
+
+    public void runBackwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
+        double encoderValue = inchesBore(inputInches);
+        double startingValue = drive_FL.getCurrentPosition();
+
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
+
+                drive_FL.setPower(speed);
+                drive_RL.setPower(speed);
+                drive_FR.setPower(speed);
+                drive_RR.setPower(speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+                rightArm.setPower(.3);
+                leftArm.setPower(.3);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+            telemetry.addData("Current Encoder",  drive_FL.getCurrentPosition());
+            telemetry.addData("Target Degrees", startingValue - abs(encoderValue));
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+
+    }
+
+    public void strafeDiagonalDownLeftEncoderAndRaiseArm(double speed, double inputInches, int angle) {
+        double encoderValue = inchesBore(inputInches);
+        double startingValue = drive_FL.getCurrentPosition();
+
+        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
+
+                drive_FL.setPower(-speed);
+                drive_RR.setPower(-speed);
+
+            } else {
+
+                drive_FL.setPower(0);
+                drive_RR.setPower(0);
+
+            }
+
+            if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+                rightArm.setPower(.3);
+                leftArm.setPower(.3);
+
+            } else {
+
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+
+            }
+
+            telemetry.addData("Current Encoder",  drive_FL.getCurrentPosition());
+            telemetry.addData("Target Degrees", startingValue - abs(encoderValue));
+            telemetry.update();
+
+        }
+
+        drive_FL.setPower(0);
+        drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+
+    }
+
     public void strafeRightEncoder(double speed, double inputInches) {
 
         double encoderValue = abs(inchesBore(inputInches));
@@ -463,8 +611,8 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
             drive_FR.setPower(speed);
             drive_RR.setPower(-speed);
 
-            telemetry.addData("Encoder Target", encoderValue);
-            telemetry.addData("Back Dead Encoder Running", drive_RL.getCurrentPosition());
+            telemetry.addData("Encoder Target", abs(drive_RL.getCurrentPosition()));
+            telemetry.addData("Back Dead Encoder Running", abs(startingValue) + abs(encoderValue));
             telemetry.update();
 
         }
@@ -510,7 +658,7 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
 
         } else {
 
-            return 22;
+            return 25;
 
         }
 
@@ -518,17 +666,17 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
 
     public int calibrateDisVisionReduction(int Position) {
 
-        if (Position == 2) { //Middle capstone position
+        if (Position == 1) {
 
             return 2;
 
-        } else if (Position == 3){ //Low capstone position
+        } else if (Position == 2){
 
-            return 2; //4 before 3/17/22
+            return 2; //12/4/2021 5:41 pm Changed from 4 to 2 -Viassna
 
         } else {
 
-            return 0; //High capstone position
+            return 3; //12/4/2021 5:41 pm Changed from 6 to 3 -Viassna
 
         }
 
@@ -549,7 +697,7 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
 
         double error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
-        while (error > .1) {
+        while (error > .3) {
 
             error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
@@ -564,7 +712,7 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
 
         }
 
-        while (error < -.1) {
+        while (error < -.3) {
 
             error = RL_distance.getDistance(DistanceUnit.INCH) - RR_distance.getDistance(DistanceUnit.INCH);
 
@@ -587,22 +735,19 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
     }
 
     public void runForwardsEncoder(double speed, double inputInches) {
-
         double encoderValue = inchesBore(inputInches);
+        double startingValue = drive_RR.getCurrentPosition();
 
-        while (abs(drive_RR.getCurrentPosition()) < encoderValue) {
-
-            drive_FL.setPower(-speed);
-            drive_RL.setPower(-speed);
-            drive_FR.setPower(-speed);
-            drive_RR.setPower(-speed);
+        while (abs(drive_RR.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
+            drive_FL.setPower(speed);
+            drive_RL.setPower(speed);
+            drive_FR.setPower(speed);
+            drive_RR.setPower(speed);
 
             telemetry.addData("Encoder Target", encoderValue);
             telemetry.addData("Right Dead Encoder Running", drive_RR.getCurrentPosition());
             telemetry.update();
-
         }
-
         drive_FL.setPower(0);
         drive_RL.setPower(0);
         drive_FR.setPower(0);
@@ -611,10 +756,6 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
         telemetry.addData("Encoder Target", encoderValue);
         telemetry.addData("Right Dead Encoder Finished", drive_RR.getCurrentPosition());
         telemetry.update();
-
-        ResetDriveEncoder();
-        turnOnEncoders();
-
     }
 
     public void ResetDriveEncoder() {
@@ -655,6 +796,38 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
 
     }
 
+    public void armMoveDown(int degrees) {
+
+        while (-degreesBore(rightArm.getCurrentPosition()) < degreesBore(degrees) * 20) {
+
+            rightArm.setPower(-.3);
+            leftArm.setPower(-.3);
+            telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
+            telemetry.addData("Target Degrees", degreesBore(degrees));
+            telemetry.update();
+
+        }
+
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+        telemetry.addData("Current Angle", getAbsoluteAngle());
+        telemetry.addData("Target Degrees", degreesBore(degrees));
+        telemetry.update();
+
+    }
+
+    public void extendArm(int ticks) {
+
+        while (armExtend.getCurrentPosition() < ticks) {
+
+            armExtend.setPower(.3);
+
+        }
+
+        armExtend.setPower(0);
+
+    }
+
     public int degreesBore(int input) {
 
         final int COUNTS_PER_BORE_MOTOR_REV = 8192;    // eg: GOBUILDA Motor Encoder
@@ -687,25 +860,61 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
 
     }
 
-    public void strafeLeft(double inches, double speed) {
+    public void strafeLeft(double speed, double inches) {
         while (LS_distance.getDistance(DistanceUnit.INCH) > inches) {
             drive_FL.setPower(speed);
             drive_RL.setPower(-speed);
             drive_FR.setPower(-speed);
             drive_RR.setPower(speed);
         }
+            drive_FL.setPower(0);
+            drive_RL.setPower(0);
+            drive_FR.setPower(0);
+            drive_RR.setPower(0);
+    }
+
+    public void strafeLeftArmRaise(double speed, double inches, int angle) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4 || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+            if (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
+                drive_FL.setPower(speed);
+                drive_RL.setPower(-speed);
+                drive_FR.setPower(-speed);
+                drive_RR.setPower(speed);
+            } else {
+                drive_FL.setPower(0);
+                drive_RL.setPower(0);
+                drive_FR.setPower(0);
+                drive_RR.setPower(0);
+            }
+            if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+                rightArm.setPower(.6);
+                leftArm.setPower(.6);
+            } else {
+                rightArm.setPower(0);
+                leftArm.setPower(0);
+            }
+
+            telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
+            telemetry.addData("Target Degrees", degreesBore(angle) * 20);
+            telemetry.update();
+
+        }
         drive_FL.setPower(0);
         drive_RL.setPower(0);
         drive_FR.setPower(0);
         drive_RR.setPower(0);
+        rightArm.setPower(0);
+        leftArm.setPower(0);
+
     }
 
-    public void strafeRight(double inches, double speed) {
-        while (RS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
-            drive_FL.setPower(-speed);
-            drive_RL.setPower(speed);
-            drive_FR.setPower(speed);
-            drive_RR.setPower(-speed);
+    public void strafeLeftFromWall(double inches) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
+            drive_FL.setPower(0.6);
+            drive_RL.setPower(-0.6);
+            drive_FR.setPower(-0.6);
+            drive_RR.setPower(0.6);
         }
         drive_FL.setPower(0);
         drive_RL.setPower(0);
@@ -713,17 +922,51 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
         drive_RR.setPower(0);
     }
 
-    public void spinDuckyRight(double speed) {
+    public void strafeRight(double inches) {
+        while (RS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
+            drive_FL.setPower(-0.6);
+            drive_RL.setPower(0.6);
+            drive_FR.setPower(0.6);
+            drive_RR.setPower(-0.6);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
+    public void strafeRightFromWall(double inches) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
+            drive_FL.setPower(-0.6);
+            drive_RL.setPower(0.6);
+            drive_FR.setPower(0.6);
+            drive_RR.setPower(-0.6);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
+    public void spinDuckyLeft(double speed) {
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() <= 4.0))
-            rightDucky.setPower(speed);
+        leftDucky.setPower(speed);
         telemetry.addData("Left Ducky Wheel", runtime.seconds());
         telemetry.update();
     }
 
     public void feederSpit(double speed) {
         runtime.reset();
-        while (opModeIsActive() && (runtime.seconds() <= 2.0)) //12/4/2021 1:55 pm Changed from 3 to 2 seconds -Viassna
+        while (opModeIsActive() && (runtime.seconds() <= 1)) //12/4/2021 11:19 am Changed runtime from 3 to 1 seconds -Viassna
+            feeder.setPower(speed);
+        telemetry.addData("Feeder", runtime.seconds());
+        telemetry.update();
+    }
+
+    public void feederEat(double speed) {
+        runtime.reset();
+        while (opModeIsActive() && (runtime.seconds() <= .750)) //12/4/2021 11:42 am Added function for feeder to have time to eat block -Viassna
             feeder.setPower(speed);
         telemetry.addData("Feeder", runtime.seconds());
         telemetry.update();
@@ -815,13 +1058,50 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
         return currAngle;
     }
 
+    public void turnRightArmRaise(double degrees, int angle){
+        resetAngle();
+
+        double error = degrees;
+
+        while (opModeIsActive() && Math.abs(error) > 2 || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+            double motorPower = (error < 0 ? -0.3 : 0.3);
+            robot.setMotorPower(-motorPower, motorPower, -motorPower, motorPower);
+            error = degrees - abs(getAngle());
+            telemetry.addData("error", error);
+            telemetry.update();
+        } if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+
+            rightArm.setPower(.6);
+            leftArm.setPower(.6);
+
+        } else {
+
+            rightArm.setPower(0);
+            leftArm.setPower(0);
+
+        }
+
+        telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
+        telemetry.addData("Target Degrees", degreesBore(angle) * 20);
+        telemetry.update();
+
+
+
+
+
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
     public void turnRight(double degrees){
         resetAngle();
 
         double error = degrees;
 
         while (opModeIsActive() && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.3 : 0.3);
+            double motorPower = (error < 0 ? -0.5 : 0.5); //.3 before 3/17/22
             robot.setMotorPower(-motorPower, motorPower, -motorPower, motorPower);
             error = degrees - abs(getAngle());
             telemetry.addData("error", error);
@@ -835,11 +1115,12 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
     }
 
     public void turnLeft(double degrees){
+        resetAngle();
 
         double error = degrees;
 
         while (opModeIsActive() && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.3 : 0.3);
+            double motorPower = (error < 0 ? -0.5 : 0.5); //.3 before 3/17/221
             robot.setMotorPower(motorPower, -motorPower, motorPower, -motorPower);
             error = degrees - abs(getAngle());
             telemetry.addData("error", error);
