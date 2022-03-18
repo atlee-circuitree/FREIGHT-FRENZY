@@ -170,7 +170,7 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
         compareBackSensorsNew();
 
-        runForwardsDistanceAndRaiseArm(.5, 19 - reduction, angle);
+        runForwardsDistanceAndRaiseArm(.4, 19 - reduction, angle);
 
         //compareBackSensorsNew();
 
@@ -192,8 +192,6 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
         //Moves forward inside warehouse
         runForwardsEncoderAndLowerArmAndExtend(.7, 52, 13);
 
-
-
         /*turnRightArmRaise(20,50); alternate solution
 
         Strafes left until RS_Distance sensor is .5 in away from wall and lifts arm
@@ -203,8 +201,10 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
         runBackwardsEncoder(.6,52);*/
 
+        strafeDiagonalDownLeftEncoderAndRaiseArm(.7,50,50); //Go down to line
+
         //Strafes left until RS_Distance sensor is .5 in away from wall and lifts arm
-        runBackwardsEncoderAndRaiseArm(.7, 50, 50);
+        //runBackwardsEncoderAndRaiseArm(.7, 50, 50);
 
         feeder.setPower(0);
 
@@ -225,6 +225,8 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
         backwardsDistanceDrive(15);
 
         turnLeft(100);
+
+        sleep(500);
 
         strafeLeft(.7, .5);
 
@@ -563,8 +565,9 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
             if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
 
-                drive_FL.setPower(-speed);
-                drive_RR.setPower(-speed);
+                drive_FL.setPower(speed);
+                drive_RR.setPower(speed);
+                drive_FR.setPower(speed - .3);
 
             } else {
 
@@ -575,8 +578,8 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
             if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
 
-                rightArm.setPower(.3);
-                leftArm.setPower(.3);
+                rightArm.setPower(.6);
+                leftArm.setPower(.6);
 
             } else {
 
