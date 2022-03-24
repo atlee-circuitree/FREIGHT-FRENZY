@@ -151,7 +151,7 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
         sleep(500);
 
-        armTurn.setPosition(.24);
+        armTurn.setPosition(.50);
 
         sleep(1000);
 

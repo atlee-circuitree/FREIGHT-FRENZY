@@ -152,7 +152,7 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
 
         sleep(1000);
 
-        armTurn.setPosition(.24);
+        armTurn.setPosition(.50);
 
         sleep (1000);
 
