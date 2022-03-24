@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 
 /**
@@ -41,6 +42,11 @@ public class Tele_Opmode_2021 extends LinearOpMode {
     private Servo odometryLift1 = null;
     private Servo armTurn = null;
 
+    //public final static double ARM_DEFAULT = 0.5; //Unslash this if you want armTurn servo using joystick back
+    public final static double ARM_MIN_RANGE = 0.46;
+    public final static double ARM_MAX_RANGE = 0.53;
+
+    //double armTurnPosition = ARM_DEFAULT;
     @Override
     public void runOpMode() {
 
@@ -72,10 +78,16 @@ public class Tele_Opmode_2021 extends LinearOpMode {
 
         armExtend.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //armTurn.setPosition(ARM_DEFAULT); //Unslash this if you want armTurn servo using joystick back
+
         //Slow Mode Variables
 
         double SD = 1;
         double SA = 1;
+
+        //Arm Turn Variables
+        //double armTurn = ARM_DEFAULT;  //Unslash this if you want armTurn servo using joystick back
+        final double ARM_SPEED = 0.005;
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the batter;
@@ -114,6 +126,7 @@ public class Tele_Opmode_2021 extends LinearOpMode {
             telemetry.addData("Arm Extend Power", armExtend.getPower());
             telemetry.addData("Tape Arm Power", tapeArm.getPower());
             telemetry.addData("Arm Turn Position", armTurn.getPosition());
+            //telemetry.addData("Arm Turn Position", "%.2f", armTurnPosition);
             telemetry.update();
 
             //Mecanum Drive Code
@@ -206,13 +219,22 @@ public class Tele_Opmode_2021 extends LinearOpMode {
             }
 
             //Turns feeder box (Higher number = left, Lower number = right)
-            if (gamepad2.dpad_left) {
-                armTurn.setPosition(.29);
+             if (gamepad2.dpad_left) {
+                armTurn.setPosition(.53);
             } else if (gamepad2.dpad_right) {
-                armTurn.setPosition(.19);
+                armTurn.setPosition(.46);
             } else if (gamepad2.dpad_up) {
-                armTurn.setPosition(.235);
+                armTurn.setPosition(.50);
             }
+
+             //Turns feeder box variably with joystick  //Unslash this section if you want armTurn servo using joystick back.
+            /*if (gamepad2.right_stick_x > .05)         // Also slash out button armTurn , it's right above this function.
+                armTurnPosition -= ARM_SPEED;
+            else if (gamepad2.right_stick_x < -.05)
+                armTurnPosition += ARM_SPEED;
+
+            armTurnPosition = Range.clip(armTurnPosition, ARM_MIN_RANGE, ARM_MAX_RANGE);
+            armTurn.setPosition(armTurnPosition); */
 
             if (gamepad2.left_bumper) {
                 tapeArm.setPower(-1);
