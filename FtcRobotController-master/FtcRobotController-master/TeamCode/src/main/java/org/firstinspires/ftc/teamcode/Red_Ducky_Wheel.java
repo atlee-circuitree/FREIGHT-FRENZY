@@ -195,7 +195,7 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
         forwardsDistanceDrive(30 - reduction);    /*(REDUCE the inches in reduction and not the inches for forwardsDistanceDrive in this particular command)
                                                            -Scroll down until you find calibrateDisVisionReduction(readDisVision), it's at line #512
                                                            -Change the number of inches to subtract from the original 30 inches depending on each level.
-                                                           -The lower the inches, the less it moves forward or closer to the wall it will be.
+                                                           -The lower the inches, the less it moves forward or closer to the wall it will be. 20 = closer to wall
                                                         */
 
         sleep(500);
