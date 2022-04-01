@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -43,6 +44,9 @@ public class Tele_Opmode_FO_Test extends BaseOpMode {
     private Servo odometryLift1 = null;
     private Servo armTurn = null;
 
+    BNO055IMU imu;
+
+
     //public final static double ARM_DEFAULT = 0.5; //Unslash this if you want armTurn servo using joystick back
     public final static double ARM_MIN_RANGE = 0.46;
     public final static double ARM_MAX_RANGE = 0.53;
@@ -70,6 +74,8 @@ public class Tele_Opmode_FO_Test extends BaseOpMode {
         tapeArm = hardwareMap.get(CRServo.class, "tapeArm");
         odometryLift1 = hardwareMap.get(Servo.class, "odometryLift1");
         armTurn = hardwareMap.get(Servo.class, "armTurn");
+
+        getCenteredNavXValues();
 
         leftArm.setDirection(DcMotor.Direction.REVERSE);
         rightArm.setDirection(DcMotor.Direction.FORWARD);
@@ -139,19 +145,17 @@ public class Tele_Opmode_FO_Test extends BaseOpMode {
 
             double gyro_degrees = navx_centered.getYaw();
 
-
-
             double gyro_radians = gyro_degrees * pi/180;
-            double temp = y_stick * cos(gyro_radians) + x_stick * sin(gyro_radians);
-            x_stick = -y_stick * sin(gyro_radians) + x_stick * cos(gyro_radians);
+            double y_joystick = y_stick * cos(gyro_radians) + -x_stick * sin(gyro_radians);
+            x_stick = -y_stick * sin(gyro_radians) + -x_stick * cos(gyro_radians);
 
             /* At this point, Joystick X/Y (strafe/forwrd) vectors have been */
             /* rotated by the gyro angle, and can be sent to drive system */
 
 
             //Mecanum Drive Code
-            double r = Math.hypot(x_stick, temp);
-            double robotAngle = Math.atan2(temp, -x_stick) - Math.PI / 4;
+            double r = Math.hypot(x_stick, y_joystick);
+            double robotAngle = Math.atan2(y_joystick, x_stick) - Math.PI / 4;
             double rightX = -gamepad1.right_stick_x;
             final double v1 = r * Math.cos(robotAngle) + rightX;
             final double v2 = r * Math.sin(robotAngle) - rightX;
