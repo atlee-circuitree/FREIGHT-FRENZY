@@ -189,7 +189,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Strafes left until Left Side Distance sensor is .5 in away from wall
-        strafeLeft(.8,.5);
+        strafeLeft(.7,.5);
 
         //Moves forward inside warehouse extending and lowering arm for second block
         runForwardsEncoderAndLowerArmAndExtend(.9, 52, 13);
@@ -224,7 +224,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Strafes left until Left Side Distance sensor is .5 in away from wall (LS_distance)
-        strafeLeft(.8, .5);
+        strafeLeft(.7, .5);
 
         runForwardsEncoderAndLowerArmAndExtend(.9, 56, 13);
 
@@ -861,6 +861,19 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
     }
 
     public void strafeLeft(double speed, double inches) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) > inches) {
+            drive_FL.setPower(speed);
+            drive_RL.setPower(-speed);
+            drive_FR.setPower(-speed);
+            drive_RR.setPower(speed);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
+    public void strafeLeftTimed(double speed, double inches) {
 
         runtime.reset();
 
@@ -875,6 +888,8 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
             drive_RL.setPower(0);
             drive_FR.setPower(0);
             drive_RR.setPower(0);
+
+            telemetry.addData("Left Side Distance",LS_distance.getDistance(DistanceUnit.INCH));
         }
     }
 

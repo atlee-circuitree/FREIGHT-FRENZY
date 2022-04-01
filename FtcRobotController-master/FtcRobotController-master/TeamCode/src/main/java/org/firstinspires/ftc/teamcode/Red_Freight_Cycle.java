@@ -188,7 +188,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Strafes right until RS_Distance sensor is 0.5 in away from wall
-        strafeRight(.8,.5);
+        strafeRight(.7,.5);
 
         //Moves forward inside warehouse extending and lowering arm for second block
         runForwardsEncoderAndLowerArmAndExtend(.9, 52, 13);
@@ -222,7 +222,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Strafes right until RS_Distance sensor is 0.5 in away from wall
-        strafeRight(.8,.5);
+        strafeRight(.7,.5);
 
         //Moves inside warehouse to get third block for end of auto period
         runForwardsEncoderAndLowerArmAndExtend(.9, 56, 13);
@@ -866,6 +866,19 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
     }
 
     public void strafeRight(double speed, double inches) {
+        while (RS_distance.getDistance(DistanceUnit.INCH) > inches) {
+            drive_FL.setPower(-speed);
+            drive_RL.setPower(speed);
+            drive_FR.setPower(speed);
+            drive_RR.setPower(-speed);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
+    public void strafeRightTimed(double speed, double inches) {
 
         runtime.reset();
 
