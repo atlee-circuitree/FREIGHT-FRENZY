@@ -32,7 +32,7 @@ import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.navXPIDController;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp Field Orientation", group="Linear Opmode")
+@TeleOp(name="TeleOp Field Orientation Test", group="Linear Opmode")
 @Disabled
 public class Tele_Opmode_2021_FO extends BaseAutoOpMode {
 

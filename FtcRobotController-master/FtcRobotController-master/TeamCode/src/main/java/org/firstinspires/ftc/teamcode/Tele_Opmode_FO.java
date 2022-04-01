@@ -24,8 +24,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="TeleOp Field Orientation Test", group="Linear Opmode")
-public class Tele_Opmode_FO_Test extends BaseOpMode {
+@TeleOp(name="TeleOp Field Orientation", group="Linear Opmode")
+public class Tele_Opmode_FO extends BaseOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();

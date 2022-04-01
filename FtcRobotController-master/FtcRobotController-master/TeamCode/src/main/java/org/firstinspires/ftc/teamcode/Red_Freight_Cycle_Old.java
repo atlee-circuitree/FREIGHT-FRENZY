@@ -4,6 +4,7 @@ import static java.lang.Math.abs;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -30,8 +31,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Blue Freight Cycle Test", group="Linear Opmode")
-public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
+@Autonomous(name="Red Freight Cycle Old", group="Linear Opmode")
+@Disabled
+public class Red_Freight_Cycle_Old extends BaseAutoOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -63,7 +65,7 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
     private DistanceSensor frontDistanceLeft;
     private DistanceSensor frontDistanceRight;
 
-    private Servo armTurn;
+    private Servo armTurn = null;
 
     BNO055IMU imu;
 
@@ -95,6 +97,7 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
         odometryLift1 = hardwareMap.get(Servo.class,"odometryLift1");
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
+        armTurn = hardwareMap.get(Servo.class, "armTurn");
 
         LS_distance = hardwareMap.get(DistanceSensor.class, "LS_distance");
         RS_distance = hardwareMap.get(DistanceSensor.class, "RS_distance");
@@ -102,7 +105,6 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
         RR_distance = hardwareMap.get(DistanceSensor.class, "RR_distance");
         frontDistanceLeft = hardwareMap.get(DistanceSensor.class, "frontDistanceLeft");
         frontDistanceRight = hardwareMap.get(DistanceSensor.class, "frontDistanceRight");
-        armTurn = hardwareMap.get(Servo.class, "armTurn");
 
         leftArm.setDirection(DcMotor.Direction.FORWARD);
         rightArm.setDirection(DcMotor.Direction.REVERSE);
@@ -149,96 +151,96 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
         kickout.setPosition(0);
 
-        sleep(200); //500 before
+        sleep(700);
 
-        //Moves feeder box to face straight
-        armTurn.setPosition(.50);
+        //Moves forward
+        forwardsDistanceDrive(5);
 
-        sleep(1000);
+        //Angle adjust
+        compareBackSensorsNew();
 
-        //Moves forward from starting position
-        forwardsDistanceDrive(.7, 5); //3 before
-
-        //compareBackSensorsNew();
-
-        //sleep(500);
+        sleep(500);
 
         //Moves arm up to according to capstone position
         int angle = calibrateDisVisionAngle(readDisVision());
         int reduction = calibrateDisVisionReduction(readDisVision());
 
-        //Strafes right to center line of wobble
-        strafeRightEncoder(1, 15); //.5 before
+        //Strafes to center of alliance shipping hub
+        strafeLeftEncoder(.5, 15);
 
         //Angle adjust
         compareBackSensorsNew();
 
-        //Moves forwards to Blue Alliance Wobble and raises arm to appropriate level for starting block
-        runForwardsDistanceAndRaiseArm(.7, 19 - reduction, angle); //.6 before
+        //Lifts arm and moves towards alliance shipping hub
+        runForwardsDistanceAndRaiseArm(.4, 19 - reduction, angle);
 
         //Angle adjust
-        //compareBackSensorsNew();
+        compareBackSensorsNew();
 
         //Feeder spits starting block
         feederSpit(0.5);
 
         feeder.setPower(0);
 
-        //Backs away from Blue Alliance Wobble
-        backwardsDistanceDrive(.7, 15); //.3 speed before
+        //Moves back from alliance shipping hub
+        backwardsDistanceDrive(15);
 
-        //Turns 100 degrees left
-        turnLeft(90); //100 before
+        //Turns 100 degrees right
+        turnRight(100);
+
+        sleep(200);
+
+        //Strafes right until RS_Distance sensor is 0.5 in away from wall
+        strafeRight(0.5);
+
+        //Moves forward inside warehouse to get second block
+        runForwardsEncoderAndLowerArmAndExtend(.5, 34, 20);
+
+        sleep(300);
+
+        //Moves out of warehouse to center of alliance shipping hub
+        runBackwardsEncoderAndRaiseArm(.6, 34, 50);
+
+        sleep(500);
+
+        //Strafes left from wall to allow space for turning
+        strafeLeftEncoder(.6, 4);
+
+        //Turns left 90 degrees
+        turnLeft(90);
 
         //Angle adjust
-        compareBackSensorsNew(); //new 3/30/22
+        compareBackSensorsNew();
 
-        //sleep(200);
+        //Lifts arm to middle level and moves forward to drop second block in alliance shipping hub
+        runForwardsDistanceAndRaiseArm(.4, 10, 50);
 
-        //Strafes left until Right Side Distance sensor is .5 in away from wall
-        strafeLeft(1,.5); //.7 before
+        sleep(500);
 
-        //Moves forward inside warehouse extending and lowering arm for second block
-        runForwardsEncoderAndLowerArmAndExtend(.9, 52, 13); //.7 before
+        feederSpit(0.5);
+
+        //Backs away from alliance shipping hub
+        backwardsDistanceDrive(15);
+
+        //Turn 100 degrees right towards wall to allow wall to guide robot
+        turnRight(100);
+
+        sleep(200);
+
+        //Strafes right until RS_Distance sensor is 0.5 in away from wall
+        strafeRight(0.5);
+
+        //Moves inside warehouse to get third block for end of auto period
+        runForwardsEncoderAndLowerArmAndExtend(.5, 34, 20);
+
+        sleep(200);
 
         feeder.setPower(0);
 
-        //Backs out of warehouse using the left wall from robot to guide it out
-        strafeDiagonalDownLeftEncoderAndRaiseArm(1,50,50); //.7 before
+        armMoveUp(-30);
 
-        //Strafes right away from wall
-        strafeRightEncoder(1, 6); //.5 before
-
-        //Turns right
-        turnRight(90);
-
-        //Angle adjust
-        compareBackSensorsNew();
-
-        //Moves forwards to wobble and raises arm to second level
-        runForwardsDistanceAndRaiseArm(.7, 13, 50); //.5 speed before 14 inch before
-
-        //sleep(500);
-
-        //Spits second block out
-        feederSpit(0.5);
-
-        //Backs away from Blue Alliance Wobble
-        backwardsDistanceDrive(.7, 15); //.3 before
-
-        //Turns left
-        turnLeft(90); //100 before
-
-        //Angle adjust
-        compareBackSensorsNew();
-
-        //sleep(200); //500 before
-
-        //Strafes left until Left Side Distance sensor is .5 in away from wall (LS_distance)
-        strafeLeft(1, .5); //.7 speed before
-
-        runForwardsEncoderAndLowerArmAndExtend(.9, 56, 13); //.7 speed before
-
+        //Strafes left to be more inside warehouse
+        strafeLeftFromWall(15);
     }
 
     public void strafeLeftEncoder(double speed, double inputInches) {
@@ -273,7 +275,7 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
     public void runForwardsDistanceAndLowerArmAndExtend(double speed, double inches, int angle) {
 
-        feederEat(-.6);
+        feederEat(-1);
 
         while (frontDistanceLeft.getDistance(DistanceUnit.INCH) > inches || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
 
@@ -290,79 +292,6 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
                 drive_RL.setPower(0);
                 drive_FR.setPower(0);
                 drive_RR.setPower(0);
-
-            }
-
-            if (degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20) {
-
-                rightArm.setPower(-.6);
-                leftArm.setPower(-.6);
-
-            } else {
-
-                rightArm.setPower(0);
-                leftArm.setPower(0);
-
-            }
-
-            if (armExtend.getCurrentPosition() < 1700) {
-
-                armExtend.setPower(1);
-
-            } else {
-
-                armExtend.setPower(0);
-
-            }
-
-        }
-
-        drive_FL.setPower(0);
-        drive_RL.setPower(0);
-        drive_FR.setPower(0);
-        drive_RR.setPower(0);
-        rightArm.setPower(0);
-        leftArm.setPower(0);
-        armExtend.setPower(0);
-
-        sleep(1000);
-
-    }
-
-    public void runForwardsEncoderAndLowerArmAndExtend(double speed, double inches, int angle) {
-
-        armTurn.setPosition(.24);
-
-        feederEat(-.6);
-
-        double encoderValue = inchesBore(inches) + drive_FL.getCurrentPosition();
-
-        while (drive_FL.getCurrentPosition() < encoderValue || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
-
-            if (drive_FL.getCurrentPosition() < encoderValue) {
-
-                drive_FL.setPower(-speed);
-                drive_RL.setPower(-speed);
-                drive_FR.setPower(-speed);
-                drive_RR.setPower(-speed);
-
-                telemetry.addData("Encoder Target", encoderValue);
-                telemetry.addData("Right Dead Encoder Running", drive_RR.getCurrentPosition());
-                telemetry.update();
-
-            } else {
-
-                drive_FL.setPower(0);
-                drive_RL.setPower(0);
-                drive_FR.setPower(0);
-                drive_RR.setPower(0);
-
-                telemetry.addData("Encoder Target", encoderValue);
-                telemetry.addData("Right Dead Encoder Finished", drive_RR.getCurrentPosition());
-                telemetry.update();
-
-                ResetDriveEncoder();
-                turnOnEncoders();
 
             }
 
@@ -492,32 +421,11 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
     }
 
-    public void runBackwardsEncoder(double speed, double inputInches) {
-        double encoderValue = inchesBore(inputInches);
-        double startingValue = drive_FL.getCurrentPosition();
-
-        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
-            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
-
-                drive_FL.setPower(speed);
-                drive_RL.setPower(speed);
-                drive_FR.setPower(speed);
-                drive_RR.setPower(speed);
-
-            } else {
-
-                drive_FL.setPower(0);
-                drive_RL.setPower(0);
-                drive_FR.setPower(0);
-                drive_RR.setPower(0);
-
-            }
-        }
-    }
-
     public void runBackwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
         double encoderValue = inchesBore(inputInches);
         double startingValue = drive_FL.getCurrentPosition();
+
+        feeder.setPower(0);
 
         while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
 
@@ -539,8 +447,8 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
             if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
 
-                rightArm.setPower(.3);
-                leftArm.setPower(.3);
+                rightArm.setPower(1);
+                leftArm.setPower(1);
 
             } else {
 
@@ -559,51 +467,6 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
         drive_RL.setPower(0);
         drive_FR.setPower(0);
         drive_RR.setPower(0);
-        rightArm.setPower(0);
-        leftArm.setPower(0);
-
-    }
-
-    public void strafeDiagonalDownLeftEncoderAndRaiseArm(double speed, double inputInches, int angle) {
-        double encoderValue = inchesBore(inputInches);
-        double startingValue = drive_FL.getCurrentPosition();
-
-        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
-
-            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
-
-                drive_FL.setPower(speed);
-                drive_RR.setPower(speed);
-                drive_FR.setPower(speed - .3);
-
-            } else {
-
-                drive_FL.setPower(0);
-                drive_RR.setPower(0);
-
-            }
-
-            if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
-
-                rightArm.setPower(.6);
-                leftArm.setPower(.6);
-
-            } else {
-
-                rightArm.setPower(0);
-                leftArm.setPower(0);
-
-            }
-
-            telemetry.addData("Current Encoder",  drive_FL.getCurrentPosition());
-            telemetry.addData("Target Degrees", startingValue - abs(encoderValue));
-            telemetry.update();
-
-        }
-
-        drive_FL.setPower(0);
-        drive_RR.setPower(0);
-        drive_FR.setPower(0);
         rightArm.setPower(0);
         leftArm.setPower(0);
 
@@ -643,15 +506,15 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
         if (frontDistanceLeft.getDistance(DistanceUnit.INCH) < 20) {
 
-            return 2;
+            return 1;
 
         } else if (frontDistanceRight.getDistance(DistanceUnit.INCH) < 20) {
 
-            return 3;
+            return 2;
 
         } else {
 
-            return 1;
+            return 3;
 
         }
 
@@ -679,15 +542,15 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
         if (Position == 1) {
 
-            return 2;
+            return 3;
 
         } else if (Position == 2){
 
-            return 2; //12/4/2021 5:41 pm Changed from 4 to 2 -Viassna
+            return 3; //12/4/2021 5:41 pm Changed from 4 to 2 -Viassna
 
         } else {
 
-            return 3; //12/4/2021 5:41 pm Changed from 6 to 3 -Viassna
+            return 4; //12/4/2021 5:41 pm Changed from 6 to 3 -Viassna
 
         }
 
@@ -791,8 +654,8 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
         while (-degreesBore(rightArm.getCurrentPosition()) > degreesBore(degrees) * 20) {
 
-            rightArm.setPower(.3);
-            leftArm.setPower(.3);
+            rightArm.setPower(.6);
+            leftArm.setPower(.6);
             telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
             telemetry.addData("Target Degrees", degreesBore(degrees));
             telemetry.update();
@@ -871,57 +734,94 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
     }
 
-    public void strafeLeft(double speed, double inches) {
-        while (LS_distance.getDistance(DistanceUnit.INCH) > inches) {
-            drive_FL.setPower(speed);
-            drive_RL.setPower(-speed);
-            drive_FR.setPower(-speed);
-            drive_RR.setPower(speed);
-        }
-            drive_FL.setPower(0);
-            drive_RL.setPower(0);
-            drive_FR.setPower(0);
-            drive_RR.setPower(0);
-    }
+    public void runForwardsEncoderAndLowerArmAndExtend(double speed, double inches, int angle) {
 
-    public void strafeLeftArmRaise(double speed, double inches, int angle) {
-        while (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4 || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+        armTurn.setPosition(.24);
 
-            if (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
-                drive_FL.setPower(speed);
+        feederEat(-.6);
+
+        double encoderValue = inchesBore(inches) + drive_FL.getCurrentPosition();
+
+        while (drive_FL.getCurrentPosition() < encoderValue || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
+
+            if (drive_FL.getCurrentPosition() < encoderValue) {
+
+                drive_FL.setPower(-speed);
                 drive_RL.setPower(-speed);
                 drive_FR.setPower(-speed);
-                drive_RR.setPower(speed);
+                drive_RR.setPower(-speed);
+
+                telemetry.addData("Encoder Target", encoderValue);
+                telemetry.addData("Right Dead Encoder Running", drive_RR.getCurrentPosition());
+                telemetry.update();
+
             } else {
+
                 drive_FL.setPower(0);
                 drive_RL.setPower(0);
                 drive_FR.setPower(0);
                 drive_RR.setPower(0);
+
+                telemetry.addData("Encoder Target", encoderValue);
+                telemetry.addData("Right Dead Encoder Finished", drive_RR.getCurrentPosition());
+                telemetry.update();
+
+                ResetDriveEncoder();
+                turnOnEncoders();
+
             }
-            if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
-                rightArm.setPower(.6);
-                leftArm.setPower(.6);
+
+            if (degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20) {
+
+                rightArm.setPower(-.6);
+                leftArm.setPower(-.6);
+
             } else {
+
                 rightArm.setPower(0);
                 leftArm.setPower(0);
+
             }
 
-            telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
-            telemetry.addData("Target Degrees", degreesBore(angle) * 20);
-            telemetry.update();
+            if (armExtend.getCurrentPosition() < 1700) {
+
+                armExtend.setPower(1);
+
+            } else {
+
+                armExtend.setPower(0);
+
+            }
 
         }
+
         drive_FL.setPower(0);
         drive_RL.setPower(0);
         drive_FR.setPower(0);
         drive_RR.setPower(0);
         rightArm.setPower(0);
         leftArm.setPower(0);
+        armExtend.setPower(0);
+
+        sleep(1000);
 
     }
 
+    public void strafeLeft(double inches) {
+        while (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4) {
+            drive_FL.setPower(0.6);
+            drive_RL.setPower(-0.6);
+            drive_FR.setPower(-0.6);
+            drive_RR.setPower(0.6);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
+    }
+
     public void strafeLeftFromWall(double inches) {
-        while (LS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
+        while (RS_distance.getDistance(DistanceUnit.INCH) < inches + 4) {
             drive_FL.setPower(0.6);
             drive_RL.setPower(-0.6);
             drive_FR.setPower(-0.6);
@@ -962,7 +862,7 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
     public void spinDuckyLeft(double speed) {
         runtime.reset();
         while (opModeIsActive() && (runtime.seconds() <= 4.0))
-        leftDucky.setPower(speed);
+            leftDucky.setPower(speed);
         telemetry.addData("Left Ducky Wheel", runtime.seconds());
         telemetry.update();
     }
@@ -983,17 +883,17 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
         telemetry.update();
     }
 
-    public void forwardsDistanceDrive(double speed, int inches) {
+    public void forwardsDistanceDrive(int inches) {
         while (RL_distance.getDistance(DistanceUnit.INCH) < inches) {
-            drive_FL.setPower(-speed);
-            drive_RL.setPower(-speed);
-            drive_FR.setPower(-speed);
-            drive_RR.setPower(-speed);
+            drive_FL.setPower(-.3);
+            drive_RL.setPower(-.3);
+            drive_FR.setPower(-.3);
+            drive_RR.setPower(-.3);
         }
-            drive_FL.setPower(0);
-            drive_RL.setPower(0);
-            drive_FR.setPower(0);
-            drive_RR.setPower(0);
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
     }
 
     public void forwardsDistanceDriveFront(int inches) {
@@ -1009,12 +909,12 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
         drive_RR.setPower(0);
     }
 
-    public void backwardsDistanceDrive(double speed, int inches) {
+    public void backwardsDistanceDrive(int inches) {
         while (RL_distance.getDistance(DistanceUnit.INCH) > inches) {
-            drive_FL.setPower(speed);
-            drive_RL.setPower(speed);
-            drive_FR.setPower(speed);
-            drive_RR.setPower(speed);
+            drive_FL.setPower(.3);
+            drive_RL.setPower(.3);
+            drive_FR.setPower(.3);
+            drive_RR.setPower(.3);
         }
         drive_FL.setPower(0);
         drive_RL.setPower(0);
@@ -1069,50 +969,13 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
         return currAngle;
     }
 
-    public void turnRightArmRaise(double degrees, int angle){
-        resetAngle();
-
-        double error = degrees;
-
-        while (opModeIsActive() && Math.abs(error) > 2 || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
-            double motorPower = (error < 0 ? -0.3 : 0.3);
-            robot.setMotorPower(-motorPower, motorPower, -motorPower, motorPower);
-            error = degrees - abs(getAngle());
-            telemetry.addData("error", error);
-            telemetry.update();
-        } if (degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
-
-            rightArm.setPower(.6);
-            leftArm.setPower(.6);
-
-        } else {
-
-            rightArm.setPower(0);
-            leftArm.setPower(0);
-
-        }
-
-        telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
-        telemetry.addData("Target Degrees", degreesBore(angle) * 20);
-        telemetry.update();
-
-
-
-
-
-        drive_FL.setPower(0);
-        drive_RL.setPower(0);
-        drive_FR.setPower(0);
-        drive_RR.setPower(0);
-    }
-
     public void turnRight(double degrees){
         resetAngle();
 
         double error = degrees;
 
         while (opModeIsActive() && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.7 : 0.7); //.5 before
+            double motorPower = (error < 0 ? -0.3 : 0.3);
             robot.setMotorPower(-motorPower, motorPower, -motorPower, motorPower);
             error = degrees - abs(getAngle());
             telemetry.addData("error", error);
@@ -1131,7 +994,7 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
         double error = degrees;
 
         while (opModeIsActive() && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.7 : 0.7); //.5 before
+            double motorPower = (error < 0 ? -0.3 : 0.3);
             robot.setMotorPower(motorPower, -motorPower, motorPower, -motorPower);
             error = degrees - abs(getAngle());
             telemetry.addData("error", error);

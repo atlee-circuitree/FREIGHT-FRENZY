@@ -215,7 +215,7 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
         //Moves backwards away from wobble to prepare to strafe left into Blue Alliance Parking Spot
         runBackwardsDistanceAndRaiseArm(.3, 4.5, 90);   //The lower the inches, the closer it is towards the wall (Uses Rear Left Distance Sensor)
 
-        //compareBackSensorsNew(); Hidden as it seems better without but add it again if robot misses parking spot if it deviates too far when turning
+        //compareBackSensorsNew(); Hidden as it seems better without it but add it again if robot misses parking spot if it deviates too far when turning
 
         //Strafes left into Blue Alliance Parking Spot
         strafeLeft(29,.3);

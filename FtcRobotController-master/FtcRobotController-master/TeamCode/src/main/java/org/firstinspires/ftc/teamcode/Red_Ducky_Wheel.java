@@ -157,7 +157,7 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
         sleep(1000);
 
         //Moves forwards from starting position
-        forwardsDistanceDrive(8); //7 before 4/1/22
+        forwardsDistanceDrive(8);
 
         sleep(500);
 
@@ -165,13 +165,13 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes left to Ducky Wheel
-        strafeLeft(3,.3); //2 before 4/1/22
+        strafeLeft(3,.3);
 
         //Angle adjust
         compareBackSensorsNew();
 
         //Moves backwards towards ducky wheel
-        runBackwardsEncoderTimed(.1,4); //2.5 before 4/1/22
+        runBackwardsEncoderTimed(.1,4);
 
         //Spins left ducky wheel
         spinDuckyLeft(1);
@@ -188,7 +188,7 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
         runForwardsDistanceAndRaiseArm(.3, 39, angle);
 
         //Turns right towards Red Alliance Wobble/Shipping Hub
-        turnRight(75);
+        turnRight(90);
 
         //Angle adjust
         compareBackSensorsNew();
@@ -213,9 +213,9 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Moves backwards away from wobble to prepare to strafe left into Red Alliance Parking Spot
-        runBackwardsDistanceAndRaiseArm(.3, 6, 90);     //The lower the inches, the closer it is towards the wall
+        runBackwardsDistanceAndRaiseArm(.3, 4.5, 90);     //The lower the inches, the closer it is towards the wall
 
-        //compareBackSensorsNew(); Hidden as it seems better without but add it again if robot misses parking spot if it deviates too far when turning
+        //compareBackSensorsNew(); Hidden as it seems better without it but add it again if robot misses parking spot if it deviates too far when turning
 
         //Strafes right into Red Alliance Parking Spot
         strafeRight(29,.3); //30 before 4/1/22
