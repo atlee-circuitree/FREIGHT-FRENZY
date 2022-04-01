@@ -151,11 +151,12 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
         sleep(200); //500 before
 
+        //Moves feeder box to face straight
         armTurn.setPosition(.50);
 
         sleep(1000);
 
-        //Moves forward
+        //Moves forward from starting position
         forwardsDistanceDrive(.7, 5); //3 before
 
         //compareBackSensorsNew();
@@ -166,12 +167,16 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
         int angle = calibrateDisVisionAngle(readDisVision());
         int reduction = calibrateDisVisionReduction(readDisVision());
 
+        //Strafes right to center line of wobble
         strafeRightEncoder(1, 15); //.5 before
 
-        //compareBackSensorsNew();
+        //Angle adjust
+        compareBackSensorsNew();
 
+        //Moves forwards to Blue Alliance Wobble and raises arm to appropriate level for starting block
         runForwardsDistanceAndRaiseArm(.7, 19 - reduction, angle); //.6 before
 
+        //Angle adjust
         //compareBackSensorsNew();
 
         //Feeder spits starting block
@@ -179,61 +184,57 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
         feeder.setPower(0);
 
+        //Backs away from Blue Alliance Wobble
         backwardsDistanceDrive(.7, 15); //.3 speed before
 
         //Turns 100 degrees left
         turnLeft(90); //100 before
 
+        //Angle adjust
         compareBackSensorsNew(); //new 3/30/22
 
         //sleep(200);
 
-        //Strafes left until RS_Distance sensor is .5 in away from wall
+        //Strafes left until Right Side Distance sensor is .5 in away from wall
         strafeLeft(1,.5); //.7 before
 
-        //Moves forward inside warehouse
+        //Moves forward inside warehouse extending and lowering arm for second block
         runForwardsEncoderAndLowerArmAndExtend(.9, 52, 13); //.7 before
 
         feeder.setPower(0);
 
-        /*turnRightArmRaise(20,50); alternate solution
-
-        Strafes left until RS_Distance sensor is .5 in away from wall and lifts arm
-        strafeLeftArmRaise(.6, .5, 50);
-
-        sleep(500);
-
-        runBackwardsEncoder(.6,52);*/
-
+        //Backs out of warehouse using the left wall from robot to guide it out
         strafeDiagonalDownLeftEncoderAndRaiseArm(1,50,50); //.7 before
 
-        //Strafes left until RS_Distance sensor is .5 in away from wall and lifts arm
-        //runBackwardsEncoderAndRaiseArm(.7, 50, 50);
-
-        feeder.setPower(0);
-
+        //Strafes right away from wall
         strafeRightEncoder(1, 6); //.5 before
 
+        //Turns right
         turnRight(90);
 
+        //Angle adjust
         compareBackSensorsNew();
 
+        //Moves forwards to wobble and raises arm to second level
         runForwardsDistanceAndRaiseArm(.7, 13, 50); //.5 speed before 14 inch before
 
         //sleep(500);
 
-        //feeder.setPower(0);
-
+        //Spits second block out
         feederSpit(0.5);
 
+        //Backs away from Blue Alliance Wobble
         backwardsDistanceDrive(.7, 15); //.3 before
 
+        //Turns left
         turnLeft(90); //100 before
 
+        //Angle adjust
         compareBackSensorsNew();
 
         //sleep(200); //500 before
 
+        //Strafes left until Left Side Distance sensor is .5 in away from wall (LS_distance)
         strafeLeft(1, .5); //.7 speed before
 
         runForwardsEncoderAndLowerArmAndExtend(.9, 56, 13); //.7 speed before
@@ -602,6 +603,7 @@ public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
         drive_FL.setPower(0);
         drive_RR.setPower(0);
+        drive_FR.setPower(0);
         rightArm.setPower(0);
         leftArm.setPower(0);
 

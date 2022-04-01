@@ -167,11 +167,13 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
         //Strafes right to Ducky Wheel
         strafeRight(3, .3);
 
+        //Angle adjust
         compareBackSensorsNew();
 
         //Moves backwards towards ducky wheel
-        runBackwardsEncoderTimed(.1,4); //2.5 before 3/16/22
+        runBackwardsEncoderTimed(.1,4);
 
+        //Spins right ducky wheel
         spinDuckyRight(1);
 
         rightDucky.setPower(0);
@@ -179,41 +181,46 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
         //Moves a little forward to allow angle adjustment
         forwardsDistanceDrive(11);
 
+        //Angle adjust
         compareBackSensorsNew();
 
-        //Moves towards center line of Blue Alliance Wobble/Shipping Hub
+        //Moves towards center of Blue Alliance Wobble/Shipping Hub
         runForwardsDistanceAndRaiseArm(.3, 35, angle);
 
         //Turns left towards Blue Alliance Wobble/Shipping Hub
         turnLeft(90);
 
+        //Angle adjust
         compareBackSensorsNew();
 
         sleep(250);
 
         //Moves forward towards wobble with RL_distance sensor
         forwardsDistanceDrive(30 - reduction);    /*(REDUCE the inches in reduction and not the inches for forwardsDistanceDrive in this particular command)
-                                                           -Scroll down until you find calibrateDisVisionReduction(readDisVision), it's at line #512
-                                                           -Change the number of inches to subtract from the original 30 inches depending on each level.
-                                                           -The lower the inches, the less it moves forward or closer to the wall it will be. 20 = closer to wall
+                       DON'T CHANGE  ^                      -Scroll down until you find calibrateDisVisionReduction(readDisVision), it's at line #512
+                       INCHES        |                      -Change the number of inches to subtract from the original 30 inches depending on each level.
+                                     |                      -The lower the inches, the less it moves forward or closer to the wall it will be. 20 = closer to wall
                                                         */
 
         sleep(500);
 
+        //Spits starting block onto Blue Alliance Wobble
         feederSpit(.6);
 
         feeder.setPower(0);
 
+        //Angle adjust
         compareBackSensorsNew();
 
         //Moves backwards away from wobble to prepare to strafe left into Blue Alliance Parking Spot
-        runBackwardsDistanceAndRaiseArm(.3, 4.5, 90);   //The lower the inches, the closer it is towards the wall
+        runBackwardsDistanceAndRaiseArm(.3, 4.5, 90);   //The lower the inches, the closer it is towards the wall (Uses Rear Left Distance Sensor)
 
-        //compareBackSensorsNew(); Hidden for now as it seems better without but add it again if you need it
+        //compareBackSensorsNew(); Hidden as it seems better without but add it again if robot misses parking spot if it deviates too far when turning
 
         //Strafes left into Blue Alliance Parking Spot
         strafeLeft(29,.3);
 
+        //Angle adjust
         compareBackSensorsNew();
     }
 

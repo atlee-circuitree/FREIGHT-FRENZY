@@ -154,10 +154,10 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
 
         armTurn.setPosition(.50);
 
-        sleep (1000);
+        sleep(1000);
 
         //Moves forwards from starting position
-        forwardsDistanceDrive(7);
+        forwardsDistanceDrive(8); //7 before 4/1/22
 
         sleep(500);
 
@@ -165,13 +165,15 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes left to Ducky Wheel
-        strafeLeft(2,.3);
+        strafeLeft(3,.3); //2 before 4/1/22
 
+        //Angle adjust
         compareBackSensorsNew();
 
         //Moves backwards towards ducky wheel
-        runBackwardsEncoderTimed(.1,2.5);
+        runBackwardsEncoderTimed(.1,4); //2.5 before 4/1/22
 
+        //Spins left ducky wheel
         spinDuckyLeft(1);
 
         leftDucky.setPower(0);
@@ -179,6 +181,7 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
         //Moves a little forward to allow angle adjustment
         forwardsDistanceDrive(11);
 
+        //Angle adjust
         compareBackSensorsNew();
 
         //Moves towards center of Red Alliance Wobble/Shipping Hub
@@ -187,33 +190,37 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
         //Turns right towards Red Alliance Wobble/Shipping Hub
         turnRight(75);
 
+        //Angle adjust
         compareBackSensorsNew();
 
         sleep(250);
 
         //Moves forward towards wobble with RL_distance sensor
         forwardsDistanceDrive(30 - reduction);    /*(REDUCE the inches in reduction and not the inches for forwardsDistanceDrive in this particular command)
-                                                           -Scroll down until you find calibrateDisVisionReduction(readDisVision), it's at line #512
-                                                           -Change the number of inches to subtract from the original 30 inches depending on each level.
-                                                           -The lower the inches, the less it moves forward or closer to the wall it will be. 20 = closer to wall
+                       DON'T CHANGE  ^                   -Scroll down until you find calibrateDisVisionReduction(readDisVision), it's at line #512
+                       INCHES        |                      -Change the number of inches to subtract from the original 30 inches depending on each level.
+                                     |                      -The lower the inches, the less it moves forward or closer to the wall it will be. 20 = closer to wall
                                                         */
 
         sleep(500);
 
+        //Spits starting block onto Red Alliance Wobble
         feederSpit(.6);
 
         feeder.setPower(0);
 
+        //Angle adjust
         compareBackSensorsNew();
 
-        //Moves backwards away from wobble to prepare to strafe left into Blue Alliance Parking Spot
+        //Moves backwards away from wobble to prepare to strafe left into Red Alliance Parking Spot
         runBackwardsDistanceAndRaiseArm(.3, 6, 90);     //The lower the inches, the closer it is towards the wall
 
-        compareBackSensorsNew();
+        //compareBackSensorsNew(); Hidden as it seems better without but add it again if robot misses parking spot if it deviates too far when turning
 
         //Strafes right into Red Alliance Parking Spot
-        strafeRight(30,.3);
+        strafeRight(29,.3); //30 before 4/1/22
 
+        //Angle adjust
         compareBackSensorsNew();
     }
 
