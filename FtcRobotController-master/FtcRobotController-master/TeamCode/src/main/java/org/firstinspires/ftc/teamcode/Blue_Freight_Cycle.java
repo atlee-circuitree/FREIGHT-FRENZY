@@ -173,7 +173,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Moves forwards to Blue Alliance Wobble and raises arm to appropriate level for starting block
-        runForwardsDistanceAndRaiseArm(.6, 19 - reduction, angle);
+        runForwardsDistanceAndRaiseArm(.6, 15 - reduction, angle);
 
         //Feeder spits starting block
         feederSpit(0.5);
@@ -197,7 +197,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
         feeder.setPower(0);
 
-        //Backs out of warehouse using the left wall from robot to guide it out
+        //Backs out of warehouse using the left wall from robot to guide it out ( possible issue )
         strafeDiagonalDownLeftEncoderAndRaiseArm(1,50,50);
 
         //Strafes right away from wall
@@ -514,12 +514,12 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
     }
 
     public void runBackwardsEncoderAndRaiseArm(double speed, double inputInches, int angle) {
-        double encoderValue = inchesBore(inputInches);
+        double targetValue = inchesBore(inputInches);
         double startingValue = drive_FL.getCurrentPosition();
 
-        while (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+        while (drive_FL.getCurrentPosition() > startingValue - abs(targetValue) || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
 
-            if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
+            if (drive_FL.getCurrentPosition() > startingValue - abs(targetValue)) {
 
                 drive_FL.setPower(speed);
                 drive_RL.setPower(speed);
@@ -548,7 +548,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
             }
 
             telemetry.addData("Current Encoder",  drive_FL.getCurrentPosition());
-            telemetry.addData("Target Degrees", startingValue - abs(encoderValue));
+            telemetry.addData("Target Degrees", startingValue - abs(targetValue));
             telemetry.update();
 
         }
@@ -570,14 +570,19 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
             if (drive_FL.getCurrentPosition() > startingValue - abs(encoderValue)) {
 
-                drive_FL.setPower(speed);
-                drive_RR.setPower(speed);
-                drive_FR.setPower(speed - .3);
+                //drive_FL.setPower(speed);
+                // drive_RL.setPower(speed - .3);// wasnt powered before -Nolan 4/4/22
+                //drive_FR.setPower(speed - .3);
+                // drive_RR.setPower(speed);
 
+
+                driveTrain(speed, speed - .3, speed - .3, speed, 1);
             } else {
 
                 drive_FL.setPower(0);
                 drive_RR.setPower(0);
+                drive_FR.setPower(0);//wasnt unpowered before -Nolan 4/4/22
+                drive_RL.setPower(0);//same with this one
 
             }
 
@@ -881,7 +886,8 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
            // drive_RL.setPower(-speed);
            // drive_FR.setPower(-speed);
            // drive_RR.setPower(speed);
-            driveTrain(speed, -speed, -speed, speed, PIDadjustment(0.5, inches, currentDistance));
+            driveTrain(speed, -speed, -speed, speed, PIDadjustment(0.5, currentDistance, inches));
+           // driveTrain(speed, -speed, -speed, speed, 1);
             currentDistance = LS_distance.getDistance(DistanceUnit.INCH);
         }
         drive_FL.setPower(0);
@@ -909,7 +915,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
             telemetry.addData("Left Side Distance",LS_distance.getDistance(DistanceUnit.INCH));
         }
     }
-
+//change distance sensor to odometry in future
     public void strafeLeftArmRaise(double speed, double inches, int angle) {
         while (LS_distance.getDistance(DistanceUnit.INCH) > inches + 4 || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
 
@@ -1049,7 +1055,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
             //drive_RL.setPower(speed);
             //drive_FR.setPower(speed);
             //drive_RR.setPower(speed);
-            driveTrain(speed, speed, speed, speed, PIDadjustment(0.5, inches, currentDistance));
+            driveTrain(speed, speed, speed, speed, PIDadjustment(0.5, currentDistance, inches));
             currentDistance = RL_distance.getDistance(DistanceUnit.INCH);
         }
         drive_FL.setPower(0);
