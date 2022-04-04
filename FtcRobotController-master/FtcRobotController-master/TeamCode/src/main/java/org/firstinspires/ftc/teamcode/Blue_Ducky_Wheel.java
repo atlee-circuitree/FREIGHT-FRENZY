@@ -185,7 +185,7 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Moves towards center of Blue Alliance Wobble/Shipping Hub
-        runForwardsDistanceAndRaiseArm(.3, 35, angle);
+        runForwardsDistanceAndRaiseArm(.3, 34, angle);
 
         //Turns left towards Blue Alliance Wobble/Shipping Hub
         turnLeft(90);

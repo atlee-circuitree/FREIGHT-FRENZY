@@ -31,7 +31,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Blue Freight Cycle Old", group="Linear Opmode")
+//@Autonomous(name="Blue Freight Cycle Old", group="Linear Opmode")
 @Disabled
 public class Blue_Freight_Cycle_Old extends BaseAutoOpMode {
 

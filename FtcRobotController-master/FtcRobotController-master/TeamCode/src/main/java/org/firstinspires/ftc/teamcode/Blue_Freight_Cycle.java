@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.max;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -324,20 +325,23 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
         feederEat(-.6);
 
-        double encoderValue = inchesBore(inches) + drive_FL.getCurrentPosition();
+        double currentValue = drive_FL.getCurrentPosition();
+        double targetValue = inchesBore(inches) + currentValue;
 
-        while (drive_FL.getCurrentPosition() < encoderValue || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
+        while (currentValue < targetValue || degreesBore(rightArm.getCurrentPosition()) > degreesBore(angle) * 20 || armExtend.getCurrentPosition() < 1700) {
 
-            if (drive_FL.getCurrentPosition() < encoderValue) {
+            if (currentValue < targetValue) {
 
-                drive_FL.setPower(-speed);
-                drive_RL.setPower(-speed);
-                drive_FR.setPower(-speed);
-                drive_RR.setPower(-speed);
+               // drive_FL.setPower(-speed);
+                //drive_RL.setPower(-speed);
+               // drive_FR.setPower(-speed);
+                //drive_RR.setPower(-speed);
+                driveTrain(-speed, -speed, -speed, -speed, PIDadjustment(1/inchesBore(2), targetValue, currentValue));
 
-                telemetry.addData("Encoder Target", encoderValue);
+                telemetry.addData("Encoder Target", targetValue);
                 telemetry.addData("Right Dead Encoder Running", drive_RR.getCurrentPosition());
                 telemetry.update();
+                currentValue = drive_FL.getCurrentPosition();
 
             } else {
 
@@ -346,7 +350,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
                 drive_FR.setPower(0);
                 drive_RR.setPower(0);
 
-                telemetry.addData("Encoder Target", encoderValue);
+                telemetry.addData("Encoder Target", targetValue);
                 telemetry.addData("Right Dead Encoder Finished", drive_RR.getCurrentPosition());
                 telemetry.update();
 
@@ -435,15 +439,20 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
 
     public void runForwardsDistanceAndRaiseArm(double speed, double inches, int angle) {
+        double currentDistance;
 
-        while (RL_distance.getDistance(DistanceUnit.INCH) < inches || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
+        currentDistance = RL_distance.getDistance(DistanceUnit.INCH);
+        while (currentDistance < inches || degreesBore(rightArm.getCurrentPosition()) < degreesBore(angle) * 20) {
 
-            if (RL_distance.getDistance(DistanceUnit.INCH) < inches) {
 
-                drive_FL.setPower(-speed);
-                drive_RL.setPower(-speed);
-                drive_FR.setPower(-speed);
-                drive_RR.setPower(-speed);
+            if (currentDistance < inches) {
+
+               // drive_FL.setPower(-speed);
+               // drive_RL.setPower(-speed);
+               // drive_FR.setPower(-speed);
+               // drive_RR.setPower(-speed);
+                driveTrain(-speed, -speed, -speed, -speed, PIDadjustment(0.5, inches, currentDistance));
+
 
             } else {
 
@@ -469,7 +478,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
             telemetry.addData("Current Angle", degreesBore(rightArm.getCurrentPosition()));
             telemetry.addData("Target Degrees", degreesBore(angle) * 20);
             telemetry.update();
-
+            currentDistance = RL_distance.getDistance(DistanceUnit.INCH);
         }
 
         drive_FL.setPower(0);
@@ -603,17 +612,20 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         double encoderValue = abs(inchesBore(inputInches));
 
         double startingValue = abs(drive_RL.getCurrentPosition());
+        double targetValue = abs(startingValue) + abs(encoderValue);
+        double currentValue = startingValue;
+        while (currentValue < targetValue) {
 
-        while (abs(drive_RL.getCurrentPosition()) < abs(startingValue) + abs(encoderValue)) {
-
-            drive_FL.setPower(-speed);
-            drive_RL.setPower(speed);
-            drive_FR.setPower(speed);
-            drive_RR.setPower(-speed);
+           // drive_FL.setPower(-speed);
+           // drive_RL.setPower(speed);
+            //drive_FR.setPower(speed);
+            //drive_RR.setPower(-speed);
+            driveTrain(-speed, speed, speed, -speed, PIDadjustment(1/inchesBore(2), targetValue, currentValue));
 
             telemetry.addData("Encoder Target", abs(drive_RL.getCurrentPosition()));
-            telemetry.addData("Back Dead Encoder Running", abs(startingValue) + abs(encoderValue));
+            telemetry.addData("Back Dead Encoder Running", targetValue);
             telemetry.update();
+            currentValue = abs(drive_RL.getCurrentPosition());
 
         }
 
@@ -861,11 +873,16 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
     }
 
     public void strafeLeft(double speed, double inches) {
+        double currentDistance;
+
+        currentDistance = LS_distance.getDistance(DistanceUnit.INCH);
         while (LS_distance.getDistance(DistanceUnit.INCH) > inches) {
-            drive_FL.setPower(speed);
-            drive_RL.setPower(-speed);
-            drive_FR.setPower(-speed);
-            drive_RR.setPower(speed);
+           // drive_FL.setPower(speed);
+           // drive_RL.setPower(-speed);
+           // drive_FR.setPower(-speed);
+           // drive_RR.setPower(speed);
+            driveTrain(speed, -speed, -speed, speed, PIDadjustment(0.5, inches, currentDistance));
+            currentDistance = LS_distance.getDistance(DistanceUnit.INCH);
         }
         drive_FL.setPower(0);
         drive_RL.setPower(0);
@@ -993,11 +1010,16 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
     }
 
     public void forwardsDistanceDrive(double speed, int inches) {
-        while (RL_distance.getDistance(DistanceUnit.INCH) < inches) {
-            drive_FL.setPower(-speed);
-            drive_RL.setPower(-speed);
-            drive_FR.setPower(-speed);
-            drive_RR.setPower(-speed);
+        double currentDistance;
+
+        currentDistance = RL_distance.getDistance(DistanceUnit.INCH);
+        while (currentDistance < inches) {
+           // drive_FL.setPower(-speed);
+           // drive_RL.setPower(-speed);
+           // drive_FR.setPower(-speed);
+           // drive_RR.setPower(-speed);
+           driveTrain(-speed, -speed, -speed, -speed, PIDadjustment(0.5, inches, currentDistance));
+            currentDistance = RL_distance.getDistance(DistanceUnit.INCH);
         }
             drive_FL.setPower(0);
             drive_RL.setPower(0);
@@ -1019,11 +1041,16 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
     }
 
     public void backwardsDistanceDrive(double speed, int inches) {
-        while (RL_distance.getDistance(DistanceUnit.INCH) > inches) {
-            drive_FL.setPower(speed);
-            drive_RL.setPower(speed);
-            drive_FR.setPower(speed);
-            drive_RR.setPower(speed);
+        double currentDistance;
+
+        currentDistance = RL_distance.getDistance(DistanceUnit.INCH);
+        while (currentDistance > inches) {
+            //drive_FL.setPower(speed);
+            //drive_RL.setPower(speed);
+            //drive_FR.setPower(speed);
+            //drive_RR.setPower(speed);
+            driveTrain(speed, speed, speed, speed, PIDadjustment(0.5, inches, currentDistance));
+            currentDistance = RL_distance.getDistance(DistanceUnit.INCH);
         }
         drive_FL.setPower(0);
         drive_RL.setPower(0);
@@ -1194,5 +1221,52 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
             telemetry.update();
         }
         robot.setAllPower(0);
+
     }
+    public double PIDadjustment(double kP, double targetValue, double sensorValue) {
+
+        return((targetValue - sensorValue) * kP);
+
+    }
+
+    public void driveTrain(double FLSpeed, double RLSpeed, double FRSpeed, double RRSpeed, double PIDScale) {
+
+        double maxSpeed = 0;
+
+        FLSpeed = (FLSpeed * PIDScale);
+        RLSpeed = (RLSpeed * PIDScale);
+        FRSpeed = (FRSpeed * PIDScale);
+        RRSpeed = (RRSpeed * PIDScale);
+
+        //maxSpeed = Math.max(abs(FLSpeed), abs(RLSpeed), abs(FRSpeed), abs(RRSpeed));
+        if (abs(FLSpeed) > maxSpeed) {
+
+            maxSpeed = abs(FLSpeed);
+        }
+        else if  (abs(RLSpeed) > maxSpeed) {
+
+            maxSpeed = abs(RLSpeed);
+        }
+        else if  (abs(FRSpeed) > maxSpeed) {
+
+            maxSpeed = abs(FRSpeed);
+        }
+        else if  (abs(RRSpeed) > maxSpeed) {
+
+            maxSpeed = abs(RRSpeed);
+        }
+        if (abs(maxSpeed) > 1) {
+            drive_FL.setPower(FLSpeed / maxSpeed);
+            drive_RL.setPower(RLSpeed / maxSpeed);
+            drive_FR.setPower(FRSpeed / maxSpeed);
+            drive_RR.setPower(RRSpeed / maxSpeed);
+        }
+        else {
+            drive_FL.setPower(FLSpeed);
+            drive_RL.setPower(RLSpeed);
+            drive_FR.setPower(FRSpeed);
+            drive_RR.setPower(RRSpeed);
+        }
+    }
+
 }
