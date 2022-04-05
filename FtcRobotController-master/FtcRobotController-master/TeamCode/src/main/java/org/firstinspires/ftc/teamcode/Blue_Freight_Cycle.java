@@ -153,7 +153,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         sleep(200);
 
         //Moves feeder box to face straight
-        armTurn.setPosition(.50);
+        armTurn.setPosition(.42);
 
         sleep(1000);
 
@@ -165,7 +165,9 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes right to center line of wobble
-        strafeRightEncoder(.8, 15);
+        strafeRightEncoder(.8, 13);
+
+        armTurn.setPosition(.42);
 
         sleep(250);
 
@@ -173,7 +175,10 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Moves forwards to Blue Alliance Wobble and raises arm to appropriate level for starting block
-        runForwardsDistanceAndRaiseArm(.6, 15 - reduction, angle);
+        //4-4-2022 5:26 changed from 18 to 15  // 4/4//22 changed 15 to 21
+        runForwardsDistanceAndRaiseArm(.6, 19 - reduction, angle);
+
+        armTurn.setPosition(.42);
 
         //Feeder spits starting block
         feederSpit(0.5);
@@ -186,16 +191,20 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         //Turns 90 degrees left
         turnLeft(90);
 
+        armTurn.setPosition(.42);
+
         //Angle adjust
         compareBackSensorsNew();
 
-        //Strafes left until Left Side Distance sensor is .5 in away from wall
-        strafeLeft(.7,.5);
+        //Strafes left until Left Side Distance sensor is .5 in away from wall //did a lil tinkering on the kind of strafe -Nolan 4/5/22
+        strafeLeft(.7, 1);
 
         //Moves forward inside warehouse extending and lowering arm for second block
-        runForwardsEncoderAndLowerArmAndExtend(.9, 52, 13);
+        runForwardsEncoderAndLowerArmAndExtend(.9, 50, 13);
 
         feeder.setPower(0);
+
+        armTurn.setPosition(.42);
 
         //Backs out of warehouse using the left wall from robot to guide it out ( possible issue )
         strafeDiagonalDownLeftEncoderAndRaiseArm(1,50,50);
@@ -204,10 +213,12 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         strafeRightEncoder(.8, 6);
 
         //Turns right
-        turnRight(90);
+        turnRight(45);
 
         //Angle adjust
         compareBackSensorsNew();
+
+        armTurn.setPosition(.42);
 
         //Moves forwards to wobble and raises arm to second level
         runForwardsDistanceAndRaiseArm(.7, 14, 50);
@@ -228,6 +239,8 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
         strafeLeft(.7, .5);
 
         runForwardsEncoderAndLowerArmAndExtend(.9, 56, 13);
+
+        armTurn.setPosition(.42);
 
     }
 
@@ -447,10 +460,10 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
             if (currentDistance < inches) {
 
-               // drive_FL.setPower(-speed);
-               // drive_RL.setPower(-speed);
-               // drive_FR.setPower(-speed);
-               // drive_RR.setPower(-speed);
+                //drive_FL.setPower(-speed);
+                //drive_RL.setPower(-speed);
+                //drive_FR.setPower(-speed);
+               //drive_RR.setPower(-speed);
                 driveTrain(-speed, -speed, -speed, -speed, PIDadjustment(0.5, inches, currentDistance));
 
 
@@ -879,6 +892,7 @@ public class Blue_Freight_Cycle extends BaseAutoOpMode {
 
     public void strafeLeft(double speed, double inches) {
         double currentDistance;
+
 
         currentDistance = LS_distance.getDistance(DistanceUnit.INCH);
         while (LS_distance.getDistance(DistanceUnit.INCH) > inches) {

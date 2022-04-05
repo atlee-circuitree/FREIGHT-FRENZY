@@ -152,7 +152,7 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
 
         sleep(1000);
 
-        armTurn.setPosition(.50);
+        armTurn.setPosition(.42);
 
         sleep(1000);
 
@@ -187,6 +187,7 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
         //Moves towards center of Red Alliance Wobble/Shipping Hub
         runForwardsDistanceAndRaiseArm(.3, 39, angle);
 
+
         //Turns right towards Red Alliance Wobble/Shipping Hub
         turnRight(90);
 
@@ -201,6 +202,7 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
                        INCHES        |                      -Change the number of inches to subtract from the original 30 inches depending on each level.
                                      |                      -The lower the inches, the less it moves forward or closer to the wall it will be. 20 = closer to wall
                                                         */
+        armTurn.setPosition(.42);
 
         sleep(500);
 

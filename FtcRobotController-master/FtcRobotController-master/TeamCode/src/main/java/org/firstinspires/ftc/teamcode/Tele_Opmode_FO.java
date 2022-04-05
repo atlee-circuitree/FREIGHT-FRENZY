@@ -244,11 +244,13 @@ public class Tele_Opmode_FO extends BaseOpMode {
 
             //Turns feeder box (Higher number = left, Lower number = right)
              if (gamepad2.dpad_left) {
-                armTurn.setPosition(.53);
+                armTurn.setPosition(.48);
+
+
             } else if (gamepad2.dpad_right) {
-                armTurn.setPosition(.46);
+                armTurn.setPosition(.36);
             } else if (gamepad2.dpad_up) {
-                armTurn.setPosition(.50);
+                armTurn.setPosition(.42);
             }
 
              //Turns feeder box variably with joystick  //Unslash this section if you want armTurn servo using joystick back.
