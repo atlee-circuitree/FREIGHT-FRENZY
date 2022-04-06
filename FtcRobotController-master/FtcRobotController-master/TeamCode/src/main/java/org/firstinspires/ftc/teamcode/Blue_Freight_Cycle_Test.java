@@ -1,9 +1,10 @@
-package org.firstinspires.ftc.teamcode.training;
+package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Math.abs;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -33,7 +34,8 @@ import org.firstinspires.ftc.teamcode.TurnPIDController;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Blue Freight Cycle", group="Linear Opmode")
+@Autonomous(name="Blue Freight Cycle Test", group="Linear Opmode")
+@Disabled
 public class Blue_Freight_Cycle_Test extends BaseAutoOpMode {
 
     // Declare OpMode members.

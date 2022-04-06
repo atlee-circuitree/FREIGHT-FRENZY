@@ -571,6 +571,11 @@ public abstract class BaseOpMode extends LinearOpMode {
         telemetry.addData("Yaw, Pitch, Roll", ypr);
 
     }
+    public void zeroGyro() {
+        navx_centered.zeroYaw();
+    }
+
+
 }
 
 

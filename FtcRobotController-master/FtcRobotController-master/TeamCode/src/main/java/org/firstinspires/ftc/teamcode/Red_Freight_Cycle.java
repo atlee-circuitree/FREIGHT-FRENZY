@@ -30,7 +30,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-//@Autonomous(name="Red Freight Cycle", group="Linear Opmode")
+@Autonomous(name="Red Freight Cycle", group="Linear Opmode")
 public class Red_Freight_Cycle extends BaseAutoOpMode {
 
     // Declare OpMode members.
@@ -67,10 +67,10 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
     BNO055IMU imu;
 
-    HardwarePushbot         robot   = new HardwarePushbot();   // Use a Pushbot's hardware
+    HardwarePushbot robot = new HardwarePushbot();   // Use a Pushbot's hardware
 
-    static final double     FORWARD_SPEED = 1;
-    static final double     TURN_SPEED    = 1;
+    static final double FORWARD_SPEED = 1;
+    static final double TURN_SPEED = 1;
 
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
@@ -92,7 +92,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         feeder = hardwareMap.get(DcMotor.class, "feeder");
 
         kickout = hardwareMap.get(Servo.class, "kickout");
-        odometryLift1 = hardwareMap.get(Servo.class,"odometryLift1");
+        odometryLift1 = hardwareMap.get(Servo.class, "odometryLift1");
         leftDucky = hardwareMap.get(CRServo.class, "left_Ducky");
         rightDucky = hardwareMap.get(CRServo.class, "right_Ducky");
         armTurn = hardwareMap.get(Servo.class, "armTurn");
@@ -151,7 +151,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
         sleep(200);
 
-        armTurn.setPosition(.42);
+        armTurn.setPosition(.44);
 
         sleep(1000);
 
@@ -163,9 +163,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         int reduction = calibrateDisVisionReduction(readDisVision());
 
         //Strafes to center of alliance shipping hub
-        strafeLeftEncoder(.8, 15);
-
-        armTurn.setPosition(.42);
+        strafeLeftEncoder(.8, 13);
 
         sleep(250);
 
@@ -175,50 +173,42 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         //Moves forwards to Red Alliance Wobble and raises arm to appropriate level for starting block
         runForwardsDistanceAndRaiseArm(.6, 19 - reduction, angle);
 
-        armTurn.setPosition(.42);
-
         //Feeder spits starting block
         feederSpit(0.5);
 
         feeder.setPower(0);
 
         //Moves back from alliance shipping hub
-        backwardsDistanceDrive(.7,15);
+        backwardsDistanceDrive(.7, 15);
 
         //Turns 90 degrees right
         turnRight(90);
 
-        armTurn.setPosition(.42);
-
         //Angle adjust
         compareBackSensorsNew();
 
-        //Strafes right until RS_Distance sensor is 0.5 in away from wall
-        strafeRightEncoder(.7,.5);
+        //Strafes right until RS_Distance sensor is 0.5 in away from wall   4/6/22 Changed to 1
+        strafeRightEncoder2(.7, 12);
 
         //Moves forward inside warehouse extending and lowering arm for second block
-        runForwardsEncoderAndLowerArmAndExtend(.9, 52, 13);
+        runForwardsEncoderAndLowerArmAndExtend(.9, 50, 13);
 
         feeder.setPower(0);
 
-        armTurn.setPosition(.42);
-
         //Backs out of warehouse using the right wall from robot to guide it out
-        strafeDiagonalDownRightEncoderAndRaiseArm(1,50,50);
+        /*strafeDiagonalDownRightEncoderAndRaiseArm(1,50,50);
 
         //Strafes left from wall to allow space for turning
         strafeLeftEncoder(.8, 6);
 
-        //Turns left 90 degrees
-        turnLeft(90);
+        //Turns left 90 degrees  changed to 45 4/6/22
+        turnLeft(45);
 
         //Angle adjust
         compareBackSensorsNew();
 
         //Moves forwards to wobble and raises arm to second level
-        runForwardsDistanceAndRaiseArm(.7, 14, 50);
-
-        armTurn.setPosition(.42);
+        runForwardsDistanceAndRaiseArm(.7, 12, 50);
 
         //Spits second block out
         feederSpit(0.5);
@@ -232,12 +222,11 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         compareBackSensorsNew();
 
         //Strafes right until RS_Distance sensor is 0.5 in away from wall
-        strafeRight(.7,.5);
+        strafeRightEncoder2(.7,6);
+        //strafeRight(.7,.5);
 
         //Moves inside warehouse to get third block for end of auto period
-        runForwardsEncoderAndLowerArmAndExtend(.9, 56, 13);
-
-        armTurn.setPosition(.42);
+        runForwardsEncoderAndLowerArmAndExtend(.9, 56, 13);*/
 
     }
 
@@ -269,6 +258,22 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         telemetry.addData("Back Dead Encoder Finished", drive_RL.getCurrentPosition());
         telemetry.update();
 
+    }
+
+    public void strafeRightPID(double speed, double inches) {
+        double currentDistance;
+
+
+        currentDistance = RS_distance.getDistance(DistanceUnit.INCH);
+        while (RS_distance.getDistance(DistanceUnit.INCH) > inches) {
+            driveTrain(-speed, speed, -speed, -speed, PIDadjustment(0.5, currentDistance, inches));
+            // driveTrain(speed, -speed, -speed, speed, 1);
+            currentDistance = RS_distance.getDistance(DistanceUnit.INCH);
+        }
+        drive_FL.setPower(0);
+        drive_RL.setPower(0);
+        drive_FR.setPower(0);
+        drive_RR.setPower(0);
     }
 
     public void runForwardsDistanceAndLowerArmAndExtend(double speed, double inches, int angle) {
@@ -455,7 +460,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
             }
 
-            telemetry.addData("Current Encoder",  drive_FL.getCurrentPosition());
+            telemetry.addData("Current Encoder", drive_FL.getCurrentPosition());
             telemetry.addData("Target Degrees", startingValue - abs(encoderValue));
             telemetry.update();
 
@@ -502,7 +507,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
             }
 
-            telemetry.addData("Current Encoder",  drive_FL.getCurrentPosition());
+            telemetry.addData("Current Encoder", drive_FL.getCurrentPosition());
             telemetry.addData("Target Degrees", startingValue - abs(encoderValue));
             telemetry.update();
 
@@ -546,6 +551,38 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
     }
 
+    public void strafeRightEncoder2(double speed, double inputInches) {
+
+        double encoderValue = inchesBore(inputInches);
+        double startingValue = drive_RL.getCurrentPosition();
+
+        runtime.reset();
+        while (drive_RL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 3) {
+            if (drive_RL.getCurrentPosition() > startingValue - abs(encoderValue) && opModeIsActive() && runtime.seconds() <= 3) {
+
+                drive_FL.setPower(-speed);
+                drive_RL.setPower(speed);
+                drive_FR.setPower(speed);
+                drive_RR.setPower(-speed);
+
+                telemetry.addData("Encoder Target", abs(drive_RL.getCurrentPosition()));
+                telemetry.addData("Back Dead Encoder Running", abs(startingValue) + abs(encoderValue));
+                telemetry.update();
+
+            }
+
+            drive_FL.setPower(0);
+            drive_RL.setPower(0);
+            drive_FR.setPower(0);
+            drive_RR.setPower(0);
+
+            telemetry.addData("Encoder Target", encoderValue);
+            telemetry.addData("Back Dead Encoder Finished", drive_RL.getCurrentPosition());
+            telemetry.update();
+
+        }
+    }
+
     public int readDisVision() {
 
         if (frontDistanceLeft.getDistance(DistanceUnit.INCH) < 20) {
@@ -570,7 +607,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
             return 75;
 
-        } else if (Position == 2){
+        } else if (Position == 2) {
 
             return 50;
 
@@ -588,7 +625,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
             return 3;
 
-        } else if (Position == 2){
+        } else if (Position == 2) {
 
             return 3; //12/4/2021 5:41 pm Changed from 4 to 2 -Viassna
 
@@ -602,10 +639,10 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
     public double inchesBore(double input) {
 
-        final double     COUNTS_PER_MOTOR_REV    = 8192;    // eg: REV Bore Encoder
-        final double     DRIVE_GEAR_REDUCTION    = 1;     // This is < 1.0 if geared UP
-        final double     WHEEL_DIAMETER_INCHES   = 2.83465;     // For figuring circumference
-        final double     COUNTS_PER_INCH  = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
+        final double COUNTS_PER_MOTOR_REV = 8192;    // eg: REV Bore Encoder
+        final double DRIVE_GEAR_REDUCTION = 1;     // This is < 1.0 if geared UP
+        final double WHEEL_DIAMETER_INCHES = 2.83465;     // For figuring circumference
+        final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * Math.PI);
 
         return COUNTS_PER_INCH * input;
 
@@ -780,7 +817,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
 
     public void runForwardsEncoderAndLowerArmAndExtend(double speed, double inches, int angle) {
 
-        armTurn.setPosition(.24);
+        armTurn.setPosition(.44);
 
         feederEat(-.6);
 
@@ -1031,7 +1068,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         return currAngle;
     }
 
-    public void turnRight(double degrees){
+    public void turnRight(double degrees) {
         resetAngle();
 
         double error = degrees;
@@ -1050,7 +1087,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         drive_RR.setPower(0);
     }
 
-    public void turnLeft(double degrees){
+    public void turnLeft(double degrees) {
         resetAngle();
 
         double error = degrees;
@@ -1069,7 +1106,7 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
         drive_RR.setPower(0);
     }
 
-    public void turnTo(double degrees){
+    public void turnTo(double degrees) {
 
         Orientation orientation = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
@@ -1110,5 +1147,47 @@ public class Red_Freight_Cycle extends BaseAutoOpMode {
             telemetry.update();
         }
         robot.setAllPower(0);
+    }
+
+    public double PIDadjustment(double kP, double targetValue, double sensorValue) {
+
+        return ((targetValue - sensorValue) * kP);
+
+    }
+
+    public void driveTrain(double FLSpeed, double RLSpeed, double FRSpeed, double RRSpeed, double PIDScale) {
+
+        double maxSpeed = 0;
+
+        FLSpeed = (FLSpeed * PIDScale);
+        RLSpeed = (RLSpeed * PIDScale);
+        FRSpeed = (FRSpeed * PIDScale);
+        RRSpeed = (RRSpeed * PIDScale);
+
+        //maxSpeed = Math.max(abs(FLSpeed), abs(RLSpeed), abs(FRSpeed), abs(RRSpeed));
+        if (abs(FLSpeed) > maxSpeed) {
+
+            maxSpeed = abs(FLSpeed);
+        } else if (abs(RLSpeed) > maxSpeed) {
+
+            maxSpeed = abs(RLSpeed);
+        } else if (abs(FRSpeed) > maxSpeed) {
+
+            maxSpeed = abs(FRSpeed);
+        } else if (abs(RRSpeed) > maxSpeed) {
+
+            maxSpeed = abs(RRSpeed);
+        }
+        if (abs(maxSpeed) > 1) {
+            drive_FL.setPower(FLSpeed / maxSpeed);
+            drive_RL.setPower(RLSpeed / maxSpeed);
+            drive_FR.setPower(FRSpeed / maxSpeed);
+            drive_RR.setPower(RRSpeed / maxSpeed);
+        } else {
+            drive_FL.setPower(FLSpeed);
+            drive_RL.setPower(RLSpeed);
+            drive_FR.setPower(FRSpeed);
+            drive_RR.setPower(RRSpeed);
+        }
     }
 }

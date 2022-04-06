@@ -152,7 +152,7 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
 
         sleep(1000);
 
-        armTurn.setPosition(.42);
+        armTurn.setPosition(.44);
 
         sleep(1000);
 
@@ -201,8 +201,6 @@ public class Blue_Ducky_Wheel extends BaseAutoOpMode {
                        INCHES        |                      -Change the number of inches to subtract from the original 30 inches depending on each level.
                                      |                      -The lower the inches, the less it moves forward or closer to the wall it will be. 20 = closer to wall
                                                         */
-
-        armTurn.setPosition(.42);
 
         sleep(500);
 

@@ -4,12 +4,23 @@ import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.kauailabs.NavxMicroNavigationSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.IntegratingGyroscope;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.kauailabs.navx.ftc.AHRS;
+
+import java.text.DecimalFormat;
 
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
@@ -46,6 +57,7 @@ public class Tele_Opmode_FO extends BaseOpMode {
 
     BNO055IMU imu;
 
+    public AHRS navx_centered;
 
     //public final static double ARM_DEFAULT = 0.5; //Unslash this if you want armTurn servo using joystick back
     public final static double ARM_MIN_RANGE = 0.46;
@@ -108,6 +120,10 @@ public class Tele_Opmode_FO extends BaseOpMode {
         drive_FR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive_RL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         drive_RR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        ElapsedTime timer = new ElapsedTime();
+
+        navx_centered = AHRS.getInstance(hardwareMap.get(NavxMicroNavigationSensor.class, "navx_centered"), AHRS.DeviceDataType.kProcessedData);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -199,9 +215,11 @@ public class Tele_Opmode_FO extends BaseOpMode {
                 odometryLift1.setPosition(0);
             }
 
-            //Lifts back odometry wheel
+            if (gamepad1.dpad_up) {
+                zeroGyro();
+            }
 
-
+            //Slow mode, slows turning
             if (gamepad1.left_stick_button) {
                 SD = .25;
             } else {
@@ -248,9 +266,9 @@ public class Tele_Opmode_FO extends BaseOpMode {
 
 
             } else if (gamepad2.dpad_right) {
-                armTurn.setPosition(.36);
+                armTurn.setPosition(.40);
             } else if (gamepad2.dpad_up) {
-                armTurn.setPosition(.42);
+                armTurn.setPosition(.435);
             }
 
              //Turns feeder box variably with joystick  //Unslash this section if you want armTurn servo using joystick back.
@@ -280,6 +298,8 @@ public class Tele_Opmode_FO extends BaseOpMode {
         int COUNTS_TICKS_PER_REV_PER_DEGREE = (COUNTS_PER_BORE_MOTOR_REV) / 360 * 2;
 
         return COUNTS_TICKS_PER_REV_PER_DEGREE * input;
+
+
 
     }
 }

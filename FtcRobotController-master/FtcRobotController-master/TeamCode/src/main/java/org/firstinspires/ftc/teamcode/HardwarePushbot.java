@@ -34,7 +34,7 @@ public class HardwarePushbot
     public DcMotor drive_FR;
     public DcMotor drive_RR;
 
-    BNO055IMU imu;
+    public BNO055IMU imu;
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
