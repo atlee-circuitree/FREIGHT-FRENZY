@@ -157,7 +157,7 @@ public class Red_Ducky_Wheel extends BaseAutoOpMode {
         sleep(1000);
 
         //Moves forwards from starting position
-        forwardsDistanceDrive(9); //8 before 4/6/22
+        forwardsDistanceDrive(10); //8 before 4/6/22
 
         sleep(500);
 
