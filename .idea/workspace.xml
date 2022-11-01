@@ -4,13 +4,20 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="62dc9451-e0a0-4649-a853-c7fbfc284f64" name="Default Changelist" comment="" />
+    <list default="true" id="62dc9451-e0a0-4649-a853-c7fbfc284f64" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FtcRobotController-master/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FtcRobotController-master/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/TeamCode/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/TeamCode/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/build.common.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/build.common.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/FtcRobotController-master/FtcRobotController-master/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[]" />
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
@@ -32,8 +39,13 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
+    <property name="cidr.known.project.marker" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/FtcRobotController-master" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -101,6 +113,5 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
